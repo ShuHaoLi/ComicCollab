@@ -1,8 +1,8 @@
 /**
  * Created by wendywang on 2016-02-01.
  */
-///<reference path='types/node/node.d.ts'/>
-///<reference path='types/express/express.d.ts'/>
+///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
+///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 'use strict';
 var Application = (function () {
     function Application() {
@@ -61,4 +61,3 @@ var Application = (function () {
 var appli = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
-//# sourceMappingURL=app.js.map

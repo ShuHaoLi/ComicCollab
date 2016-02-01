@@ -13,3 +13,4 @@
 # ignore compilation codes
 node_modules/
 data/
+types/

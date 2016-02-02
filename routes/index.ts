@@ -1,19 +1,24 @@
-/**
- * Created by wendywang on 2016-02-01.
- */
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
-class User {
-    username : string;
-    password : string;
-    constructor(username, password){
+interface UserInterface {
+    getUsername() : String;
+    getPassword() : String;
+}
+
+class User implements UserInterface {
+    private username: String;
+    private password: String;
+    constructor(username: String, password: String) {
         this.username = username;
         this.password = password;
     }
-    getUsername() {return this.username;}
-    getPassword() {return this.password;}
+    getUsername(){
+        return this.username;
+    }
+    getPassword(){
+        return this.password;
+    }
 }
-
 
 class Router{
     constructor(){
@@ -36,10 +41,10 @@ class Router{
             res.render('createprofile');
         });
 
-///* GET Default Home page. */
-//router.get('/home', function(req, res) {
-//  res.render('home', { title: 'Comic Books Home Page' });
-//});
+        ///* GET Default Home page. */
+        //router.get('/home', function(req, res) {
+        //  res.render('home', { title: 'Comic Books Home Page' });
+        //});
 
         /* POST to UserList Page */
         router.post('/createprofile', function(req, res) {
@@ -50,13 +55,14 @@ class Router{
             // Get our form values. These rely on the "name" attributes
             var userName = req.body.username;
             var password = req.body.password;
-            var confirmPassword;
-            var user = new User(this.username, this.password);
+            var confirmPassword = req.body.confirmPassword;
 
             if (!password == confirmPassword){
                 res.send("Passwords do not match");
             }
             else {
+                var user : User = new User(req.body.username, req.body.password);
+
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB

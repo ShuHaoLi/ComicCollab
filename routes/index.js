@@ -1,6 +1,3 @@
-/**
- * Created by wendywang on 2016-02-01.
- */
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 var User = (function () {
@@ -8,8 +5,12 @@ var User = (function () {
         this.username = username;
         this.password = password;
     }
-    User.prototype.getUsername = function () { return this.username; };
-    User.prototype.getPassword = function () { return this.password; };
+    User.prototype.getUsername = function () {
+        return this.username;
+    };
+    User.prototype.getPassword = function () {
+        return this.password;
+    };
     return User;
 })();
 var Router = (function () {
@@ -40,12 +41,12 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var userName = req.body.username;
             var password = req.body.password;
-            var confirmPassword;
-            var user = new User(this.username, this.password);
+            var confirmPassword = req.body.confirmPassword;
             if (!password == confirmPassword) {
                 res.send("Passwords do not match");
             }
             else {
+                var user = new User(req.body.username, req.body.password);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB

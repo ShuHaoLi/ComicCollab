@@ -1,6 +1,3 @@
-/**
- * Created by wendywang on 2016-02-01.
- */
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 'use strict';
@@ -12,6 +9,20 @@ var Application = (function () {
         var logger = require('morgan');
         var cookieParser = require('cookie-parser');
         var bodyParser = require('body-parser');
+        var mongo = require('mongodb');
+        var monk = require('monk');
+        /*
+                var db;
+                var uri = 'mongodb://user:pass@ds060968.mongolab.com:60968/wecode_db';
+                mongo.connect(uri, function(err, db2) {
+                    if (err) {
+                        console.log("Error: unable to connect to database");
+                        return;
+                    }
+                    db = db2;
+                });*/
+        //var db = monk('mongodb://<user>:<pass>@ds060968.mongolab.com:60968/wecode_db');
+        var db = monk('user:pass@ds060968.mongolab.com:60968/wecode_db');
         var routes = require('./routes/index');
         var users = require('./routes/users');
         var app = express();
@@ -25,6 +36,11 @@ var Application = (function () {
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
         app.use(express.static(path.join(__dirname, 'public')));
+        // Make our db accessible to our router
+        app.use(function (req, res, next) {
+            req.db = db;
+            next();
+        });
         app.use('/', routes);
         app.use('/users', users);
         // catch 404 and forward to error handler
@@ -58,6 +74,6 @@ var Application = (function () {
     }
     return Application;
 })();
-var appli = new Application();
+var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 

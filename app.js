@@ -17,7 +17,7 @@ var Application = (function () {
         var app = express();
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
-        app.set('view engine', 'jade');
+        app.set('view engine', 'ejs');
         // uncomment after placing your favicon in /public
         //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
         app.use(logger('dev'));
@@ -38,6 +38,11 @@ var Application = (function () {
             err.status = 404;
             next(err);
         });
+        // viewed at http://localhost:8080
+        app.get('/', function (req, res) {
+            res.sendFile(path.join(__dirname + '/*.html'));
+        });
+        app.listen(3030);
         // error handlers
         // development error handler
         // will print stacktrace
@@ -54,7 +59,7 @@ var Application = (function () {
         // no stacktraces leaked to user
         app.use(function (err, req, res, next) {
             res.status(err.status || 500);
-            res.render('error', {
+            res.render('error.html', {
                 message: err.message,
                 error: {}
             });

@@ -33,18 +33,24 @@ class Router{
         /* GET login page. */
         router.get('/login', function(req, res) {
             res.render('login');
-            res.redirect('main');
+            //res.redirect('main');
+            var db = req.db;
+            var userName = req.body.username;
+            var password = req.body.password;
+
+            if (password.length() < 10 || password.length() > 20){
+                res.send("Password needs to be between 10 - 20 characters. Please try again!");
+            }
+            var collection = db.get('usercollection');
+            if (!collection.has(userName)){
+                res.send("username doesn't exists. Please try again or register a new acccount");
+            }
         });
 
         /* GET Create Profile page. */
         router.get('/createprofile', function(req, res) {
             res.render('createprofile');
         });
-
-        ///* GET Default Home page. */
-        //router.get('/home', function(req, res) {
-        //  res.render('home', { title: 'Comic Books Home Page' });
-        //});
 
         /* POST to UserList Page */
         router.post('/createprofile', function(req, res) {

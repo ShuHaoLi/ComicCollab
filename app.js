@@ -11,17 +11,6 @@ var Application = (function () {
         var bodyParser = require('body-parser');
         var mongo = require('mongodb');
         var monk = require('monk');
-        /*
-                var db;
-                var uri = 'mongodb://user:pass@ds060968.mongolab.com:60968/wecode_db';
-                mongo.connect(uri, function(err, db2) {
-                    if (err) {
-                        console.log("Error: unable to connect to database");
-                        return;
-                    }
-                    db = db2;
-                });*/
-        //var db = monk('mongodb://<user>:<pass>@ds060968.mongolab.com:60968/wecode_db');
         var db = monk('user:pass@ds060968.mongolab.com:60968/wecode_db');
         var routes = require('./routes/index');
         var users = require('./routes/users');

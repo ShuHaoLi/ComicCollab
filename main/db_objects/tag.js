@@ -7,7 +7,9 @@ var Tag = (function () {
         this.tagName = tagName;
     }
     Tag.prototype.getTagId = function () { return this.id; };
+    Tag.prototype.setTagId = function (id) { this.id = id; };
     Tag.prototype.getTagName = function () { return this.tagName; };
+    Tag.prototype.setTagName = function (tagName) { this.tagName = tagName; };
     return Tag;
 })();
 //# sourceMappingURL=tag.js.map

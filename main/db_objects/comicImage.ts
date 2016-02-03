@@ -13,9 +13,15 @@ class ComicImage{
         this.order = order;
         this.image = image;
     }
-    getComicImageid() {return this.id;}
+    getComicImageId() {return this.id;}
+    setComicImageId(id : number) {this.id = id;}
     getComicOrder() {return this.order;}
+    setComicOrder(order : number) {this.order = order;}
     getComicAuthor() {return this.author;}
+    setComicAuthor(author : Account) {this.author = author;}
     getComicImage() {return this.image;}
+    setComicImage(image : Image) {this.image = image;}
+
+
 
 }

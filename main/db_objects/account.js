@@ -10,6 +10,12 @@ var Account = (function () {
     }
     Account.prototype.getUsername = function () { return this.username; };
     Account.prototype.getPassword = function () { return this.password; };
+    Account.prototype.setUsername = function (username) {
+        this.username = username;
+    };
+    Account.prototype.setPassword = function (password) {
+        this.password = password;
+    };
     return Account;
 })();
 //# sourceMappingURL=account.js.map

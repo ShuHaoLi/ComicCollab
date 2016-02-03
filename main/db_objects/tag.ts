@@ -9,6 +9,8 @@ class Tag {
         this.tagName = tagName;
     }
     getTagId() {return this.id;}
+    setTagId(id : number) {this.id = id;}
     getTagName() {return this.tagName;}
+    setTagName(tagName : string) {this.tagName = tagName;}
 
 }

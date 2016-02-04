@@ -18,8 +18,8 @@ var Router = (function () {
         var express = require('express');
         var router = express.Router();
         /* GET home page. */
-        router.get('/main', function (req, res) {
-            res.render('main');
+        router.get('/home', function (req, res) {
+            res.render('home');
         });
         /* GET login page. */
         router.get('/login', function (req, res) {
@@ -76,3 +76,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

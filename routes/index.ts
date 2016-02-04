@@ -26,8 +26,8 @@ class Router{
         var router = express.Router();
 
         /* GET home page. */
-        router.get('/main', function(req, res) {
-            res.render('main');
+        router.get('/home', function(req, res) {
+            res.render('home');
         });
 
         /* GET login page. */

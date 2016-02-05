@@ -13,6 +13,25 @@ var User = (function () {
     };
     return User;
 })();
+var LoggedInUser = (function () {
+    function LoggedInUser(username, isLoggedIn) {
+        this.username = username;
+        this.isLoggedIn = isLoggedIn;
+    }
+    LoggedInUser.prototype.getUsername = function () {
+        return this.username;
+    };
+    LoggedInUser.prototype.setUsername = function (username) {
+        this.username = username;
+    };
+    LoggedInUser.prototype.getIsLoggedIn = function () {
+        return this.isLoggedIn;
+    };
+    LoggedInUser.prototype.setIsLoggedIn = function (isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
+    };
+    return LoggedInUser;
+})();
 var Router = (function () {
     function Router() {
         var express = require('express');
@@ -24,17 +43,29 @@ var Router = (function () {
         /* GET login page. */
         router.get('/login', function (req, res) {
             res.render('login');
-            //res.redirect('main');
+        });
+        /* POST for login page */
+        router.post('/login', function (req, res) {
+            // Set our internal DB variable
             var db = req.db;
-            var userName = req.body.username;
+            // Get our form values. These rely on the "name" attributes
+            var username = req.body.username;
             var password = req.body.password;
-            if (password.length() < 10 || password.length() > 20) {
-                res.send("Password needs to be between 10 - 20 characters. Please try again!");
-            }
+            // Set our collection
             var collection = db.get('usercollection');
-            if (!collection.has(userName)) {
-                res.send("username doesn't exists. Please try again or register a new acccount");
-            }
+            collection.findOne({
+                "username": username,
+                "password": password
+            }, function (err, docs) {
+                if (docs != null) {
+                    currentUser.setUsername(username);
+                    currentUser.setIsLoggedIn(true);
+                    res.redirect('home');
+                }
+                else {
+                    res.send('Login failed, invalid credentials');
+                }
+            });
         });
         /* GET Create Profile page. */
         router.get('/createprofile', function (req, res) {
@@ -75,5 +106,5 @@ var Router = (function () {
     }
     return Router;
 })();
+var currentUser = new LoggedInUser('', false);
 var router = new Router();
-//# sourceMappingURL=index.js.map

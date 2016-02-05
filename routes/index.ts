@@ -20,6 +20,27 @@ class User implements UserInterface {
     }
 }
 
+class LoggedInUser {
+    private username: String;
+    private isLoggedIn: boolean;
+    constructor(username: String, isLoggedIn: boolean) {
+        this.username = username;
+        this.isLoggedIn = isLoggedIn;
+    }
+    getUsername(){
+        return this.username;
+    }
+    setUsername(username: String){
+        this.username = username;
+    }
+    getIsLoggedIn(){
+        return this.isLoggedIn;
+    }
+    setIsLoggedIn(isLoggedIn: boolean){
+        this.isLoggedIn = isLoggedIn;
+    }
+}
+
 class Router{
     constructor(){
         var express = require('express');
@@ -33,18 +54,33 @@ class Router{
         /* GET login page. */
         router.get('/login', function(req, res) {
             res.render('login');
-            //res.redirect('main');
+        });
+
+        /* POST for login page */
+        router.post('/login', function(req, res) {
+
+            // Set our internal DB variable
             var db = req.db;
-            var userName = req.body.username;
+
+            // Get our form values. These rely on the "name" attributes
+            var username = req.body.username;
             var password = req.body.password;
 
-            if (password.length() < 10 || password.length() > 20){
-                res.send("Password needs to be between 10 - 20 characters. Please try again!");
-            }
+            // Set our collection
             var collection = db.get('usercollection');
-            if (!collection.has(userName)){
-                res.send("username doesn't exists. Please try again or register a new acccount");
-            }
+
+            collection.findOne({
+                "username": username,
+                "password": password
+            }, function(err, docs) {
+                if (docs != null) {
+        			currentUser.setUsername(username);
+        			currentUser.setIsLoggedIn(true);
+                    res.redirect('home');
+                } else {
+                	res.send('Login failed, invalid credentials')
+                }
+            });
         });
 
         /* GET Create Profile page. */
@@ -94,5 +130,5 @@ class Router{
     }
 }
 
+var currentUser = new LoggedInUser('', false);
 var router = new Router();
-

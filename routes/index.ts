@@ -38,8 +38,8 @@ class Router{
             var userName = req.body.username;
             var password = req.body.password;
 
-            if (password.length() < 10 || password.length() > 20){
-                res.send("Password needs to be between 10 - 20 characters. Please try again!");
+            if (password.length() < 6 || password.length() > 20){
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
             var collection = db.get('usercollection');
             if (!collection.has(userName)){
@@ -63,7 +63,7 @@ class Router{
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
 
-            if (!password == confirmPassword){
+            if (password != confirmPassword){
                 res.send("Passwords do not match");
             }
             else {

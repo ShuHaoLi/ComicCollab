@@ -35,7 +35,7 @@ var Router = (function () {
             // Set our collection
             var collection = db.get('usercollection');
             collection.findOne({
-                "username": username,
+                "username": username.toLowerCase(),
                 "password": password
             }, function (err, docs) {
                 if (docs != null) {
@@ -89,4 +89,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

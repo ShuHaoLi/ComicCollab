@@ -49,7 +49,7 @@ class Router{
             var collection = db.get('usercollection');
 
             collection.findOne({
-                "username": username,
+                "username": username.toLowerCase(),
                 "password": password
             }, function(err, docs) {
                 if (docs != null) {

@@ -1,6 +1,12 @@
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <label for="file">Select your image:</label>
-    <input type="file" name="file" id="file" />
-    <span class="hint">Supported files: jpg, jpeg, png.</span>
-    <button type="submit">publish</button>
+<form action="/upload" method="post" action="file-upload-1.htm" name="submit" enctype="multipart/form-data">
+    <h1>UPLOAD A COMIC WEBPAGE</h1>
+    <h3>Upload an Image:</h3>
+    <p>Must be:</p>
+    <ul>
+        <li>PNG, JPEG, or JPG</li>
+        <li>Not larger than 500 MB</li>
+        <li>Be a square at maximum 500 by 500 pixels</li>
+    </ul>
+    <input type="file" name="fileField"><br /><br />
+    <input type="submit" name="publish" value="Publish">
 </form>

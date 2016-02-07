@@ -1,0 +1,11 @@
+<form method="post" action="file-upload-1.htm" name="submit" enctype="multipart/form-data">
+    <input type="file" name="fileField"><br /><br />
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="file">Select your image:</label>
+    <input type="file" name="file" id="file" />
+    <span class="hint">Supported files: jpg, jpeg, png.</span>
+    <button type="submit">publish</button>
+</form>

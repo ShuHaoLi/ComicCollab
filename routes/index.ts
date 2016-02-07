@@ -20,27 +20,6 @@ class User implements UserInterface {
     }
 }
 
-class LoggedInUser {
-    private username: String;
-    private isLoggedIn: boolean;
-    constructor(username: String, isLoggedIn: boolean) {
-        this.username = username;
-        this.isLoggedIn = isLoggedIn;
-    }
-    getUsername(){
-        return this.username;
-    }
-    setUsername(username: String){
-        this.username = username;
-    }
-    getIsLoggedIn(){
-        return this.isLoggedIn;
-    }
-    setIsLoggedIn(isLoggedIn: boolean){
-        this.isLoggedIn = isLoggedIn;
-    }
-}
-
 class Router{
     constructor(){
         var express = require('express');
@@ -53,7 +32,7 @@ class Router{
 
         /* GET login page. */
         router.get('/login', function(req, res) {
-            res.render('login');
+            res.render('login', { loginError: ''});
         });
 
         /* POST for login page */
@@ -74,11 +53,12 @@ class Router{
                 "password": password
             }, function(err, docs) {
                 if (docs != null) {
+                    var currentUser = req.currentUser;
         			currentUser.setUsername(username);
         			currentUser.setIsLoggedIn(true);
                     res.redirect('home');
                 } else {
-                	res.send('Login failed, invalid credentials')
+                    res.render('login', { loginError: 'Login failed, invalid credentials'});
                 }
             });
         });
@@ -130,5 +110,4 @@ class Router{
     }
 }
 
-var currentUser = new LoggedInUser('', false);
 var router = new Router();

@@ -1,6 +1,25 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 'use strict';
+var LoggedInUser = (function () {
+    function LoggedInUser(username, isLoggedIn) {
+        this.username = username;
+        this.isLoggedIn = isLoggedIn;
+    }
+    LoggedInUser.prototype.getUsername = function () {
+        return this.username;
+    };
+    LoggedInUser.prototype.setUsername = function (username) {
+        this.username = username;
+    };
+    LoggedInUser.prototype.getIsLoggedIn = function () {
+        return this.isLoggedIn;
+    };
+    LoggedInUser.prototype.setIsLoggedIn = function (isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
+    };
+    return LoggedInUser;
+})();
 var Application = (function () {
     function Application() {
         var express = require('express');
@@ -47,6 +66,7 @@ var Application = (function () {
         app.use(express.static(path.join(__dirname, 'public')));
         // Make our db accessible to our router
         app.use(function (req, res, next) {
+            req.currentUser = currentUser;
             req.db = db;
             next();
         });
@@ -88,6 +108,7 @@ var Application = (function () {
     }
     return Application;
 })();
+var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 

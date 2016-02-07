@@ -13,25 +13,6 @@ var User = (function () {
     };
     return User;
 })();
-var LoggedInUser = (function () {
-    function LoggedInUser(username, isLoggedIn) {
-        this.username = username;
-        this.isLoggedIn = isLoggedIn;
-    }
-    LoggedInUser.prototype.getUsername = function () {
-        return this.username;
-    };
-    LoggedInUser.prototype.setUsername = function (username) {
-        this.username = username;
-    };
-    LoggedInUser.prototype.getIsLoggedIn = function () {
-        return this.isLoggedIn;
-    };
-    LoggedInUser.prototype.setIsLoggedIn = function (isLoggedIn) {
-        this.isLoggedIn = isLoggedIn;
-    };
-    return LoggedInUser;
-})();
 var Router = (function () {
     function Router() {
         var express = require('express');
@@ -42,7 +23,7 @@ var Router = (function () {
         });
         /* GET login page. */
         router.get('/login', function (req, res) {
-            res.render('login');
+            res.render('login', { loginError: '' });
         });
         /* POST for login page */
         router.post('/login', function (req, res) {
@@ -58,12 +39,13 @@ var Router = (function () {
                 "password": password
             }, function (err, docs) {
                 if (docs != null) {
+                    var currentUser = req.currentUser;
                     currentUser.setUsername(username);
                     currentUser.setIsLoggedIn(true);
                     res.redirect('home');
                 }
                 else {
-                    res.send('Login failed, invalid credentials');
+                    res.render('login', { loginError: 'Login failed, invalid credentials' });
                 }
             });
         });
@@ -106,5 +88,5 @@ var Router = (function () {
     }
     return Router;
 })();
-var currentUser = new LoggedInUser('', false);
 var router = new Router();
+//# sourceMappingURL=index.js.map

@@ -5,6 +5,27 @@ interface Error {
     status?: number;
 }
 
+class LoggedInUser {
+    private username: String;
+    private isLoggedIn: boolean;
+    constructor(username: String, isLoggedIn: boolean) {
+        this.username = username;
+        this.isLoggedIn = isLoggedIn;
+    }
+    getUsername(){
+        return this.username;
+    }
+    setUsername(username: String){
+        this.username = username;
+    }
+    getIsLoggedIn(){
+        return this.isLoggedIn;
+    }
+    setIsLoggedIn(isLoggedIn: boolean){
+        this.isLoggedIn = isLoggedIn;
+    }
+}
+
 class Application {
     constructor(){
         var express = require('express');
@@ -61,6 +82,7 @@ class Application {
 
         // Make our db accessible to our router
         app.use(function(req, res, next) {
+            req.currentUser = currentUser;
             req.db = db;
             next();
         });
@@ -109,6 +131,7 @@ class Application {
     }
 }
 
+var currentUser = new LoggedInUser('', false);
 var application = new Application();
 
 //# sourceMappingURL=app.js.map

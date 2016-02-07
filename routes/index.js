@@ -17,6 +17,7 @@ var Router = (function () {
     function Router() {
         var express = require('express');
         var router = express.Router();
+        var multer = require('multer'), bodyParser = require('body-parser'), path = require('path');
         /* GET home page. */
         router.get('/home', function (req, res) {
             res.render('home');
@@ -84,8 +85,30 @@ var Router = (function () {
                 });
             }
         });
+        router.get('/', function (req, res) {
+            res.render('index');
+        });
+        router.post('/fileupload2', multer({ dest: './uploads/' }).single('upl'), function (req, res) {
+            console.log(req.body); //form fields
+            /* example output:
+             { title: 'abc' }
+             */
+            console.log(req.file); //form files
+            /* example output:
+             { fieldname: 'upl',
+             originalname: 'grumpy.png',
+             encoding: '7bit',
+             mimetype: 'image/png',
+             destination: './uploads/',
+             filename: '436ec561793aa4dc475a88e84776b1b9',
+             path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
+             size: 277056 }
+             */
+            res.status(204).end();
+        });
         module.exports = router;
     }
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

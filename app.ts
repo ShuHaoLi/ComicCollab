@@ -68,6 +68,24 @@ class Application {
             // req.body will contain the text fields, if there were any
         })
 
+        app.use(multer({
+            dest: './fileupload2',
+            limits: {
+                fieldNameSize: 50,
+                files: 1,
+                fields: 5,
+                fileSize: 400 * 400
+            },
+            rename: function(fieldname, filename) {
+                return filename;
+            },
+            onFileUploadStart: function(file) {
+                if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+                    return false;
+                }
+            }
+        }));
+
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');

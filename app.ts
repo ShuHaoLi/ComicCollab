@@ -69,7 +69,7 @@ class Application {
         })
 
         app.use(multer({
-            dest: './fileupload2',
+            dest: './uploads',
             limits: {
                 fieldNameSize: 50,
                 files: 1,

@@ -88,7 +88,7 @@ var Router = (function () {
         router.get('/', function (req, res) {
             res.render('index');
         });
-        router.post('/uploadcomic', multer({ dest: './uploads/' }).single('upl'), function (req, res) {
+        router.post('/', multer({ dest: './uploads/' }).single('upl'), function (req, res) {
             console.log(req.body); //form fields
             /* example output:
              { title: 'abc' }

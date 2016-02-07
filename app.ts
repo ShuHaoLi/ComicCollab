@@ -68,7 +68,7 @@ class Application {
             // req.body will contain the text fields, if there were any
         })
 
-        app.use(multer({
+        var upload = multer({
             dest: './uploads',
             limits: {
                 fieldNameSize: 50,

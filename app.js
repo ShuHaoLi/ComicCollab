@@ -54,7 +54,7 @@ var Application = (function () {
             //
             // req.body will contain the text fields, if there were any
         });
-        app.use(multer({
+        var upload = multer({
             dest: './uploads',
             limits: {
                 fieldNameSize: 50,
@@ -70,7 +70,7 @@ var Application = (function () {
                     return false;
                 }
             }
-        }));
+        });
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');

@@ -27,7 +27,7 @@ class LoggedInUser {
 }
 
 class Application {
-    constructor(){
+    constructor() {
         var express = require('express');
         var path = require('path');
         var favicon = require('serve-favicon');
@@ -42,10 +42,9 @@ class Application {
         var routes = require('./routes/index');
         var users = require('./routes/users');
 
-        var multer  = require('multer')
-        var upload = multer({ dest: 'uploads/' })
+        var multer = require('multer');
 
-        var app = express()
+        var app = express();
 
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
@@ -55,9 +54,28 @@ class Application {
         //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
         app.use(logger('dev'));
         app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.urlencoded({extended: false}));
         app.use(cookieParser());
         app.use(express.static(path.join(__dirname, 'public')));
+        app.use(multer({ dest: './public/images'}).array("file"));
+        var upload = multer({ dest: './public/images', limits: { fileSize: 10 * 1024 * 1024}});
+        // File Upload route
+        //app.post('/uploadcomics', upload.array('file'));
+
+        /*
+        app.use(multer({
+            dest: './uploads'.array("file")},
+            rename: function (fieldname, filename) {
+                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
+            },
+            limits: {
+                fieldNameSize: 50,
+                files: 1,
+                fields: 5,
+                fileSize: 1024 * 1024
+
+            }
+        })); */
 
         // Make our db accessible to our router
         app.use(function(req, res, next) {
@@ -77,6 +95,30 @@ class Application {
         });
 
         /*
+
+        app.use(multer({
+                dest: './uploads/',
+                rename: function (fieldname, filename) {
+                    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
+                },
+                onFileUploadStart: function (file) {
+                    console.log(file.name + ' is starting ...');
+                },
+                onFileUploadComplete: function (file, req, res) {
+                    console.log(file.name + ' uploading is ended ...');
+                    console.log("File name : " + file.name + "\n" + "FilePath: " + file.path)
+                },
+                onError: function (error, next) {
+                    console.log("File uploading error: => " + error)
+                    next(error)
+                },
+                onFileSizeLimit: function (file) {
+                    console.log('Failed: ', file.originalname + " in path: " + file.path)
+                },
+                putSingleFilesInArray: true
+            })
+        );
+
         app.post('/profile', upload.single('avatar'), function (req, res, next) {
             // req.file is the `avatar` file
             // req.body will hold the text fields, if there were any
@@ -97,10 +139,11 @@ class Application {
             //
             // req.body will contain the text fields, if there were any
         });
-        */
+
+
 
         var upload = multer({
-            storage: './uploads',
+            dest: './uploads',
             limits: {
                 fieldNameSize: 50,
                 files: 1,
@@ -109,7 +152,7 @@ class Application {
 
             },
             rename: function(fieldname, filename) {
-                return filename;
+                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
             },
             onFileUploadStart: function(file) {
                 if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
@@ -118,15 +161,26 @@ class Application {
                     return false;
                 }
             },
+            onFileUploadComplete: function (file, req, res) {
+                console.log(file.name + ' uploading is ended ...');
+                console.log("File name : " + file.name + "\n" + "FilePath: " + file.path)
+            },
+            onError: function (error, next) {
+                console.log("File uploading error: => " + error)
+                next(error)
+            },
+            onFileSizeLimit: function (file) {
+                console.log('Failed: ', file.originalname + " in path: " + file.path)
+            },
+            putSingleFilesInArray: true,
             inMemory: true
         });
+        */
 
         // viewed at http://localhost:3000
         app.get('/', function(req, res) {
             res.sendFile(path.join(__dirname + '/*.html'));
         });
-
-        app.listen(3030);
 
         // error handlers
 
@@ -151,6 +205,7 @@ class Application {
                 error: {}
             });
         });
+        app.listen(3030);
         module.exports = app;
     }
 }

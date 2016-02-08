@@ -45,9 +45,17 @@ class Router{
     constructor(){
         var express = require('express');
         var router = express.Router();
-        var multer = require('multer'),
-                bodyParser = require('body-parser'),
-                path = require('path');
+        var multer = require('multer');
+        /*
+        var os = require('os');
+        var uuid = require('node-uuid');
+        var storage = multer.diskStorage({
+            destination: function (req, file, cb) { cb(null, os.tmpdir()) },
+            filename: function (req, file, cb) { cb(null, uuid.v4());}
+        }); */
+        // Create the multer instance here
+
+        var router = express.Router();
 
         /* GET home page. */
         router.get('/home', function(req, res) {
@@ -132,15 +140,41 @@ class Router{
         /* GET UPLOAD COMICS PAGE */
         router.get('/uploadcomics', function(req, res) {
             res.render('uploadcomics');
+        })
+
+
+
+        /*
+
+        upload = multer({
+            storage: './uploads',
+            limits: {
+                fieldNameSize: 50,
+                files: 1,
+                fields: 5,
+                fileSize: 1024 * 1024
+
+            },
+            rename: function(fieldname, filename) {
+                return filename;
+            },
+            onFileUploadStart: function(file) {
+                if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+                    return false;
+                } else if (file.size > 1024 * 1024) {
+                    return false;
+                }
+            },
+            inMemory: true
         });
 
-        router.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
+        router.('/profile', upload.array(), function (req, res, next) {
 
             console.log(req.body); //form fields
 
             console.log(req.file); {
                 //form files
-                /* example output:
+                example output:
                  { fieldname: 'upl',
                  originalname: 'grumpy.png',i
                  encoding: '7bit',
@@ -149,7 +183,7 @@ class Router{
                  filename: '436ec561793aa4dc475a88e84776b1b9',
                  path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
                  size: 277056 }
-                 */
+
                 fieldname: 'comicimage'
                 originalname: ''
                 mimetype: 'image/png'
@@ -158,31 +192,36 @@ class Router{
                 path: 'uploads/comicimage1'
             }
 
-            // Set our internal DB variable
-            var db = req.db;
+            upload(req, res, function (err) {
 
-            // Get our form values. These rely on the "name" attributes
-            var image = req.body.imagefile;
+                // Set our internal DB variable
+                var db = req.db;
 
-            // Set our collection
-            var collection = db.get('comicimages');
+                // Get our form values. These rely on the "name" attributes
+                var image = req.body.imagefile;
 
-            var myImage = new base64();
-            var img = myImage.getBase64Image(image);
+                // Set our collection
+                var collection = db.get('comicimages');
 
-            collection.insert({
-                "image": img
-            }, function(err, docs) {
-                if (err) {
-                    // If it failed, return error
-                    res.send("There was a problem adding the information to the database.");
-                }
-                else {
-                    // And forward to home page
-                    res.redirect("main");
-                }
+                var myImage = new base64();
+                var img = myImage.getBase64Image(image);
+
+                collection.insert({
+                    img
+                }, function (err, docs) {
+                    if (err) {
+                        // If it failed, return error
+                        res.send("There was a problem adding the information to the database.");
+                    }
+                    else {
+                        // And forward to home page
+                        res.redirect("main");
+                    }
+                });
             });
         });
+
+        */
 
         router.get('/', function(req, res){
             res.render('index');

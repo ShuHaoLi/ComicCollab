@@ -111,6 +111,27 @@ var Router = (function () {
             res.render('uploadcomics');
         });
         router.post('/', multer({ dest: './uploads/' }).single('upl'), function (req, res) {
+            console.log(req.body); //form fields
+            console.log(req.file);
+            {
+                //form files
+                /* example output:
+                 { fieldname: 'upl',
+                 originalname: 'grumpy.png',i
+                 encoding: '7bit',
+                 mimetype: 'image/png',
+                 destination: './uploads/',
+                 filename: '436ec561793aa4dc475a88e84776b1b9',
+                 path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
+                 size: 277056 }
+                 */
+                fieldname: 'comicimage';
+                originalname: '';
+                mimetype: 'image/png';
+                destination: './uploads/';
+                filename: 'comicimage';
+                path: 'uploads/comicimage1';
+            }
             // Set our internal DB variable
             var db = req.db;
             // Get our form values. These rely on the "name" attributes
@@ -119,43 +140,18 @@ var Router = (function () {
             var collection = db.get('comicimages');
             var myImage = new base64();
             var img = myImage.getBase64Image(image);
-            collection.findOne({
+            collection.insert({
                 "image": img
             }, function (err, docs) {
-                if (docs != null) {
-                    var currentComic = req.currentUser;
-                    currentComic.setUsername(img);
-                    res.redirect('home');
+                if (err) {
+                    // If it failed, return error
+                    res.send("There was a problem adding the information to the database.");
                 }
                 else {
-                    res.render('Upload failed, invalid credentials');
+                    // And forward to home page
+                    res.redirect("main");
                 }
             });
-            console.log(req.body); //form fields
-            // Base64DataURL
-            /* example output:
-             { title: 'abc' }
-             */
-            console.log(req.file);
-            {
-                fieldname: 'comicimage';
-                originalname: '';
-                mimetype: 'image/png';
-                destination: './uploads/';
-                filename: 'comicimage';
-                path: 'uploads/comicimage1';
-            }
-            //form files
-            /* example output:
-             { fieldname: 'upl',
-             originalname: 'grumpy.png',i
-             encoding: '7bit',
-             mimetype: 'image/png',
-             destination: './uploads/',
-             filename: '436ec561793aa4dc475a88e84776b1b9',
-             path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
-             size: 277056 }
-             */
         });
         router.get('/', function (req, res) {
             res.render('index');

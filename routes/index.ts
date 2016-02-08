@@ -20,6 +20,27 @@ class User implements UserInterface {
     }
 }
 
+class base64 {
+    getBase64Image(img) {
+        // Create an empty canvas element
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Copy the image contents to the canvas
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        // Get the data-URL formatted image
+        // Firefox supports PNG and JPEG. You could check img.src to
+        // guess the original format, but be aware the using "image/jpg"
+        // will re-encode the image.
+        var dataURL = canvas.toDataURL("image/png");
+
+        return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+    };
+}
+
 class Router{
     constructor(){
         var express = require('express');
@@ -115,15 +136,35 @@ class Router{
         });
 
         router.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
-            res.send('Successfully uploaded!');
+
+            // Set our internal DB variable
+            var db = req.db;
+
+            // Get our form values. These rely on the "name" attributes
+            var image = req.body.imagefile;
+
+            // Set our collection
+            var collection = db.get('comicimages');
+
             console.log(req.body); //form fields
+
+                // Base64DataURL
             /* example output:
              { title: 'abc' }
              */
-            console.log(req.file); //form files
+            console.log(req.file); {
+                fieldname: 'comicimage'
+                originalname: ''
+                mimetype: 'image/png'
+                destination: './uploads/'
+                filename: 'comicimage'
+                path: 'uploads/comicimage1'
+            }
+
+                //form files
             /* example output:
              { fieldname: 'upl',
-             originalname: 'grumpy.png',
+             originalname: 'grumpy.png',i
              encoding: '7bit',
              mimetype: 'image/png',
              destination: './uploads/',
@@ -131,6 +172,10 @@ class Router{
              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
              size: 277056 }
              */
+
+            var db = req.db;
+            var myImage = new base64();
+            myImage.getBase64Image(image)
         });
 
         router.get('/', function(req, res){

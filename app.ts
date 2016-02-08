@@ -100,7 +100,7 @@ class Application {
         */
 
         var upload = multer({
-            dest: './uploads',
+            storage: './uploads',
             limits: {
                 fieldNameSize: 50,
                 files: 1,

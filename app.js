@@ -83,7 +83,7 @@ var Application = (function () {
         });
         */
         var upload = multer({
-            dest: './uploads',
+            storage: './uploads',
             limits: {
                 fieldNameSize: 50,
                 files: 1,

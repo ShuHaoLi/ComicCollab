@@ -48,7 +48,9 @@ class Router{
             var username = req.body.username;
             var password = req.body.password;
 
-            // Set our collection
+            if (password.length() < 6 || password.length() > 20){
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+            }
             var collection = db.get('usercollection');
 
             collection.findOne({
@@ -82,7 +84,7 @@ class Router{
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
 
-            if (!password == confirmPassword){
+            if (password != confirmPassword){
                 res.send("Passwords do not match");
             }
             else {

@@ -33,7 +33,9 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
-            // Set our collection
+            if (password.length() < 6 || password.length() > 20) {
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+            }
             var collection = db.get('usercollection');
             collection.findOne({
                 "username": username.toLowerCase(),
@@ -62,7 +64,7 @@ var Router = (function () {
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
-            if (!password == confirmPassword) {
+            if (password != confirmPassword) {
                 res.send("Passwords do not match");
             }
             else {

@@ -1,5 +1,6 @@
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
+///<reference path='../db_objects/account.ts'/>
 var User = (function () {
     function User(username, password) {
         this.username = username;
@@ -68,21 +69,36 @@ var Router = (function () {
                 res.send("Passwords do not match");
             }
             else {
-                var user = new User(req.body.username, req.body.password);
+                var account = new Account(userName, password);
                 // Set our collection
                 var collection = db.get('usercollection');
-                // Submit to the DB
-                collection.insert({
-                    "username": user.getUsername(),
-                    "password": user.getPassword()
-                }, function (err, doc) {
-                    if (err) {
-                        // If it failed, return error
-                        res.send("There was a problem adding the information to the database.");
+                collection.findOne({
+                    "username": userName.toLowerCase(),
+                    "password": password
+                }, function (err, docs) {
+                    /*
+                     ** check if the username exists in the db
+                     *  if it does, register failed
+                     *  if not, insert to db
+                     */
+                    if (docs != null) {
+                        res.send("Username has already exists.");
                     }
                     else {
-                        // And forward to home page
-                        res.redirect("main");
+                        //submit to DB
+                        collection.insert({
+                            "username": account.getUsername(),
+                            "password": account.getPassword()
+                        }, function (err, doc) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // And forward to home page
+                                res.redirect("home");
+                            }
+                        });
                     }
                 });
             }

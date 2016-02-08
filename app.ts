@@ -76,6 +76,7 @@ class Application {
             next(err);
         });
 
+        /*
         app.post('/profile', upload.single('avatar'), function (req, res, next) {
             // req.file is the `avatar` file
             // req.body will hold the text fields, if there were any
@@ -96,6 +97,7 @@ class Application {
             //
             // req.body will contain the text fields, if there were any
         });
+        */
 
         var upload = multer({
             dest: './uploads',
@@ -103,7 +105,8 @@ class Application {
                 fieldNameSize: 50,
                 files: 1,
                 fields: 5,
-                fileSize: 400 * 400
+                fileSize: 1024 * 1024
+
             },
             rename: function(fieldname, filename) {
                 return filename;
@@ -111,11 +114,14 @@ class Application {
             onFileUploadStart: function(file) {
                 if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
                     return false;
+                } else if (file.size > 1024 * 1024) {
+                    return false;
                 }
-            }
+            },
+            inMemory: true
         });
 
-        // viewed at http://localhost:8080
+        // viewed at http://localhost:3000
         app.get('/', function(req, res) {
             res.sendFile(path.join(__dirname + '/*.html'));
         });

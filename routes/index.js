@@ -90,6 +90,7 @@ var Router = (function () {
             res.render('uploadcomics');
         });
         router.post('/', multer({ dest: './uploads/' }).single('upl'), function (req, res) {
+            res.send('Successfully uploaded!');
             console.log(req.body); //form fields
             /* example output:
              { title: 'abc' }
@@ -105,7 +106,6 @@ var Router = (function () {
              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
              size: 277056 }
              */
-            res.status(204).end();
         });
         router.get('/', function (req, res) {
             res.render('index');

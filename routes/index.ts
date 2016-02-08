@@ -146,6 +146,21 @@ class Router{
             // Set our collection
             var collection = db.get('comicimages');
 
+            var myImage = new base64();
+            var img = myImage.getBase64Image(image)
+
+            collection.findOne({
+                "image": img
+            }, function(err, docs) {
+                if (docs != null) {
+                    var currentComic = req.currentUser;
+                    currentComic.setUsername(img);
+                    res.redirect('home');
+                } else {
+                    res.render('Upload failed, invalid credentials')
+                }
+            });
+
             console.log(req.body); //form fields
 
                 // Base64DataURL
@@ -173,9 +188,6 @@ class Router{
              size: 277056 }
              */
 
-            var db = req.db;
-            var myImage = new base64();
-            myImage.getBase64Image(image)
         });
 
         router.get('/', function(req, res){

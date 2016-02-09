@@ -1,9 +1,14 @@
 
 <html>
+
 <head>
     <title></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
-</head><body><div class="container">
+</head>
+<body>
+
+<%if (cur.getIsLoggedIn()) { %>
+<div class="container" id="loggedIn">
     <div class="navbar-header">
         <a class="navbar-brand" href="home">ComicCollab</a>
     </div>
@@ -11,7 +16,7 @@
         <h1>My Profile</h1>
     </div>
     <table>
-    <thead>
+        <thead>
         <tr>
             <th>Name&nbsp</th>
             <th>Age&nbsp</th>
@@ -19,8 +24,8 @@
             <th>Location&nbsp</th>
             <th>About Me&nbsp</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td><%=fullname%></td>
             <td><%=age%></td>
@@ -28,8 +33,13 @@
             <td><%=location%></td>
             <td><%=aboutme%></td>
         </tr>
-    </tbody>
+        </tbody>
     </table>
-    </div>
-    </body>
+</div>
+<% } else { %>
+<div class="container" id="notLoggedIn">
+    <div>Please sign in to view your profile.</div>
+</div>
+<% } %>
+</body>
 </html>

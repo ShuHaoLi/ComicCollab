@@ -186,13 +186,25 @@ class Router{
             collection.findOne({
                 "username" : current
             },function(e, docs) {
-                res.render('myprofile', {
-                    fullname: docs['fullname'],
-                    location: docs['location'],
-                    age: docs['age'],
-                    gender: docs['gender'],
-                    aboutme: docs['aboutme']
-                });
+                if (docs != null) {
+                    res.render('myprofile', {
+                        cur: currentUser,
+                        fullname: docs['fullname'],
+                        location: docs['location'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        aboutme: docs['aboutme']
+                    });
+                } else {
+                    res.render('myprofile', {
+                        cur: currentUser,
+                        fullname: '',
+                        location: '',
+                        age: '',
+                        gender: '',
+                        aboutme: ''
+                    });
+                }
             });
         });
 

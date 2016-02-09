@@ -41,6 +41,7 @@ console.log(getFiles('public/images', null));
 
 var files = getFiles('public/images', null);
 
+/*
 for (var i = 0; files.length; i++) {
     var myImage = new Image(files[i]);
     myImage.src = files[i];
@@ -54,6 +55,7 @@ for (var i = 0; files.length; i++) {
     //imageObject.setHTMLElement(img)
     console.log(myImage);
 };
+*/
 
 class Router{
     constructor(){

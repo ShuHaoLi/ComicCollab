@@ -32,18 +32,21 @@ function getFiles(dir, files_) {
 // ^ Function above still works but this call doesnt?
 console.log(getFiles('public/images', null));
 var files = getFiles('public/images', null);
+/*
 for (var i = 0; files.length; i++) {
     var myImage = new Image(files[i]);
     myImage.src = files[i];
     var url = "../image/" + files[i];
+
     //var img = document.createElement("IMG")
     //img.setAttribute('src', url);
     //img.setAttribute('width', '300')
     //img.setAttribute('height', '300')
+
     //imageObject.setHTMLElement(img)
     console.log(myImage);
-}
-;
+};
+*/
 var Router = (function () {
     function Router() {
         var express = require('express');

@@ -59,6 +59,8 @@ class Application {
         app.use(cookieParser());
         app.use(express.static(path.join(__dirname, 'public')));
         //app.use(multer({ dest: './public/images'}).array("file"));
+
+        // THIS IS THE MULTER CODE (DO NOT TOUCH)
         app.use(multer({
             dest: './public/images',
             limits: { fileSize: 1 * 1024 * 1024},
@@ -73,27 +75,6 @@ class Application {
                 }
             }
         }).array("file"));
-
-
-
-
-        // File Upload route
-        //app.post('/uploadcomics', upload.array('file'));
-
-        /*
-        app.use(multer({
-            dest: './uploads'.array("file")},
-            rename: function (fieldname, filename) {
-                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
-            },
-            limits: {
-                fieldNameSize: 50,
-                files: 1,
-                fields: 5,
-                fileSize: 1024 * 1024
-
-            }
-        })); */
 
         // Make our db accessible to our router
         app.use(function(req, res, next) {
@@ -111,89 +92,6 @@ class Application {
             err.status = 404;
             next(err);
         });
-
-        /*
-
-        app.use(multer({
-                dest: './uploads/',
-                rename: function (fieldname, filename) {
-                    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
-                },
-                onFileUploadStart: function (file) {
-                    console.log(file.name + ' is starting ...');
-                },
-                onFileUploadComplete: function (file, req, res) {
-                    console.log(file.name + ' uploading is ended ...');
-                    console.log("File name : " + file.name + "\n" + "FilePath: " + file.path)
-                },
-                onError: function (error, next) {
-                    console.log("File uploading error: => " + error)
-                    next(error)
-                },
-                onFileSizeLimit: function (file) {
-                    console.log('Failed: ', file.originalname + " in path: " + file.path)
-                },
-                putSingleFilesInArray: true
-            })
-        );
-
-        app.post('/profile', upload.single('avatar'), function (req, res, next) {
-            // req.file is the `avatar` file
-            // req.body will hold the text fields, if there were any
-        })
-
-        app.post('/photos/upload', upload.array('photos', 12), function (req, res, next) {
-            // req.files is array of `photos` files
-            // req.body will contain the text fields, if there were any
-        })
-
-        var cpUpload = upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }])
-        app.post('/cool-profile', cpUpload, function (req, res, next) {
-            // req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
-            //
-            // e.g.
-            //  req.files['avatar'][0] -> File
-            //  req.files['gallery'] -> Array
-            //
-            // req.body will contain the text fields, if there were any
-        });
-
-
-
-        var upload = multer({
-            dest: './uploads',
-            limits: {
-                fieldNameSize: 50,
-                files: 1,
-                fields: 5,
-                fileSize: 1024 * 1024
-
-            },
-            rename: function(fieldname, filename) {
-                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
-            },
-            onFileUploadStart: function(file) {
-                if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
-                    return false;
-                } else if (file.size > 1024 * 1024) {
-                    return false;
-                }
-            },
-            onFileUploadComplete: function (file, req, res) {
-                console.log(file.name + ' uploading is ended ...');
-                console.log("File name : " + file.name + "\n" + "FilePath: " + file.path)
-            },
-            onError: function (error, next) {
-                console.log("File uploading error: => " + error)
-                next(error)
-            },
-            onFileSizeLimit: function (file) {
-                console.log('Failed: ', file.originalname + " in path: " + file.path)
-            },
-            putSingleFilesInArray: true,
-            inMemory: true
-        });
-        */
 
         // viewed at http://localhost:3000
         app.get('/', function(req, res) {

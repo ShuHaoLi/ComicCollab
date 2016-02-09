@@ -1,5 +1,6 @@
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
+///<reference path='../db_objects/account.ts'/>
 var User = (function () {
     function User(username, password, fullname, gender, age, aboutme, location) {
         this.username = username;
@@ -78,6 +79,18 @@ var Router = (function () {
         router.get('/createprofile', function (req, res) {
             res.render('createprofile');
         });
+        /* GET logout */
+        router.get('/logout', function (req, res) {
+            var currentUser = req.currentUser;
+            if (!currentUser.isLoggedIn) {
+                res.redirect('/home');
+            }
+            else {
+                currentUser.setIsLoggedIn(false);
+                currentUser.setUsername("");
+                res.redirect('/home');
+            }
+        });
         /* POST to UserList Page */
         router.post('/createprofile', function (req, res) {
             // Set our internal DB variable
@@ -88,6 +101,9 @@ var Router = (function () {
             var confirmPassword = req.body.confirmPassword;
             if (password != confirmPassword) {
                 res.send("Passwords do not match");
+            }
+            else if (password.length < 6 || password.length > 20) {
+                res.render('createprofile', { loginError: 'Password needs to be between 6 - 20 characters. Please try again!' });
             }
             else {
                 var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);

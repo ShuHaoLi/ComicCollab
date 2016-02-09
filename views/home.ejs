@@ -41,11 +41,39 @@
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
-            <a href="createComic" class="btn btn-info" role="button">Create Comic</a>
-            <a href="profile" class="btn btn-info" role="button">Profile</a>
-            <a href="createProfile" class="btn btn-info" role="button">Register</a>
-            <a href="login" class="btn btn-info" role="button">Login</a>
-            <a href="home" class="btn btn-info" role="button">Logout</a>
+            <head>
+                <script>
+                    function disable_by_conditions()
+                    {
+                        var createComic_button = document.getElementById('button_createComic');
+                        var profile_button = document.getElementById('button_profile');
+                        var createProfile_button = document.getElementById('button_createprofile');
+                        var login_button = document.getElementById('button_login');
+                        var logout_button = document.getElementById('button_logout');
+                        var currentUser = req.currentUser;
+                        if (currentUser.getIsLoggedIn()){
+                            createComic_button.disabled=false;
+                            profile_button.disabled=false;
+                            createProfile_button.disabled=false;
+                            login_button.disabled=true;
+                            logout_button.disabled=false;
+
+                        }
+                        else{
+                            createComic_button.disabled=true;
+                            profile_button.disabled=true;
+                            createProfile_button.disabled=true;
+                            login_button.disabled=false;
+                            logout_button.disabled=true;
+                        }
+                    }
+                </script>
+            </head>
+            <a href="createComic" class="btn btn-info" role="button" id='button_createComic' onClick="disable_by_conditions">Create Comic</a>
+            <a href="profile" class="btn btn-info" role="button" id='button_profile' onClick="disable_by_conditions">Profile</a>
+            <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile' onClick="disable_by_conditions">Register</a>
+            <a href="login" class="btn btn-info" role="button" id='button_login' onClick="disable_by_conditions">Login</a>
+            <a href="logout" class="btn btn-info" role="button" id='button_logout' onClick="disable_by_conditions">Logout</a>
             <div class="container">
                 <div class="row">
                     <h2></h2>

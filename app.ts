@@ -1,5 +1,6 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
+//import session = BrowserStorage.session;
 'use strict';
 interface Error {
     status?: number;
@@ -36,6 +37,7 @@ class Application {
         var bodyParser = require('body-parser');
         var mongo = require('mongodb');
         var monk = require('monk');
+
 
         var db = monk('user:pass@ds060968.mongolab.com:60968/wecode_db');
 

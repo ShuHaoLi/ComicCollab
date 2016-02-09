@@ -1,5 +1,6 @@
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
+///<reference path='../db_objects/account.ts'/>
 interface UserInterface {
     getUsername() : String;
     getPassword() : String;
@@ -71,10 +72,8 @@ class Router{
 
         /* POST for login page */
         router.post('/login', function(req, res) {
-
             // Set our internal DB variable
             var db = req.db;
-
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
@@ -104,6 +103,19 @@ class Router{
             res.render('createprofile');
         });
 
+        /* GET logout */
+        router.get('/logout', function(req,res){
+            var currentUser = req.currentUser;
+            if (!currentUser.isLoggedIn){
+                res.redirect('/home');
+            }
+            else {
+                currentUser.setIsLoggedIn(false);
+                currentUser.setUsername("");
+                res.redirect('/home');
+            }
+        });
+
         /* POST to UserList Page */
         router.post('/createprofile', function(req, res) {
 
@@ -114,9 +126,11 @@ class Router{
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
-
             if (password != confirmPassword){
                 res.send("Passwords do not match");
+            }
+            else if (password.length < 6 || password.length > 20){
+                res.render('createprofile', {loginError: 'Password needs to be between 6 - 20 characters. Please try again!'});
             }
             else {
                 var user : User = new User(req.body.username, req.body.password, req.body.fullname,
@@ -143,8 +157,7 @@ class Router{
                             res.redirect("home");
                         }
 
-                    }
-                );
+                });
             }
         });
 

@@ -148,18 +148,15 @@ class Router{
         });
 
         /* GET UPLOAD COMICS PAGE */
-        router.get('/uploadcomics', function(req, res) {
+        router.get('/uploadcomics/*', function(req, res) {
+            // Eventually need to check if user is supposed to be able to upload to comic
             res.render('uploadcomics');
         });
 
         /* POST TO UPLOAD COMICS PAGE */
-        router.post('/uploadcomics/:comicName', function(req, res) {
-            var title = req.params.comicName;
-            res.render('editPage'),
-            {
-                title: title
-            };
-            console.log("recieved");
+        router.post('/uploadcomics/*', function(req, res) {
+            var comicId = req.params[0];
+            res.redirect("../../comic/" + comicId);
         });
 
         router.get('/', function(req, res){

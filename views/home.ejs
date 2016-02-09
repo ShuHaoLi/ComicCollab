@@ -41,11 +41,14 @@
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
-            <a href="createComic" class="btn btn-info" role="button">Create Comic</a>
-            <a href="profile" class="btn btn-info" role="button">Profile</a>
-            <a href="createProfile" class="btn btn-info" role="button">Register</a>
-            <a href="login" class="btn btn-info" role="button" onClick="LoggedInUser.prototype.getIsLoggedIn(); this.disabled=true; this.value='Sending…'; ">Login</a>
-            <a href="logout" class="btn btn-info" role="button">Logout</a>
+            <head>
+                <script src="../routes/index.js"></script>
+            </head>
+            <a href="createComic" class="btn btn-info" role="button" disabled>Create Comic</a>
+            <a href="profile" class="btn btn-info" role="button" onClick="!LoggedInUser.prototype.getIsLoggedIn(); this.disabled=true">Profile</a>
+            <a href="createProfile" class="btn btn-info" role="button" onClick="LoggedInUser.prototype.getIsLoggedIn(); this.disabled=true">Register</a>
+            <a href="login" class="btn btn-info" role="button" onClick="LoggedInUser.prototype.getIsLoggedIn(); this.disabled=true ">Login</a>
+            <a href="logout" class="btn btn-info" role="button" onClick="LoggedInUser.prototype.getIsLoggedIn(); this.disabled=true">Logout</a>
             <div class="container">
                 <div class="row">
                     <h2></h2>

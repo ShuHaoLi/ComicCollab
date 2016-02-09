@@ -121,8 +121,8 @@ class Router{
                     else {
                         //submit to DB
                         collection.insert({
-                                "username": account.getUsername(),
-                                "password": account.getPassword()
+                                "username": "wendy",
+                                "password": "test1"
                             }, function (err, doc) {
                                 if (err) {
                                     // If it failed, return error

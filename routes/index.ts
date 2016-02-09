@@ -166,7 +166,18 @@ class Router{
         
         /* GET myprofile page. */
         router.get('/myprofile', function(req, res) {
-            res.render('myprofile');
+            //res.render('myprofile');
+            
+            var db = req.db;
+            var collection = db.get('usercollection');
+
+            var currentUsername = req.currentUser.getUserName();
+
+            collection.find({ "username": currentUsername }, function(e, docs) {
+                res.render('myprofile', {
+                    
+                });
+            });
         });
         
         // router.get('/myprofile', function(req, res) {

@@ -130,7 +130,15 @@ var Router = (function () {
         });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
-            res.render('myprofile');
+            var db = req.db;
+            var collection = db.get('usercollection');
+            var currentUser = req.currentUser;
+            var currentUsername = currentUser.getUserName();
+            collection.find({ "username": currentUsername }, function (e, docs) {
+                res.render('myprofile', {
+                    "myprofile": docs
+                });
+            });
         });
         // router.get('/myprofile', function(req, res) {
         //     var db = req.db;

@@ -55,7 +55,6 @@ var Router = (function () {
             return files_;
         }
         console.log(getFiles('public/images'));
-        var myURL = new URL(http, //l)
         /*
         var upload = multer({
             dest: './public/images',
@@ -82,7 +81,7 @@ var Router = (function () {
         /* GET home page. */
         router.get('/home', function (req, res) {
             res.render('home');
-        }));
+        });
         /* GET login page. */
         router.get('/login', function (req, res) {
             res.render('login', { loginError: '' });

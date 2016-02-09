@@ -64,7 +64,6 @@ class Router{
 
         console.log(getFiles('public/images'));
 
-        var myURL = new URL(http://l)
         /*
         var upload = multer({
             dest: './public/images',

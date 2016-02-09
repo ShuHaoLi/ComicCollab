@@ -125,10 +125,7 @@ class Router{
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
-            if (userName == null || password == null){
-                res.send("please enter your username or password");
-            }
-            else if (password.length < 4 || password.length > 10){
+            if (password.length < 4 || password.length > 10){
                 res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
             else if (password!=confirmPassword){

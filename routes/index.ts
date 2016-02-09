@@ -20,46 +20,46 @@ class User implements UserInterface {
     }
 }
 
+// LEYLA'S ADDITION: THIS IS THE METHOD THAT GETS ALL THE FILES FROM THE PUBLIC/IMAGES FILE.
+var fs = require('fs');
+function getFiles (dir, files_){
+    files_ = files_ || [];
+    var files = fs.readdirSync(dir);
+    for (var i in files){
+        var name = dir + '/' + files[i];
+        if (fs.statSync(name).isDirectory()){
+            getFiles(name, files_);
+        } else {
+            files_.push(name);
+        }
+    }
+    return files_;
+}
+
+// ^ Function above still works but this call doesnt?
+console.log(getFiles('public/images', null));
+
+var files = getFiles('public/images', null);
+
+for (var i = 0; files.length; i++) {
+    var myImage = new Image(files[i]);
+    myImage.src = files[i];
+    var url = "../image/" + files[i];
+
+    //var img = document.createElement("IMG")
+    //img.setAttribute('src', url);
+    //img.setAttribute('width', '300')
+    //img.setAttribute('height', '300')
+
+    //imageObject.setHTMLElement(img)
+    console.log(myImage);
+};
+
 class Router{
     constructor(){
         var express = require('express');
         var router = express.Router();
         var multer = require('multer');
-
-        // LEYLA'S ADDITION: THIS IS THE METHOD THAT GETS ALL THE FILES FROM THE PUBLIC/IMAGES FILE.
-        var fs = require('fs');
-        function getFiles (dir, files_){
-            files_ = files_ || [];
-            var files = fs.readdirSync(dir);
-            for (var i in files){
-                var name = dir + '/' + files[i];
-                if (fs.statSync(name).isDirectory()){
-                    getFiles(name, files_);
-                } else {
-                    files_.push(name);
-                }
-            }
-            return files_;
-        }
-
-        // ^ Function above still works but this call doesnt?
-        console.log(getFiles('public/images', null));
-
-        var files = getFiles('public/images', null);
-
-        /*
-        for (var i = 0; files.length; i++) {
-            //var imageObject: IMG = new IMG(files[i]);
-            var url = "http://" + "localhost:3000/" + "/uploadcomics/" + ":comicName";
-
-            var img = document.createElement("IMG")
-            img.setAttribute('src', url);
-            img.setAttribute('width', '300')
-            img.setAttribute('height', '300')
-
-            imageObject.setHTMLElement(img)
-        };
-        */
 
         /* GET home page. */
         router.get('/home', function(req, res) {
@@ -148,12 +148,13 @@ class Router{
 
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/:comicName', function(req, res) {
-            var title = req.params.comicName;
+            /* var title = req.params.comicName;
             res.render('editPage'),
             {
                 title: title
-            };
+            }; */
             console.log("recieved");
+
         });
 
         router.get('/', function(req, res){

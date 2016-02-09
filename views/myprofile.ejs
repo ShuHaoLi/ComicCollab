@@ -15,26 +15,18 @@
     <div class="page-header" style="margin-top: 60px">
         <h1>My Profile</h1>
     </div>
-    <table>
-        <thead>
-        <tr>
-            <th>Name&nbsp</th>
-            <th>Age&nbsp</th>
-            <th>Gender&nbsp</th>
-            <th>Location&nbsp</th>
-            <th>About Me&nbsp</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><%=fullname%></td>
-            <td><%=age%></td>
-            <td><%=gender%></td>
-            <td><%=location%></td>
-            <td><%=aboutme%></td>
-        </tr>
-        </tbody>
-    </table>
+    <h4>Name</h4>
+    <p><%=fullname%></p>
+    <h4>Age</h4>
+    <p><%=age%></p>
+    <h4>gender</h4>
+    <p><%=gender%></p>
+    <h4>Location</h4>
+    <p><%=location%></p>
+    <h4>About Me</h4>
+    <p><%=aboutme%></p>
+    <br>
+    <a href="editprofile">Edit Profile</a>
 </div>
 <% } else { %>
 <div class="container" id="notLoggedIn">

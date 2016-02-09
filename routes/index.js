@@ -133,17 +133,6 @@ var Router = (function () {
         router.get('/', function (req, res) {
             res.render('index');
         });
-        //new code
-        /* GET Users page. */
-        router.get('/users', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            collection.find({}, {}, function (e, docs) {
-                res.render('users', {
-                    "users": docs
-                });
-            });
-        });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
@@ -179,18 +168,32 @@ var Router = (function () {
         router.get('/users/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            // var _usernames: Array<String> = collection.runCommand(
-            //     {
-            //         find: "username"
-            //     }
-            // );
             var userName = req.params['0'];
-            res.render('users', { userName: userName });
-            // collection.find({}, {}, function(e, docs) {
-            //     res.render('users', {
-            //         "users": user.getUsername()
-            //     });
-            // });
+            //res.render('users', { userName: userName});
+            collection.findOne({
+                "username": userName
+            }, function (e, docs) {
+                if (docs != null) {
+                    res.render('users', {
+                        userName: userName,
+                        fullname: docs['fullname'],
+                        location: docs['location'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        aboutme: docs['aboutme']
+                    });
+                }
+                else {
+                    res.render('users', {
+                        userName: userName,
+                        fullname: '',
+                        location: '',
+                        age: '',
+                        gender: '',
+                        aboutme: ''
+                    });
+                }
+            });
         });
         //comic number
         router.get('/comic/*', function (req, res) {

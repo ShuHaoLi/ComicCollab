@@ -3,20 +3,51 @@
 interface UserInterface {
     getUsername() : String;
     getPassword() : String;
+    getFullName() : String;
+    getGender() : String;
+    getAge() : String;
+    getLocation() : String;
+    getAboutMe() : String;
 }
 
 class User implements UserInterface {
     private username: String;
     private password: String;
-    constructor(username: String, password: String) {
+    private fullname: String;
+    private gender: String;
+    private age: String;
+    private aboutme: String;
+    private location: String;
+    constructor(username: String, password: String, fullname: String, 
+                gender: String, age: String, aboutme: String, location: String) {
         this.username = username;
         this.password = password;
+        this.fullname = fullname;
+        this.gender = gender;
+        this.age = age;
+        this.aboutme = aboutme;
+        this.location = location;
     }
     getUsername(){
         return this.username;
     }
     getPassword(){
         return this.password;
+    }
+    getFullName(){
+        return this.fullname;
+    }
+    getGender(){
+        return this.gender;
+    }
+    getAboutMe(){
+        return this.aboutme;
+    }
+    getLocation(){
+        return this.location;
+    }
+    getAge(){
+        return this.age;
     }
 }
 
@@ -88,14 +119,20 @@ class Router{
                 res.send("Passwords do not match");
             }
             else {
-                var user : User = new User(req.body.username, req.body.password);
+                var user : User = new User(req.body.username, req.body.password, req.body.fullname,
+                                           req.body.age, req.body.aboutme, req.body.gender, req.body.location);
 
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
                 collection.insert({
                         "username": user.getUsername(),
-                        "password": user.getPassword()
+                        "password": user.getPassword(),
+                        "fullname": "",
+                        "age": "",
+                        "gender": "",
+                        "location": "",
+                        "aboutme": ""
                     }, function (err, doc) {
                         if (err) {
                             // If it failed, return error
@@ -103,7 +140,7 @@ class Router{
                         }
                         else {
                             // And forward to home page
-                            res.redirect("main");
+                            res.redirect("home");
                         }
 
                     }
@@ -113,6 +150,123 @@ class Router{
 
         router.get('/', function(req, res){
             res.render('index');
+        });
+        
+        //new code
+        /* GET Users page. */
+        router.get('/users', function(req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            collection.find({}, {}, function(e, docs) {
+                res.render('users', {
+                    "users": docs
+                });
+            });
+        });
+        
+        /* GET myprofile page. */
+        router.get('/myprofile', function(req, res) {
+            res.render('myprofile');
+        });
+        
+        // router.get('/myprofile', function(req, res) {
+        //     var db = req.db;
+        //     var currentUser = req.currentUser;
+        //     var current = currentUser.getUsername();
+        //     var collection = db.get('usercollection');
+        //     collection.find({
+        //         "username" : current
+        //     },function(err, item) {
+        //         res.render('myprofile', { 
+        //             fullname: item['fullname'],
+        //             location: item['location'],
+        //             age: item['age'],
+        //             gender: item['gender'],
+        //             aboutme: item['aboutme']
+        //          });
+        //     });
+        // });
+        
+        //Get profile pages
+        router.get('/users/*', function(req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            
+            // var _usernames: Array<String> = collection.runCommand(
+            //     {
+            //         find: "username"
+            //     }
+            // );
+            var userName = req.params['0'];
+            res.render('users', {userName: userName});
+            
+            // collection.find({}, {}, function(e, docs) {
+            //     res.render('users', {
+            //         "users": user.getUsername()
+            //     });
+            // });
+        });
+        
+        
+        //comic number
+        router.get('/comic/*', function(req, res) {
+            var comicNumber = req.params['0'];
+            res.render('comic', { comicNumber: comicNumber.toString()});
+        });
+        
+        
+        /* GET editprofile page. */
+        router.get('/editprofile', function(req, res) {
+            res.render('editprofile', { title: 'Edit Profile' });
+        });
+        
+        /* POST for editprofile page */
+        router.post('/editprofile', function(req, res) {
+            
+            var currentUser = req.currentUser;
+
+            if (currentUser.getIsLoggedIn() != true)  {
+                 res.send("You must be logged in")
+             } else {
+                // Set our internal DB variable
+                var db = req.db;
+            
+                //get form values
+                var fullname = req.body.fullname;
+                var age = req.body.age;
+                var location = req.body.location;
+                var gender = req.body.gender;
+                var aboutme = req.body.aboutme;
+
+                // Set our collection
+                var collection = db.get('usercollection');
+
+                var user: User = new User(currentUser.getUserName(), req.body.password, req.body.fullname,
+                    req.body.age, req.body.aboutme, req.body.gender, req.body.location)
+                
+                collection.update(
+                    { username: currentUser.getUsername },
+                    {
+                        $set: {
+                        "fullname": user.getFullName(),
+                        "age": user.getPassword(),
+                        "gender": user.getGender(),
+                        "location": user.getLocation(),
+                        "aboutme": user.getAboutMe()
+                        }
+                    }
+                    // }, function(err, doc) {
+                    //     if (err) {
+                    //         // If it failed, return error
+                    //         res.send("There was a problem adding the information to the database.");
+                    //     }
+                    //     else {
+                    //         // And forward back to my profile page
+                    //         res.redirect("myprofile");
+                    //     }
+                    // }
+                    );
+             }
         });
 
         router.post('/fileupload2', multer({ dest: './uploads/'}).single('upl'), function(req,res){

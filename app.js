@@ -129,4 +129,3 @@ var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
-//# sourceMappingURL=app.js.map

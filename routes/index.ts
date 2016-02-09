@@ -41,10 +41,8 @@ class Router{
 
         /* POST for login page */
         router.post('/login', function(req, res) {
-
             // Set our internal DB variable
             var db = req.db;
-
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
@@ -82,9 +80,9 @@ class Router{
             }
             else {
                 currentUser.setIsLoggedIn(false);
+                currentUser.setUsername("");
                 res.redirect('/home');
             }
-
         });
 
         /* POST to UserList Page */
@@ -99,6 +97,9 @@ class Router{
             var confirmPassword = req.body.confirmPassword;
             if (password != confirmPassword){
                 res.send("Passwords do not match");
+            }
+            else if (password.length < 6 || password.length > 20){
+                res.render('createprofile', {loginError: 'Password needs to be between 6 - 20 characters. Please try again!'});
             }
             else {
                 var account : Account = new Account(userName, password);

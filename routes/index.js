@@ -67,6 +67,7 @@ var Router = (function () {
             }
             else {
                 currentUser.setIsLoggedIn(false);
+                currentUser.setUsername("");
                 res.redirect('/home');
             }
         });
@@ -80,6 +81,9 @@ var Router = (function () {
             var confirmPassword = req.body.confirmPassword;
             if (password != confirmPassword) {
                 res.send("Passwords do not match");
+            }
+            else if (password.length < 6 || password.length > 20) {
+                res.render('createprofile', { loginError: 'Password needs to be between 6 - 20 characters. Please try again!' });
             }
             else {
                 var account = new Account(userName, password);
@@ -142,3 +146,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

@@ -131,32 +131,21 @@ var Router = (function () {
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
-            var collection = db.get('usercollection');
             var currentUser = req.currentUser;
-            var currentUsername = currentUser.getUserName();
-            collection.find({ "username": currentUsername }, function (e, docs) {
+            var current = currentUser.getUsername();
+            var collection = db.get('usercollection');
+            collection.findOne({
+                "username": current
+            }, function (e, docs) {
                 res.render('myprofile', {
-                    "myprofile": docs
+                    fullname: docs['fullname'],
+                    location: docs['location'],
+                    age: docs['age'],
+                    gender: docs['gender'],
+                    aboutme: docs['aboutme']
                 });
             });
         });
-        // router.get('/myprofile', function(req, res) {
-        //     var db = req.db;
-        //     var currentUser = req.currentUser;
-        //     var current = currentUser.getUsername();
-        //     var collection = db.get('usercollection');
-        //     collection.find({
-        //         "username" : current
-        //     },function(err, item) {
-        //         res.render('myprofile', { 
-        //             fullname: item['fullname'],
-        //             location: item['location'],
-        //             age: item['age'],
-        //             gender: item['gender'],
-        //             aboutme: item['aboutme']
-        //          });
-        //     });
-        // });
         //Get profile pages
         router.get('/users/*', function (req, res) {
             var db = req.db;

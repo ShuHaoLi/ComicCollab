@@ -39,6 +39,38 @@ var Router = (function () {
         var express = require('express');
         var router = express.Router();
         var multer = require('multer');
+        var fs = require('fs');
+        function getFiles(dir, files_) {
+            files_ = files_ || [];
+            var files = fs.readdirSync(dir);
+            for (var i in files) {
+                var name = dir + '/' + files[i];
+                if (fs.statSync(name).isDirectory()) {
+                    getFiles(name, files_);
+                }
+                else {
+                    files_.push(name);
+                }
+            }
+            return files_;
+        }
+        console.log(getFiles('public/images'));
+        var myURL = new URL(http, //l)
+        /*
+        var upload = multer({
+            dest: './public/images',
+            limits: { fileSize: 1024 * 1024},
+            rename: function(fieldname, filename) {
+                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
+            },
+            onFileUploadStart: function(file) {
+                if(file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+                    return false;
+                } else if (file.size > 1024 * 1024) {
+                    return false;
+                }
+            }
+        }); */
         /*
         var os = require('os');
         var uuid = require('node-uuid');
@@ -47,11 +79,10 @@ var Router = (function () {
             filename: function (req, file, cb) { cb(null, uuid.v4());}
         }); */
         // Create the multer instance here
-        var router = express.Router();
         /* GET home page. */
         router.get('/home', function (req, res) {
             res.render('home');
-        });
+        }));
         /* GET login page. */
         router.get('/login', function (req, res) {
             res.render('login', { loginError: '' });
@@ -118,6 +149,14 @@ var Router = (function () {
         /* GET UPLOAD COMICS PAGE */
         router.get('/uploadcomics', function (req, res) {
             res.render('uploadcomics');
+        });
+        router.post('/uploadcomics/:comicName', function (req, res) {
+            var title = req.params.comicName;
+            res.render('editPage'),
+                {
+                    title: title
+                };
+            console.log("recieved");
         });
         /*
 

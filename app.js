@@ -35,6 +35,7 @@ var Application = (function () {
         var users = require('./routes/users');
         var multer = require('multer');
         var app = express();
+        var maxSize = 1024 * 1024;
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');
@@ -45,8 +46,21 @@ var Application = (function () {
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
         app.use(express.static(path.join(__dirname, 'public')));
-        app.use(multer({ dest: './public/images' }).array("file"));
-        var upload = multer({ dest: './public/images', limits: { fileSize: 10 * 1024 * 1024 } });
+        //app.use(multer({ dest: './public/images'}).array("file"));
+        app.use(multer({
+            dest: './public/images',
+            limits: { fileSize: 1 * 1024 * 1024 },
+            onFileUploadStart: function (file, req, res) {
+                if (req.files.file.length > maxSize) {
+                    res.send("TOO BIG OF A FILE");
+                    return false;
+                }
+                if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
+                    res.send("WRONG FORMAT");
+                    return false;
+                }
+            }
+        }).array("file"));
         // File Upload route
         //app.post('/uploadcomics', upload.array('file'));
         /*

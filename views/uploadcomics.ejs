@@ -1,3 +1,5 @@
+<script src="editImage.ts"></script>
+
 <form method="post" enctype="multipart/form-data">
     <h1>UPLOAD A COMIC WEBPAGE</h1>
     <h3>Upload an Image:</h3>
@@ -6,6 +8,6 @@
         <li>PNG, JPEG, or JPG</li>
         <li>Not larger than 1 MB</li>
     </ul>
-    <input placeholder="file" required="required" name="file" type="file" name="fileField"> <br /><br />
+    <input placeholder="file" required="required" name="file" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg">
     <input type="submit" name="publish" value="Publish">
 </form>

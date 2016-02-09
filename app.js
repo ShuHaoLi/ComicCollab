@@ -51,6 +51,18 @@ var Application = (function () {
         app.use(multer({
             dest: './public/images',
             limits: { fileSize: 1 * 1024 * 1024 },
+            filename: function (req, file, cb) {
+                console.log(file.mimetype);
+                if (file.mimetype == 'image/jpg') {
+                    cb(null, Date.now() + '.jpg');
+                }
+                else if (file.mimetype == 'image/png') {
+                    cb(null, Date.now() + '.png');
+                }
+                else if (file.mimetype == 'image/jpeg') {
+                    cb(null, Date.now() + '.jpeg');
+                }
+            },
             onFileUploadStart: function (file, req, res) {
                 if (req.files.file.length > maxSize) {
                     res.send("TOO BIG OF A FILE");

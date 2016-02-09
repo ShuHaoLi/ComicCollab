@@ -43,7 +43,23 @@ class Router{
         }
 
         // ^ Function above still works but this call doesnt?
-        console.log(getFiles('public/images'));
+        console.log(getFiles('public/images', null));
+
+        var files = getFiles('public/images', null);
+
+        /*
+        for (var i = 0; files.length; i++) {
+            //var imageObject: IMG = new IMG(files[i]);
+            var url = "http://" + "localhost:3000/" + "/uploadcomics/" + ":comicName";
+
+            var img = document.createElement("IMG")
+            img.setAttribute('src', url);
+            img.setAttribute('width', '300')
+            img.setAttribute('height', '300')
+
+            imageObject.setHTMLElement(img)
+        };
+        */
 
         /* GET home page. */
         router.get('/home', function(req, res) {
@@ -135,7 +151,7 @@ class Router{
             var title = req.params.comicName;
             res.render('editPage'),
             {
-                title: title,
+                title: title
             };
             console.log("recieved");
         });

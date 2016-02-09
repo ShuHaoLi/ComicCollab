@@ -109,23 +109,33 @@ var Router = (function () {
                 var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
                 // Set our collection
                 var collection = db.get('usercollection');
-                // Submit to the DB
-                collection.insert({
-                    "username": user.getUsername(),
-                    "password": user.getPassword(),
-                    "fullname": "",
-                    "age": "",
-                    "gender": "",
-                    "location": "",
-                    "aboutme": ""
-                }, function (err, doc) {
-                    if (err) {
-                        // If it failed, return error
-                        res.send("There was a problem adding the information to the database.");
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": userName.toLowerCase()
+                }, function (err, docs) {
+                    if (docs != null) {
+                        res.send("Username has already exist. Please enter a new username");
                     }
                     else {
-                        // And forward to home page
-                        res.redirect("home");
+                        // Submit to the DB
+                        collection.insert({
+                            "username": user.getUsername(),
+                            "password": user.getPassword(),
+                            "fullname": "",
+                            "age": "",
+                            "gender": "",
+                            "location": "",
+                            "aboutme": ""
+                        }, function (err, doc) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // And forward to home page
+                                res.redirect("home");
+                            }
+                        });
                     }
                 });
             }

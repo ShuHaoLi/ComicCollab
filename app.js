@@ -1,5 +1,6 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
+//import session = BrowserStorage.session;
 'use strict';
 var LoggedInUser = (function () {
     function LoggedInUser(username, isLoggedIn) {
@@ -129,3 +130,4 @@ var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
+//# sourceMappingURL=app.js.map

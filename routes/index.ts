@@ -74,6 +74,19 @@ class Router{
             res.render('createprofile');
         });
 
+        /* GET logout */
+        router.get('/logout', function(req,res){
+            var currentUser = req.currentUser;
+            if (!currentUser.isLoggedIn){
+                res.redirect('/home');
+            }
+            else {
+                currentUser.setIsLoggedIn(false);
+                res.redirect('/home');
+            }
+
+        });
+
         /* POST to UserList Page */
         router.post('/createprofile', function(req, res) {
 
@@ -90,6 +103,7 @@ class Router{
             else {
                 var account : Account = new Account(userName, password);
                 // Set our collection
+
                 var collection = db.get('usercollection');
                 collection.findOne({
                     "username": userName.toLowerCase(),

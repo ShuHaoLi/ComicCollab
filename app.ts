@@ -63,16 +63,9 @@ class Application {
         // THIS IS THE MULTER CODE (DO NOT TOUCH)
         app.use(multer({
             dest: './public/images',
-            limits: { fileSize: 1 * 1024 * 1024},
-            filename: function (req, file, cb) {
-                console.log(file.mimetype);
-                if (file.mimetype == 'image/jpg') {
-                    cb(null, Date.now() + '.jpg')
-                } else if (file.mimetype == 'image/png') {
-                    cb(null, Date.now() + '.png')
-                } else if (file.mimetype == 'image/jpeg') {
-                    cb(null, Date.now() + '.jpeg')
-                }
+            limits: { fileSize: 1024 * 1024},
+            rename: function (fieldname, filename) {
+                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
             },
             onFileUploadStart: function(file, req, res){
                 if(req.files.file.length > maxSize) {

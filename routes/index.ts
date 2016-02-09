@@ -18,7 +18,7 @@ class User implements UserInterface {
     private age: String;
     private aboutme: String;
     private location: String;
-    constructor(username: String, password: String, fullname: String, 
+    constructor(username: String, password: String, fullname: String,
                 gender: String, age: String, aboutme: String, location: String) {
         this.username = username;
         this.password = password;
@@ -56,8 +56,8 @@ class Router{
         var express = require('express');
         var router = express.Router();
         var multer = require('multer'),
-                bodyParser = require('body-parser'),
-                path = require('path');
+            bodyParser = require('body-parser'),
+            path = require('path');
 
         /* GET home page. */
         router.get('/home', function(req, res) {
@@ -120,7 +120,7 @@ class Router{
             }
             else {
                 var user : User = new User(req.body.username, req.body.password, req.body.fullname,
-                                           req.body.age, req.body.aboutme, req.body.gender, req.body.location);
+                    req.body.age, req.body.aboutme, req.body.gender, req.body.location);
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -151,7 +151,7 @@ class Router{
         router.get('/', function(req, res){
             res.render('index');
         });
-        
+
         //new code
         /* GET Users page. */
         router.get('/users', function(req, res) {
@@ -182,12 +182,12 @@ class Router{
                 });
             });
         });
-        
+
         //Get profile pages
         router.get('/users/*', function(req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            
+
             // var _usernames: Array<String> = collection.runCommand(
             //     {
             //         find: "username"
@@ -195,38 +195,38 @@ class Router{
             // );
             var userName = req.params['0'];
             res.render('users', {userName: userName});
-            
+
             // collection.find({}, {}, function(e, docs) {
             //     res.render('users', {
             //         "users": user.getUsername()
             //     });
             // });
         });
-        
-        
+
+
         //comic number
         router.get('/comic/*', function(req, res) {
             var comicNumber = req.params['0'];
             res.render('comic', { comicNumber: comicNumber.toString()});
         });
-        
-        
+
+
         /* GET editprofile page. */
         router.get('/editprofile', function(req, res) {
             res.render('editprofile', { title: 'Edit Profile' });
         });
-        
+
         /* POST for editprofile page */
         router.post('/editprofile', function(req, res) {
-            
+
             var currentUser = req.currentUser;
 
             if (currentUser.getIsLoggedIn() != true)  {
-                 res.send("You must be logged in")
-             } else {
+                res.send("You must be logged in")
+            } else {
                 // Set our internal DB variable
                 var db = req.db;
-            
+
                 //get form values
                 var fullname = req.body.fullname;
                 var age = req.body.age;
@@ -237,32 +237,39 @@ class Router{
                 // Set our collection
                 var collection = db.get('usercollection');
 
-                var user: User = new User(currentUser.getUserName(), req.body.password, req.body.fullname,
-                    req.body.age, req.body.aboutme, req.body.gender, req.body.location)
-                
-                collection.update(
-                    { username: currentUser.getUsername },
-                    {
-                        $set: {
-                        "fullname": user.getFullName(),
-                        "age": user.getPassword(),
-                        "gender": user.getGender(),
-                        "location": user.getLocation(),
-                        "aboutme": user.getAboutMe()
+                collection.findOne({
+                    "username" : currentUser.getUsername()
+                }, function(e, docs) {
+                    var password : String = docs['password'];
+
+                    var user:User = new User(currentUser.getUsername(), password, fullname,
+                        gender, age, aboutme, location);
+
+                    collection.update(
+                        {username: currentUser.getUsername()},
+                        {
+                            "username": user.getUsername(),
+                            "password": user.getPassword(),
+                            "fullname": user.getFullName(),
+                            "gender": user.getGender(),
+                            "age": user.getAge(),
+                            "aboutme": user.getAboutMe(),
+                            "location": user.getLocation()
+                        }, function(err, doc) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // And forward back to my profile page
+                                res.redirect("myprofile");
+                            }
                         }
-                    }
-                    // }, function(err, doc) {
-                    //     if (err) {
-                    //         // If it failed, return error
-                    //         res.send("There was a problem adding the information to the database.");
-                    //     }
-                    //     else {
-                    //         // And forward back to my profile page
-                    //         res.redirect("myprofile");
-                    //     }
-                    // }
                     );
-             }
+                });
+
+
+            }
         });
 
         router.post('/fileupload2', multer({ dest: './uploads/'}).single('upl'), function(req,res){

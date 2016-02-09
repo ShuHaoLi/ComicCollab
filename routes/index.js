@@ -189,15 +189,29 @@ var Router = (function () {
                 var aboutme = req.body.aboutme;
                 // Set our collection
                 var collection = db.get('usercollection');
-                var user = new User(currentUser.getUserName(), req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
-                collection.update({ username: currentUser.getUsername }, {
-                    $set: {
+                collection.findOne({
+                    "username": currentUser.getUsername()
+                }, function (e, docs) {
+                    var password = docs['password'];
+                    var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location);
+                    collection.update({ username: currentUser.getUsername() }, {
+                        "username": user.getUsername(),
+                        "password": user.getPassword(),
                         "fullname": user.getFullName(),
-                        "age": user.getPassword(),
                         "gender": user.getGender(),
-                        "location": user.getLocation(),
-                        "aboutme": user.getAboutMe()
-                    }
+                        "age": user.getAge(),
+                        "aboutme": user.getAboutMe(),
+                        "location": user.getLocation()
+                    }, function (err, doc) {
+                        if (err) {
+                            // If it failed, return error
+                            res.send("There was a problem adding the information to the database.");
+                        }
+                        else {
+                            // And forward back to my profile page
+                            res.redirect("myprofile");
+                        }
+                    });
                 });
             }
         });
@@ -224,3 +238,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

@@ -216,11 +216,11 @@ class Router{
                 } else {
                     res.render('users', {
                         userName: userName,
-                        fullname: '',
-                        location: '',
-                        age: '',
-                        gender: '',
-                        aboutme: ''
+                        fullname: 'This user has not specified yet',
+                        location: 'This user has not specified yet',
+                        age: 'This user has not specified yet',
+                        gender: 'This user has not specified yet',
+                        aboutme: 'This user has not specified yet'
                     });
                 }
             });

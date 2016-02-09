@@ -164,12 +164,11 @@ var Router = (function () {
                 }
             });
         });
-        //Get profile pages
+        /* GET users. */
         router.get('/users/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
             var userName = req.params['0'];
-            //res.render('users', { userName: userName});
             collection.findOne({
                 "username": userName
             }, function (e, docs) {
@@ -186,11 +185,11 @@ var Router = (function () {
                 else {
                     res.render('users', {
                         userName: userName,
-                        fullname: '',
-                        location: '',
-                        age: '',
-                        gender: '',
-                        aboutme: ''
+                        fullname: 'This user has not specified yet',
+                        location: 'This user has not specified yet',
+                        age: 'This user has not specified yet',
+                        gender: 'This user has not specified yet',
+                        aboutme: 'This user has not specified yet'
                     });
                 }
             });

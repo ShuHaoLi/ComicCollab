@@ -102,11 +102,11 @@ var Router = (function () {
             if (userName == null || password == null) {
                 res.send("please enter your username or password");
             }
-            if (password != confirmPassword) {
-                res.send("Passwords do not match");
-            }
-            else if (password.length < 4 && password.length > 10) {
+            else if (password.length < 4 || password.length > 10) {
                 res.send("Password needs to be between 6 - 20 characters. Please try again!");
+            }
+            else if (password != confirmPassword) {
+                res.send("passwords do not match");
             }
             else {
                 var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
@@ -159,4 +159,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

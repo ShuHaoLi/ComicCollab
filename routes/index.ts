@@ -149,8 +149,7 @@ class Router{
 
         /* GET UPLOAD COMICS PAGE */
         router.get('/uploadcomics/*', function(req, res) {
-            // Eventually need to check if user is supposed to be able to upload to comic
-            res.render('uploadcomics');
+            res.render('uploadcomics', {cur: req.currentUser});
         });
 
         /* POST TO UPLOAD COMICS PAGE */

@@ -65,7 +65,7 @@ class Application {
             dest: './public/images',
             limits: { fileSize: 1024 * 1024},
             rename: function (fieldname, filename) {
-                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
+                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
             },
             onFileUploadStart: function(file, req, res){
                 if(req.files.file.length > maxSize) {

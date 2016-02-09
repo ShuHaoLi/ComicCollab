@@ -1,11 +1,32 @@
-<form method="post" enctype="multipart/form-data">
-    <h1>UPLOAD A COMIC WEBPAGE</h1>
-    <h3>Upload an Image:</h3>
-    <p>Image must be:</p>
-    <ul>
-        <li>PNG, JPEG, or JPG</li>
-        <li>Not larger than 1 MB</li>
-    </ul>
-    <input placeholder="file" required="required" name="file" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg">
-    <input type="submit" name="publish" value="Publish">
-</form>
+<html>
+<head>
+    <title></title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<% if (cur.getIsLoggedIn()) { %>
+<div class="container">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="home">ComicCollab</a>
+    </div>
+    <div class="page-header" style="margin-top: 60px">
+        <h1>Upload a Comic</h1>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        <h3>Upload an Image:</h3>
+        <p>Image must be:</p>
+        <ul>
+            <li>PNG, JPEG, or JPG</li>
+            <li>Not larger than 1 MB</li>
+        </ul>
+        <input placeholder="file" required="required" name="file" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg">
+        <input type="submit" name="publish" value="Publish">
+    </form>
+</div>
+<% } else { %>
+<div class="container">
+    <div>Please sign in to upload a comic.</div>
+</div>
+<% } %>
+</body>
+</html>

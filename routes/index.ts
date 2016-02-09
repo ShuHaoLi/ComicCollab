@@ -20,43 +20,6 @@ class User implements UserInterface {
     }
 }
 
-// LEYLA'S ADDITION: THIS IS THE METHOD THAT GETS ALL THE FILES FROM THE PUBLIC/IMAGES FILE.
-var fs = require('fs');
-function getFiles (dir, files_){
-    files_ = files_ || [];
-    var files = fs.readdirSync(dir);
-    for (var i in files){
-        var name = dir + '/' + files[i];
-        if (fs.statSync(name).isDirectory()){
-            getFiles(name, files_);
-        } else {
-            files_.push(name);
-        }
-    }
-    return files_;
-}
-
-// ^ Function above still works but this call doesnt?
-console.log(getFiles('public/images', null));
-
-var files = getFiles('public/images', null);
-
-/*
-for (var i = 0; files.length; i++) {
-    var myImage = new Image(files[i]);
-    myImage.src = files[i];
-    var url = "../image/" + files[i];
-
-    //var img = document.createElement("IMG")
-    //img.setAttribute('src', url);
-    //img.setAttribute('width', '300')
-    //img.setAttribute('height', '300')
-
-    //imageObject.setHTMLElement(img)
-    console.log(myImage);
-};
-*/
-
 class Router{
     constructor(){
         var express = require('express');
@@ -151,13 +114,41 @@ class Router{
 
         /* GET UPLOAD COMICS PAGE */
         router.get('/uploadcomics/*', function(req, res) {
-            // Eventually need to check if user is supposed to be able to upload to comic
-            res.render('uploadcomics');
+            res.render('uploadcomics', {cur: req.currentUser});
         });
 
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function(req, res) {
-            var comicId = req.params[0];
+            var comicId : String = req.params[0];
+
+            var db = req.db;
+            var collection = db.get('comicimages');
+
+            collection.find({"comicId": comicId}, function(err, docs) {
+                var sequence : number;
+                if (docs.length != 0) {
+                    var curMost : number = 0;
+                    for (var i = 0; i < docs.length; i++) {
+                        var seq = parseInt(docs[i]['sequence']);
+                        if (seq > curMost) {
+                            curMost = seq;
+                        }
+                    }
+                    sequence = curMost;
+                } else {
+                    sequence = 0;
+                }
+                for (var i = 0; i < req.files.length; i++ ) {
+                    var nextSequence : number = sequence + 1;
+                    collection.insert({
+                        "comicId": comicId,
+                        "creator": req.currentUser.getUsername(),
+                        "url": "../public/images/" + req.files[i].filename,
+                        "sequence": nextSequence.toString()
+                    });
+                    sequence = nextSequence;
+                }
+            });
             res.redirect("../../comic/" + comicId);
         });
 

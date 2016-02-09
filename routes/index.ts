@@ -99,6 +99,12 @@ class Router{
             });
         });
 
+        router.get('/comic/*', function(req, res) {
+            var comicNumber = req.params['0'];
+
+            res.render('comic', { comicNumber: comicNumber.toString()});
+        });
+
         /* GET Create Profile page. */
         router.get('/createprofile', function(req, res) {
             res.render('createprofile');

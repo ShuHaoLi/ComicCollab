@@ -19,7 +19,7 @@ class User implements UserInterface {
         return this.password;
     }
 }
-
+/*
 // LEYLA'S ADDITION: THIS IS THE METHOD THAT GETS ALL THE FILES FROM THE PUBLIC/IMAGES FILE.
 var fs = require('fs');
 function getFiles (dir, files_){
@@ -53,7 +53,7 @@ for (var i = 0; files.length; i++) {
 
     //imageObject.setHTMLElement(img)
     console.log(myImage);
-};
+};*/
 
 class Router{
     constructor(){
@@ -155,7 +155,36 @@ class Router{
 
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function(req, res) {
-            var comicId = req.params[0];
+            var comicId : String = req.params[0];
+
+            var db = req.db;
+            var collection = db.get('comicimages');
+
+            collection.find({"comicId": comicId}, function(err, docs) {
+                var sequence : number;
+                if (docs.length != 0) {
+                    var curMost : number = 0;
+                    for (var i = 0; i < docs.length; i++) {
+                        var seq = parseInt(docs[i]['sequence']);
+                        if (seq > curMost) {
+                            curMost = seq;
+                        }
+                    }
+                    sequence = curMost;
+                } else {
+                    sequence = 0;
+                }
+                for (var i = 0; i < req.files.length; i++ ) {
+                    var nextSequence : number = sequence + 1;
+                    collection.insert({
+                        "comicId": comicId,
+                        "creator": req.currentUser.getUsername(),
+                        "url": "../public/images/" + req.files[i].filename,
+                        "sequence": nextSequence.toString()
+                    });
+                    sequence = nextSequence;
+                }
+            });
             res.redirect("../../comic/" + comicId);
         });
 

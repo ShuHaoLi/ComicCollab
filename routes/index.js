@@ -34,24 +34,26 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
-            if (password.length() < 6 || password.length() > 20) {
-                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+            if (password.length < 6 || password.length > 20) {
+                res.render('login', { loginError: 'Password needs to be between 6 - 20 characters. Please try again!' });
             }
-            var collection = db.get('usercollection');
-            collection.findOne({
-                "username": username.toLowerCase(),
-                "password": password
-            }, function (err, docs) {
-                if (docs != null) {
-                    var currentUser = req.currentUser;
-                    currentUser.setUsername(username);
-                    currentUser.setIsLoggedIn(true);
-                    res.redirect('home');
-                }
-                else {
-                    res.render('login', { loginError: 'Login failed, invalid credentials' });
-                }
-            });
+            else {
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase(),
+                    "password": password
+                }, function (err, docs) {
+                    if (docs != null) {
+                        var currentUser = req.currentUser;
+                        currentUser.setUsername(username);
+                        currentUser.setIsLoggedIn(true);
+                        res.redirect('home');
+                    }
+                    else {
+                        res.render('login', { loginError: 'Login failed, invalid credentials' });
+                    }
+                });
+            }
         });
         /* GET Create Profile page. */
         router.get('/createprofile', function (req, res) {
@@ -140,4 +142,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

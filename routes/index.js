@@ -2,15 +2,35 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password) {
+    function User(username, password, fullname, gender, age, aboutme, location) {
         this.username = username;
         this.password = password;
+        this.fullname = fullname;
+        this.gender = gender;
+        this.age = age;
+        this.aboutme = aboutme;
+        this.location = location;
     }
     User.prototype.getUsername = function () {
         return this.username;
     };
     User.prototype.getPassword = function () {
         return this.password;
+    };
+    User.prototype.getFullName = function () {
+        return this.fullname;
+    };
+    User.prototype.getGender = function () {
+        return this.gender;
+    };
+    User.prototype.getAboutMe = function () {
+        return this.aboutme;
+    };
+    User.prototype.getLocation = function () {
+        return this.location;
+    };
+    User.prototype.getAge = function () {
+        return this.age;
     };
     return User;
 })();
@@ -79,43 +99,36 @@ var Router = (function () {
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
+            if (userName == null || password == null) {
+                res.send("please enter your username or password");
+            }
             if (password != confirmPassword) {
                 res.send("Passwords do not match");
             }
-            else if (password.length < 6 || password.length > 20) {
-                res.render('createprofile', { loginError: 'Password needs to be between 6 - 20 characters. Please try again!' });
+            else if (password.length < 4 && password.length > 10) {
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
             else {
-                var account = new Account(userName, password);
+                var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
                 // Set our collection
                 var collection = db.get('usercollection');
-                collection.findOne({
-                    "username": userName.toLowerCase(),
-                    "password": password
-                }, function (err, docs) {
-                    /*
-                     ** check if the username exists in the db
-                     *  if it does, register failed
-                     *  if not, insert to db
-                     */
-                    if (docs != null) {
-                        res.send("Username has already exists.");
+                // Submit to the DB
+                collection.insert({
+                    "username": user.getUsername(),
+                    "password": user.getPassword(),
+                    "fullname": "",
+                    "age": "",
+                    "gender": "",
+                    "location": "",
+                    "aboutme": ""
+                }, function (err, doc) {
+                    if (err) {
+                        // If it failed, return error
+                        res.send("There was a problem adding the information to the database.");
                     }
                     else {
-                        //submit to DB
-                        collection.insert({
-                            "username": "wendy",
-                            "password": "test1"
-                        }, function (err, doc) {
-                            if (err) {
-                                // If it failed, return error
-                                res.send("There was a problem adding the information to the database.");
-                            }
-                            else {
-                                // And forward to home page
-                                res.redirect("home");
-                            }
-                        });
+                        // And forward to home page
+                        res.redirect("home");
                     }
                 });
             }

@@ -4,20 +4,50 @@
 interface UserInterface {
     getUsername() : String;
     getPassword() : String;
+    getFullName() : String;
+    getGender() : String;
+    getAge() : String;
+    getLocation() : String;
+    getAboutMe() : String;
 }
-
 class User implements UserInterface {
     private username: String;
     private password: String;
-    constructor(username: String, password: String) {
+    private fullname: String;
+    private gender: String;
+    private age: String;
+    private aboutme: String;
+    private location: String;
+    constructor(username: String, password: String, fullname: String,
+                gender: String, age: String, aboutme: String, location: String) {
         this.username = username;
         this.password = password;
+        this.fullname = fullname;
+        this.gender = gender;
+        this.age = age;
+        this.aboutme = aboutme;
+        this.location = location;
     }
     getUsername(){
         return this.username;
     }
     getPassword(){
         return this.password;
+    }
+    getFullName(){
+        return this.fullname;
+    }
+    getGender(){
+        return this.gender;
+    }
+    getAboutMe(){
+        return this.aboutme;
+    }
+    getLocation(){
+        return this.location;
+    }
+    getAge(){
+        return this.age;
     }
 }
 
@@ -95,50 +125,43 @@ class Router{
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
+            if (userName == null || password == null){
+                res.send("please enter your username or password");
+            }
             if (password != confirmPassword){
                 res.send("Passwords do not match");
             }
-            else if (password.length < 6 || password.length > 20){
-                res.render('createprofile', {loginError: 'Password needs to be between 6 - 20 characters. Please try again!'});
+            else if (password.length < 4 && password.length > 10){
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
             else {
-                var account : Account = new Account(userName, password);
-                // Set our collection
+                var user : User = new User(req.body.username, req.body.password, req.body.fullname,
+                    req.body.age, req.body.aboutme, req.body.gender, req.body.location);
 
+                // Set our collection
                 var collection = db.get('usercollection');
-                collection.findOne({
-                    "username": userName.toLowerCase(),
-                    "password": password
-                }, function(err, docs) {
-                    /*
-                     ** check if the username exists in the db
-                     *  if it does, register failed
-                     *  if not, insert to db
-                     */
-                    if (docs != null) {
-                        res.send("Username has already exists.");
+                // Submit to the DB
+                collection.insert({
+                    "username": user.getUsername(),
+                    "password": user.getPassword(),
+                    "fullname": "",
+                    "age": "",
+                    "gender": "",
+                    "location": "",
+                    "aboutme": ""
+                }, function (err, doc) {
+                    if (err) {
+                        // If it failed, return error
+                        res.send("There was a problem adding the information to the database.");
                     }
                     else {
-                        //submit to DB
-                        collection.insert({
-                                "username": "wendy",
-                                "password": "test1"
-                            }, function (err, doc) {
-                                if (err) {
-                                    // If it failed, return error
-                                    res.send("There was a problem adding the information to the database.");
-                                }
-                                else {
-                                    // And forward to home page
-                                    res.redirect("home");
-                                }
-                            }
-                        );
+                        // And forward to home page
+                        res.redirect("home");
                     }
+
                 });
             }
         });
-
         router.get('/', function(req, res){
             res.render('index');
         });

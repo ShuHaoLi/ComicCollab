@@ -1,7 +1,7 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 //import session = BrowserStorage.session;
-'use strict';
+//'use strict';
 var LoggedInUser = (function () {
     function LoggedInUser(username, isLoggedIn) {
         this.username = username;
@@ -35,6 +35,7 @@ var Application = (function () {
         var routes = require('./routes/index');
         var users = require('./routes/users');
         var multer = require('multer');
+        var http = require('http');
         var app = express();
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
@@ -100,3 +101,4 @@ var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
+//# sourceMappingURL=app.js.map

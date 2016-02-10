@@ -1,7 +1,7 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 //import session = BrowserStorage.session;
-'use strict';
+//'use strict';
 
 interface Error {
     status?: number;
@@ -42,6 +42,7 @@ class Application {
         var routes = require('./routes/index');
         var users = require('./routes/users');
         var multer = require('multer');
+        var http = require('http');
         var app = express();
 
         // view engine setup

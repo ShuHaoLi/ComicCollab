@@ -62,12 +62,12 @@ class Router {
         /* GET home page. */
         router.get('/home', function (req, res) {
             res.render('home',
-                {cur: req.currentUser});
+                {cur: req.currentUser, urls: urls});
             var db = req.db;
             var collection = db.get('comicimages');
             var urls = [];
             collection.find({"sequence": "1"}, function (err, docs) {
-                if (docs.length != 0) {
+                if (docs.length > 0) {
                     for (var i = 0; i < docs.length; i++) {
                         urls.push(docs[i]['url']);
                     }
@@ -251,6 +251,7 @@ class Router {
                 } else {
                     sequence = 0;
                 }
+
                 /* insert the comic image (with its associated details) in the last
                  sequence (or initial sequence) */
                 for (var i = 0; i < req.files.length; i++) {

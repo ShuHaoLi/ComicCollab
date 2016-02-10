@@ -1,6 +1,7 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 //import session = BrowserStorage.session;
+'use strict';
 var LoggedInUser = (function () {
     function LoggedInUser(username, isLoggedIn) {
         this.username = username;

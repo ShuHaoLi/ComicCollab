@@ -76,8 +76,9 @@ class Router {
         });
         
         /* GET home page. */
-        router.get('/', function(req, res) {
-            res.render('home');
+        router.get('/', function (req, res) {
+            res.render('home',
+                {cur: req.currentUser});
         });
 
         /* GET login page. */

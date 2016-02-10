@@ -63,6 +63,16 @@ class Router {
         router.get('/home', function (req, res) {
             res.render('home',
                 {cur: req.currentUser});
+            var db = req.db;
+            var collection = db.get('comicimages');
+            var urls = [];
+            collection.find({"sequence": "1"}, function (err, docs) {
+                if (docs.length != 0) {
+                    for (var i = 0; i < docs.length; i++) {
+                        urls.push(docs[i]['url']);
+                    }
+                }
+            })
         });
         
         /* GET home page. */

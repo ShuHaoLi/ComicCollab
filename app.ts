@@ -2,9 +2,10 @@
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 //import session = BrowserStorage.session;
 //'use strict';
-/*interface Error {
+
+interface Error {
     status?: number;
-}*/
+}
 
 class LoggedInUser {
     private username: String;

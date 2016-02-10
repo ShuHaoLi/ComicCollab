@@ -39,42 +39,22 @@
             </button>
             <a class="navbar-brand" href="home">ComicCollab</a>
         </div>
-
         <div id="navbar" class="navbar-collapse collapse">
-            <head>
-                <script>
-                    function disable_by_conditions()
-                    {
-                        var createComic_button = document.getElementById('button_createComic');
-                        var profile_button = document.getElementById('button_profile');
-                        var createProfile_button = document.getElementById('button_createprofile');
-                        var login_button = document.getElementById('button_login');
-                        var logout_button = document.getElementById('button_logout');
-                        var currentUser = req.currentUser;
-                        alert("hello");
-                        if (currentUser.isLoggedIn){
-                            createComic_button.disabled=false;
-                            profile_button.disabled=false;
-                            createProfile_button.disabled=false;
-                            login_button.disabled=true;
-                            logout_button.disabled=false;
-
-                        }
-                        else{
-                            createComic_button.disabled=true;
-                            profile_button.disabled=true;
-                            createProfile_button.disabled=true;
-                            login_button.disabled=false;
-                            logout_button.disabled=true;
-                        }
-                    }
-                </script>
-            <a href="createComic" class="btn btn-info" role="button" id='button_createComic' onClick=alert("hello")>Create Comic</a>
-            <a href="profile" class="btn btn-info" role="button" id='button_profile' onClick="disable_by_conditions()">Profile</a>
-            <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile' onClick="disable_by_conditions()">Register</a>
-            <a href="login" class="btn btn-info" role="button" id='button_login' onClick="disable_by_conditions()">Login</a>
-            <a href="logout" class="btn btn-info" role="button" id='button_logout' onClick="disable_by_conditions()">Logout</a>
-            </head>
+        <ul>
+            <%if (cur.getIsLoggedIn()){%>
+                <a href="createComic" class="btn btn-info" role="button" id='button_createComic'>Create Comic</a>
+                <a href="profile" class="btn btn-info" role="button" id='button_profile'>Profile</a>
+                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile' disabled>Register</a>
+                <a href="login" class="btn btn-info" role="button" id='button_login' disabled>Login</a>
+                <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
+            <% }else {%>
+                <a href="createComic" class="btn btn-info" role="button" id='button_createComic' disabled>Create Comic</a>
+                <a href="profile" class="btn btn-info" role="button" id='button_profile' disabled>Profile</a>
+                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
+                <a href="login" class="btn btn-info" role="button" id='button_login'>Login</a>
+                <a href="logout" class="btn btn-info" role="button" id='button_logout' disabled>Logout</a>
+                <%}%>
+        </ul>
             <div class="container">
                 <div class="row">
                     <h2></h2>

@@ -61,7 +61,8 @@ class Router{
 
         /* GET home page. */
         router.get('/home', function(req, res) {
-            res.render('home');
+            res.render('home',
+                {cur: req.currentUser});
         });
 
         /* GET login page. */

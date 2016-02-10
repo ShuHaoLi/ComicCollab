@@ -41,7 +41,7 @@ var Router = (function () {
         var multer = require('multer'), bodyParser = require('body-parser'), path = require('path');
         /* GET home page. */
         router.get('/home', function (req, res) {
-            res.render('home');
+            res.render('home', { cur: req.currentUser });
         });
         /* GET login page. */
         router.get('/login', function (req, res) {
@@ -276,4 +276,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

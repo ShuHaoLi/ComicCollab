@@ -151,46 +151,33 @@ var Router = (function () {
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
-                collection.insert({
-                    "username": user.getUsername(),
-                    "password": user.getPassword()
-                }, function (err, doc) {
-                    if (err) {
-                        // If it failed, return error
-                        res.send("There was a problem adding the information to the database.");
+                collection.findOne({
+                    "username": userName.toLowerCase()
+                }, function (err, docs) {
+                    if (docs != null) {
+                        res.send("Username has already exist. Please enter a new username");
                     }
                     else {
-                        // And forward to home page
-                        res.redirect("main");
+                        // Submit to the DB
+                        collection.insert({
+                            "username": user.getUsername(),
+                            "password": user.getPassword(),
+                            "fullname": "",
+                            "age": "",
+                            "gender": "",
+                            "location": "",
+                            "aboutme": ""
+                        }, function (err, doc) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // And forward to home page
+                                res.redirect("home");
+                            }
+                        });
                     }
-                    collection.findOne({
-                        "username": userName.toLowerCase()
-                    }, function (err, docs) {
-                        if (docs != null) {
-                            res.send("Username has already exist. Please enter a new username");
-                        }
-                        else {
-                            // Submit to the DB
-                            collection.insert({
-                                "username": user.getUsername(),
-                                "password": user.getPassword(),
-                                "fullname": "",
-                                "age": "",
-                                "gender": "",
-                                "location": "",
-                                "aboutme": ""
-                            }, function (err, doc) {
-                                if (err) {
-                                    // If it failed, return error
-                                    res.send("There was a problem adding the information to the database.");
-                                }
-                                else {
-                                    // And forward to home page
-                                    res.redirect("home");
-                                }
-                            });
-                        }
-                    });
                 });
             }
         });
@@ -382,4 +369,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

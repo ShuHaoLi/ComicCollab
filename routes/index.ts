@@ -61,18 +61,25 @@ class Router {
 
         /* GET home page. */
         router.get('/home', function (req, res) {
-            res.render('home',
-                {cur: req.currentUser, urls: urls});
             var db = req.db;
             var collection = db.get('comicimages');
             var urls = [];
+            var comicIds = [];
             collection.find({"sequence": "1"}, function (err, docs) {
                 if (docs.length > 0) {
+                    //console.log(docs);
                     for (var i = 0; i < docs.length; i++) {
+                        //console.log(docs[i]);
                         urls.push(docs[i]['url']);
+                        comicIds.push("../comic/" + docs[i]['comicId']);
                     }
                 }
-            })
+                console.log(urls);
+                console.log(comicIds);
+                    res.render('home',
+                        {cur: req.currentUser, urls: urls, comicIds: comicIds});
+
+            });
         });
         
         /* GET home page. */

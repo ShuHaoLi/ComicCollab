@@ -65,12 +65,21 @@
                     <!--</div>-->
                 <!--</div>-->
             <!--</div>-->
-            <div class="container"><img src=images/08f3842254dccc4ca9eb60f9860d1388 alt="Comic not found"></div>
+
 
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
 
+<div class="container">
+    <div style="min-width: 1250px">
+        <% for (var i=0; i<urls.length; i++) { %>
+        <a href="<%=comicIds[i]%>">
+            <img style="width: 300px; height:300px" src="<%= urls[i]%>" />
+        </a>
+        <% } %>
+    </div>
+</div>
 
 <div class="container">
 

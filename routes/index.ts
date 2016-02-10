@@ -10,7 +10,6 @@ interface UserInterface {
     getLocation() : String;
     getAboutMe() : String;
 }
-
 class User implements UserInterface {
     private username: String;
     private password: String;
@@ -83,8 +82,8 @@ class Router{
             var username = req.body.username;
             var password = req.body.password;
 
-            if (password.length < 6 || password.length > 20){
-                res.render('login', {loginError: 'Password needs to be between 6 - 20 characters. Please try again!'});
+            if (password.length < 4 || password.length > 10){
+                res.render('login', {loginError: 'Password needs to be between 4 - 10 characters. Please try again!'});
             } else {
                 var collection = db.get('usercollection');
                 collection.findOne({
@@ -131,11 +130,11 @@ class Router{
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
-            if (password != confirmPassword){
-                res.send("Passwords do not match");
+            if (password.length < 4 || password.length > 10){
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
-            else if (password.length < 6 || password.length > 20){
-                res.render('createprofile', {loginError: 'Password needs to be between 6 - 20 characters. Please try again!'});
+            else if (password!=confirmPassword){
+                res.send("passwords do not match");
             }
             else {
                 var user : User = new User(req.body.username, req.body.password, req.body.fullname,
@@ -143,25 +142,34 @@ class Router{
 
                 // Set our collection
                 var collection = db.get('usercollection');
-                // Submit to the DB
-                collection.insert({
-                        "username": user.getUsername(),
-                        "password": user.getPassword(),
-                        "fullname": "",
-                        "age": "",
-                        "gender": "",
-                        "location": "",
-                        "aboutme": ""
-                    }, function (err, doc) {
-                        if (err) {
-                            // If it failed, return error
-                            res.send("There was a problem adding the information to the database.");
-                        }
-                        else {
-                            // And forward to home page
-                            res.redirect("home");
-                        }
+                collection.findOne({
+                    "username": userName.toLowerCase()
+                }, function (err, docs) {
+                    if (docs != null) {
+                        res.send("Username has already exist. Please enter a new username");
 
+                    } else {
+                        // Submit to the DB
+                        collection.insert({
+                            "username": user.getUsername(),
+                            "password": user.getPassword(),
+                            "fullname": "",
+                            "age": "",
+                            "gender": "",
+                            "location": "",
+                            "aboutme": ""
+                        }, function (err, doc) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // And forward to home page
+                                res.redirect("home");
+                            }
+
+                        });
+                    }
                 });
             }
         });

@@ -35,43 +35,7 @@ var Application = (function () {
         var routes = require('./routes/index');
         var users = require('./routes/users');
         var multer = require('multer');
-        var upload = multer({ dest: 'uploads/' });
         var app = express();
-        app.post('/profile', upload.single('avatar'), function (req, res, next) {
-            // req.file is the `avatar` file
-            // req.body will hold the text fields, if there were any
-        });
-        app.post('/photos/upload', upload.array('photos', 12), function (req, res, next) {
-            // req.files is array of `photos` files
-            // req.body will contain the text fields, if there were any
-        });
-        var cpUpload = upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }]);
-        app.post('/cool-profile', cpUpload, function (req, res, next) {
-            // req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
-            //
-            // e.g.
-            //  req.files['avatar'][0] -> File
-            //  req.files['gallery'] -> Array
-            //
-            // req.body will contain the text fields, if there were any
-        });
-        upload = (multer({
-            dest: './uploads',
-            limits: {
-                fieldNameSize: 50,
-                files: 1,
-                fields: 5,
-                fileSize: 400 * 400
-            },
-            rename: function (fieldname, filename) {
-                return filename;
-            },
-            onFileUploadStart: function (file) {
-                if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
-                    return false;
-                }
-            }
-        }));
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');
@@ -82,6 +46,12 @@ var Application = (function () {
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
         app.use(express.static(path.join(__dirname, 'public')));
+        //app.use(multer({ dest: './public/images'}).array("file"));
+        // THIS IS THE MULTER CODE (DO NOT TOUCH)
+        app.use(multer({
+            dest: './public/images',
+            limits: { fileSize: 1024 * 1024 }
+        }).array("file"));
         // Make our db accessible to our router
         app.use(function (req, res, next) {
             req.currentUser = currentUser;
@@ -96,11 +66,10 @@ var Application = (function () {
             err.status = 404;
             next(err);
         });
-        // viewed at http://localhost:8080
+        // viewed at http://localhost:3000
         app.get('/', function (req, res) {
             res.sendFile(path.join(__dirname + '/*.html'));
         });
-        app.listen(3030);
         // error handlers
         // development error handler
         // will print stacktrace
@@ -122,6 +91,7 @@ var Application = (function () {
                 error: {}
             });
         });
+        app.listen(3030);
         module.exports = app;
     }
     return Application;

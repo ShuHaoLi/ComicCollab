@@ -83,8 +83,9 @@ class Router {
             var username = req.body.username;
             var password = req.body.password;
 
-            if (password.length < 4 || password.length > 20){
-                res.render('login', {loginError: 'Password needs to be between 4 - 10 characters. Please try again!'});
+            // Set our collection
+            if (password.length < 4 || password.length > 20) {
+                res.render('login', {loginError: 'Password needs to be between 4 - 20 characters. Please try again!'});
             } else {
                 var collection = db.get('usercollection');
                 collection.findOne({

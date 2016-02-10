@@ -42,7 +42,7 @@
         <div id="navbar" class="navbar-collapse collapse">
         <ul>
             <%if (cur.getIsLoggedIn()){%>
-                <a href="uploadcomics" class="btn btn-info" role="button" id='button_createComic'>Create Comic</a>
+                <a href="uploadcomics/" class="btn btn-info" role="button" id='button_createComic'>Create Comic</a>
                 <a href="myprofile" class="btn btn-info" role="button" id='button_profile'>Profile</a>
                 <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
             <% }else {%>
@@ -67,15 +67,24 @@
             <!--</div>-->
 
 
-
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
 
 <div class="container">
+    <div style="min-width: 1250px">
+        <% for (var i=0; i<urls.length; i++) { %>
+        <a href="<%=comicIds[i]%>">
+            <img style="width: 300px; height:300px" src="<%= urls[i]%>" />
+        </a>
+        <% } %>
+    </div>
+</div>
+
+<div class="container">
 
     <footer>
-        <p>&copy; ComicCollab @wendy </p>
+        <p>&copy; ComicCollab  </p>
     </footer>
 </div> <!-- /container -->
 

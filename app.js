@@ -2,6 +2,9 @@
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
 //import session = BrowserStorage.session;
 'use strict';
+/*interface Error {
+    status?: number;
+}*/
 var LoggedInUser = (function () {
     function LoggedInUser(username, isLoggedIn) {
         this.username = username;

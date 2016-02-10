@@ -76,9 +76,9 @@ class Router {
                 }
                 console.log(urls);
                 console.log(comicIds);
-                    res.render('home',
-                        {cur: req.currentUser, urls: urls, comicIds: comicIds});
-
+                res.render('home',
+                    {cur: req.currentUser, urls: urls, comicIds: comicIds}
+                );
             });
         });
         

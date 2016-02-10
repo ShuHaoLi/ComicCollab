@@ -46,7 +46,7 @@
                 <a href="myprofile" class="btn btn-info" role="button" id='button_profile'>Profile</a>
                 <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
             <% }else {%>
-                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile'>Create Profile</a>
+                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
                 <a href="login" class="btn btn-info" role="button" id='button_login'>Login</a>
                 <%}%>
         </ul>
@@ -73,7 +73,7 @@
 
 <div class="container">
     <div style="min-width: 1250px">
-        <% for (var i=0; i<urls.length; i++) { %>
+        <% for (var i=urls.length-1; i>=0; i--) { %>
         <a href="<%=comicIds[i]%>">
             <img style="width: 300px; height:300px" src="<%= urls[i]%>" />
         </a>

@@ -58,7 +58,7 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
-            if (password.length < 4 || password.length > 10) {
+            if (password.length < 4 || password.length > 20) {
                 res.render('login', { loginError: 'Password needs to be between 4 - 10 characters. Please try again!' });
             }
             else {
@@ -282,4 +282,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

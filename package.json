@@ -2,10 +2,6 @@
   "name": "main",
   "version": "0.0.1",
   "private": true,
-  "engines": {
-    "node": "5.4.0",
-    "npm": "3.7.1"
-  },
   "scripts": {
     "start": "node ./bin/www"
   },

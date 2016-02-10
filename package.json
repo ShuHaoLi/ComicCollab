@@ -21,5 +21,9 @@
     "multer": "^1.1.0",
     "serve-favicon": "~2.2.1",
     "uid2": "latest"
+  },
+  "engines": {
+    "node": "5.4.0",
+    "npm": "3.7.1"
   }
 }

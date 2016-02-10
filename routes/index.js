@@ -57,21 +57,6 @@ var Router = (function () {
             var username = req.body.username;
             var password = req.body.password;
             // Set our collection
-            var collection = db.get('usercollection');
-            collection.findOne({
-                "username": username.toLowerCase(),
-                "password": password
-            }, function (err, docs) {
-                if (docs != null) {
-                    var currentUser = req.currentUser;
-                    currentUser.setUsername(username);
-                    currentUser.setIsLoggedIn(true);
-                    res.redirect('home');
-                }
-                else {
-                    res.render('login', { loginError: 'Login failed, invalid credentials' });
-                }
-            });
             if (password.length < 4 || password.length > 20) {
                 res.render('login', { loginError: 'Password needs to be between 4 - 20 characters. Please try again!' });
             }
@@ -354,3 +339,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

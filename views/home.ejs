@@ -44,32 +44,29 @@
             <%if (cur.getIsLoggedIn()){%>
                 <a href="createComic" class="btn btn-info" role="button" id='button_createComic'>Create Comic</a>
                 <a href="profile" class="btn btn-info" role="button" id='button_profile'>Profile</a>
-                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile' disabled>Register</a>
-                <a href="login" class="btn btn-info" role="button" id='button_login' disabled>Login</a>
                 <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
             <% }else {%>
-                <a href="createComic" class="btn btn-info" role="button" id='button_createComic' disabled>Create Comic</a>
-                <a href="profile" class="btn btn-info" role="button" id='button_profile' disabled>Profile</a>
-                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
+                <a href="createProfile" class="btn btn-info" role="button" id='button_createprofile'>Create Profile</a>
                 <a href="login" class="btn btn-info" role="button" id='button_login'>Login</a>
-                <a href="logout" class="btn btn-info" role="button" id='button_logout' disabled>Logout</a>
                 <%}%>
         </ul>
-            <div class="container">
-                <div class="row">
-                    <h2></h2>
-                    <div id="custom-search-input">
-                        <div class="input-group col-md-12">
-                            <input type="text" class="  search-query form-control" placeholder="Search your favourite comics..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-danger" type="button">
-                                        <span class=" glyphicon glyphicon-search"></span>
-                                    </button>
-                                </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!--<div class="container">-->
+                <!--<div class="row">-->
+                    <!--<h2></h2>-->
+                    <!--<div id="custom-search-input">-->
+                        <!--<div class="input-group col-md-12">-->
+                            <!--<input type="text" class="  search-query form-control" placeholder="Search your favourite comics..." />-->
+                                <!--<span class="input-group-btn">-->
+                                    <!--<button class="btn btn-danger" type="button">-->
+                                        <!--<span class=" glyphicon glyphicon-search"></span>-->
+                                    <!--</button>-->
+                                <!--</span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+
 
         </div><!--/.navbar-collapse -->
     </div>

@@ -43,6 +43,10 @@ var Router = (function () {
         router.get('/home', function (req, res) {
             res.render('home', { cur: req.currentUser });
         });
+        /* GET home page. */
+        router.get('/', function (req, res) {
+            res.render('home');
+        });
         /* GET login page. */
         router.get('/login', function (req, res) {
             res.render('login', { loginError: '' });
@@ -54,7 +58,7 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
-            if (password.length < 4 || password.length > 10) {
+            if (password.length < 4 || password.length > 20) {
                 res.render('login', { loginError: 'Password needs to be between 4 - 10 characters. Please try again!' });
             }
             else {
@@ -142,17 +146,6 @@ var Router = (function () {
         router.get('/', function (req, res) {
             res.render('index');
         });
-        //new code
-        /* GET Users page. */
-        router.get('/users', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            collection.find({}, {}, function (e, docs) {
-                res.render('users', {
-                    "users": docs
-                });
-            });
-        });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
@@ -184,22 +177,35 @@ var Router = (function () {
                 }
             });
         });
-        //Get profile pages
+        /* GET users. */
         router.get('/users/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            // var _usernames: Array<String> = collection.runCommand(
-            //     {
-            //         find: "username"
-            //     }
-            // );
             var userName = req.params['0'];
-            res.render('users', { userName: userName });
-            // collection.find({}, {}, function(e, docs) {
-            //     res.render('users', {
-            //         "users": user.getUsername()
-            //     });
-            // });
+            collection.findOne({
+                "username": userName
+            }, function (e, docs) {
+                if (docs != null) {
+                    res.render('users', {
+                        userName: userName,
+                        fullname: docs['fullname'],
+                        location: docs['location'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        aboutme: docs['aboutme']
+                    });
+                }
+                else {
+                    res.render('users', {
+                        userName: userName,
+                        fullname: 'This user has not specified yet',
+                        location: 'This user has not specified yet',
+                        age: 'This user has not specified yet',
+                        gender: 'This user has not specified yet',
+                        aboutme: 'This user has not specified yet'
+                    });
+                }
+            });
         });
         //comic number
         router.get('/comic/*', function (req, res) {

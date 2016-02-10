@@ -6,7 +6,7 @@ class ComicImage{
     id : number;
     order : number;
     author: Account;
-    image : Image;
+    //image : Image;
 
     constructor (id, order, author, image){
         this.id = id;
@@ -20,7 +20,7 @@ class ComicImage{
     getComicAuthor() {return this.author;}
     setComicAuthor(author : Account) {this.author = author;}
     getComicImage() {return this.image;}
-    setComicImage(image : Image) {this.image = image;}
+    //setComicImage(image : Image) {this.image = image;}
 
 
 

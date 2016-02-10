@@ -3,6 +3,7 @@
  */
 ///<reference path='../db_objects/account.ts'/>
 var ComicImage = (function () {
+    //image : Image;
     function ComicImage(id, order, author, image) {
         this.id = id;
         this.order = order;
@@ -15,7 +16,6 @@ var ComicImage = (function () {
     ComicImage.prototype.getComicAuthor = function () { return this.author; };
     ComicImage.prototype.setComicAuthor = function (author) { this.author = author; };
     ComicImage.prototype.getComicImage = function () { return this.image; };
-    ComicImage.prototype.setComicImage = function (image) { this.image = image; };
     return ComicImage;
 })();
 //# sourceMappingURL=comicImage.js.map

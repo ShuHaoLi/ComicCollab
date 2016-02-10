@@ -1,15 +1,36 @@
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
+///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password) {
+    function User(username, password, fullname, gender, age, aboutme, location) {
         this.username = username;
         this.password = password;
+        this.fullname = fullname;
+        this.gender = gender;
+        this.age = age;
+        this.aboutme = aboutme;
+        this.location = location;
     }
     User.prototype.getUsername = function () {
         return this.username;
     };
     User.prototype.getPassword = function () {
         return this.password;
+    };
+    User.prototype.getFullName = function () {
+        return this.fullname;
+    };
+    User.prototype.getGender = function () {
+        return this.gender;
+    };
+    User.prototype.getAboutMe = function () {
+        return this.aboutme;
+    };
+    User.prototype.getLocation = function () {
+        return this.location;
+    };
+    User.prototype.getAge = function () {
+        return this.age;
     };
     return User;
 })();
@@ -22,7 +43,7 @@ var Router = (function () {
         var fs = require('fs');
         /* GET home page. */
         router.get('/home', function (req, res) {
-            res.render('home');
+            res.render('home', { cur: req.currentUser });
         });
         /* GET login page. */
         router.get('/login', function (req, res) {
@@ -51,6 +72,26 @@ var Router = (function () {
                     res.render('login', { loginError: 'Login failed, invalid credentials' });
                 }
             });
+            if (password.length < 4 || password.length > 20) {
+                res.render('login', { loginError: 'Password needs to be between 4 - 20 characters. Please try again!' });
+            }
+            else {
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase(),
+                    "password": password
+                }, function (err, docs) {
+                    if (docs != null) {
+                        var currentUser = req.currentUser;
+                        currentUser.setUsername(username);
+                        currentUser.setIsLoggedIn(true);
+                        res.redirect('home');
+                    }
+                    else {
+                        res.render('login', { loginError: 'Login failed, invalid credentials' });
+                    }
+                });
+            }
         });
         router.get('/comic/*', function (req, res) {
             var comicNumber = req.params['0'];
@@ -60,6 +101,18 @@ var Router = (function () {
         router.get('/createprofile', function (req, res) {
             res.render('createprofile');
         });
+        /* GET logout */
+        router.get('/logout', function (req, res) {
+            var currentUser = req.currentUser;
+            if (!currentUser.isLoggedIn) {
+                res.redirect('/home');
+            }
+            else {
+                currentUser.setIsLoggedIn(false);
+                currentUser.setUsername("");
+                res.redirect('/home');
+            }
+        });
         /* POST to UserList Page */
         router.post('/createprofile', function (req, res) {
             // Set our internal DB variable
@@ -68,11 +121,14 @@ var Router = (function () {
             var userName = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
-            if (!password == confirmPassword) {
-                res.send("Passwords do not match");
+            if (password.length < 4 || password.length > 20) {
+                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+            }
+            else if (password != confirmPassword) {
+                res.send("passwords do not match");
             }
             else {
-                var user = new User(req.body.username, req.body.password);
+                var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -88,6 +144,34 @@ var Router = (function () {
                         // And forward to home page
                         res.redirect("main");
                     }
+                    collection.findOne({
+                        "username": userName.toLowerCase()
+                    }, function (err, docs) {
+                        if (docs != null) {
+                            res.send("Username has already exist. Please enter a new username");
+                        }
+                        else {
+                            // Submit to the DB
+                            collection.insert({
+                                "username": user.getUsername(),
+                                "password": user.getPassword(),
+                                "fullname": "",
+                                "age": "",
+                                "gender": "",
+                                "location": "",
+                                "aboutme": ""
+                            }, function (err, doc) {
+                                if (err) {
+                                    // If it failed, return error
+                                    res.send("There was a problem adding the information to the database.");
+                                }
+                                else {
+                                    // And forward to home page
+                                    res.redirect("home");
+                                }
+                            });
+                        }
+                    });
                 });
             }
         });
@@ -95,7 +179,6 @@ var Router = (function () {
         router.get('/uploadcomics/*', function (req, res) {
             res.render('uploadcomics', { cur: req.currentUser });
         });
-        var comicnum = 1;
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function (req, res) {
             var comicId = req.params[0];
@@ -108,7 +191,7 @@ var Router = (function () {
                 if (docs.length != 0) {
                     var curMost = 0;
                     /* for each image associated with that comic, find the last image (aka image with
-                       the highest sequence number) */
+                     the highest sequence number) */
                     for (var i = 0; i < docs.length; i++) {
                         var seq = parseInt(docs[i]['sequence']);
                         if (seq > curMost) {
@@ -121,7 +204,7 @@ var Router = (function () {
                     sequence = 0;
                 }
                 /* insert the comic image (with its associated details) in the last
-                   sequence (or initial sequence) */
+                 sequence (or initial sequence) */
                 for (var i = 0; i < req.files.length; i++) {
                     var nextSequence = sequence + 1;
                     collection.insert({
@@ -135,6 +218,119 @@ var Router = (function () {
             });
             /* redirect to new page */
             res.redirect("../../comic/" + comicId);
+        });
+        router.get('/', function (req, res) {
+            res.render('index');
+        });
+        /* GET Users page. */
+        router.get('/users', function (req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            collection.find({}, {}, function (e, docs) {
+                res.render('users', {
+                    "users": docs
+                });
+            });
+        });
+        /* GET myprofile page. */
+        router.get('/myprofile', function (req, res) {
+            var db = req.db;
+            var currentUser = req.currentUser;
+            var current = currentUser.getUsername();
+            var collection = db.get('usercollection');
+            collection.findOne({
+                "username": current
+            }, function (e, docs) {
+                if (docs != null) {
+                    res.render('myprofile', {
+                        cur: currentUser,
+                        fullname: docs['fullname'],
+                        location: docs['location'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        aboutme: docs['aboutme']
+                    });
+                }
+                else {
+                    res.render('myprofile', {
+                        cur: currentUser,
+                        fullname: '',
+                        location: '',
+                        age: '',
+                        gender: '',
+                        aboutme: ''
+                    });
+                }
+            });
+        });
+        //Get profile pages
+        router.get('/users/*', function (req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            // var _usernames: Array<String> = collection.runCommand(
+            //     {
+            //         find: "username"
+            //     }
+            // );
+            var userName = req.params['0'];
+            res.render('users', { userName: userName });
+            // collection.find({}, {}, function(e, docs) {
+            //     res.render('users', {
+            //         "users": user.getUsername()
+            //     });
+            // });
+        });
+        //comic number
+        router.get('/comic/*', function (req, res) {
+            var comicNumber = req.params['0'];
+            res.render('comic', { comicNumber: comicNumber.toString() });
+        });
+        /* GET editprofile page. */
+        router.get('/editprofile', function (req, res) {
+            res.render('editprofile', { title: 'Edit Profile' });
+        });
+        /* POST for editprofile page */
+        router.post('/editprofile', function (req, res) {
+            var currentUser = req.currentUser;
+            if (currentUser.getIsLoggedIn() != true) {
+                res.send("You must be logged in");
+            }
+            else {
+                // Set our internal DB variable
+                var db = req.db;
+                //get form values
+                var fullname = req.body.fullname;
+                var age = req.body.age;
+                var location = req.body.location;
+                var gender = req.body.gender;
+                var aboutme = req.body.aboutme;
+                // Set our collection
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": currentUser.getUsername()
+                }, function (e, docs) {
+                    var password = docs['password'];
+                    var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location);
+                    collection.update({ username: currentUser.getUsername() }, {
+                        "username": user.getUsername(),
+                        "password": user.getPassword(),
+                        "fullname": user.getFullName(),
+                        "gender": user.getGender(),
+                        "age": user.getAge(),
+                        "aboutme": user.getAboutMe(),
+                        "location": user.getLocation()
+                    }, function (err, doc) {
+                        if (err) {
+                            // If it failed, return error
+                            res.send("There was a problem adding the information to the database.");
+                        }
+                        else {
+                            // And forward back to my profile page
+                            res.redirect("myprofile");
+                        }
+                    });
+                });
+            }
         });
         router.get('/', function (req, res) {
             res.render('index');

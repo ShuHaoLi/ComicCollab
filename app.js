@@ -1,5 +1,6 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/>
+//import session = BrowserStorage.session;
 'use strict';
 var LoggedInUser = (function () {
     function LoggedInUser(username, isLoggedIn) {
@@ -35,7 +36,6 @@ var Application = (function () {
         var users = require('./routes/users');
         var multer = require('multer');
         var app = express();
-        var maxSize = 1024 * 1024;
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');

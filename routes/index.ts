@@ -323,14 +323,6 @@ class Router {
             });
         });
 
-
-        //comic number
-        router.get('/comic/*', function (req, res) {
-            var comicNumber = req.params['0'];
-            res.render('comic', {comicNumber: comicNumber.toString()});
-        });
-
-
         /* GET editprofile page. */
         router.get('/editprofile', function (req, res) {
             res.render('editprofile', {title: 'Edit Profile'});

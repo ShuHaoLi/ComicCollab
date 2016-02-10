@@ -56,8 +56,8 @@ var Router = (function () {
                         comicIds.push("../comic/" + docs[i]['comicId']);
                     }
                 }
-                console.log(urls);
-                console.log(comicIds);
+                //console.log(urls);
+                //console.log(comicIds);
                 res.render('home', { cur: req.currentUser, urls: urls, comicIds: comicIds });
             });
         });

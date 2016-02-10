@@ -107,7 +107,7 @@ class Router {
                         var currentUser = req.currentUser;
                         currentUser.setUsername(username);
                         currentUser.setIsLoggedIn(true);
-                        res.redirect('home');
+                        res.redirect('../home');
                     } else {
                         res.render('login', {loginError: 'Login failed, invalid credentials'});
                     }
@@ -229,44 +229,72 @@ class Router {
         router.post('/uploadcomics/*', function (req, res) {
 
             var comicId:String = req.params[0];
+
             var db = req.db;
             var collection = db.get('comicimages');
 
-            /* look for comic in the database */
-            collection.find({"comicId": comicId}, function (err, docs) {
-                var sequence:number;
-                /* if the comic already exists in the database, we want to add the new image to the end */
-                if (docs.length != 0) {
-                    var curMost:number = 0;
-                    /* for each image associated with that comic, find the last image (aka image with
-                     the highest sequence number) */
+            if (comicId == "") {
+                collection.find({"sequence": "1"}, function (err, docs) {
+                    var largestId:number = 0;
                     for (var i = 0; i < docs.length; i++) {
-                        var seq = parseInt(docs[i]['sequence']);
-                        if (seq > curMost) {
-                            curMost = seq;
+                        var curId = parseInt(docs[i]['comicId']);
+                        if (curId > largestId) {
+                            largestId = curId;
                         }
                     }
-                    sequence = curMost;
-                    /* if the comic doesn't exist in the database, set its seq to 0 */
-                } else {
-                    sequence = 0;
-                }
+                    largestId++;
+                    for (var i = 0; i < req.files.length; i++) {
+                        collection.insert({
+                            "comicId": largestId.toString(),
+                            "creator": req.currentUser.getUsername(),
+                            "url": "/images/" + req.files[i].filename,
+                            "sequence": "1"
+                        });
+                        largestId++;
+                    }
+                    /* redirect to new page */
+                    res.redirect("../../comic/" + (largestId-1).toString());
 
-                /* insert the comic image (with its associated details) in the last
-                 sequence (or initial sequence) */
-                for (var i = 0; i < req.files.length; i++) {
-                    var nextSequence:number = sequence + 1;
-                    collection.insert({
-                        "comicId": comicId,
-                        "creator": req.currentUser.getUsername(),
-                        "url": "/images/" + req.files[i].filename,
-                        "sequence": nextSequence.toString()
-                    });
-                    sequence = nextSequence;
-                }
-                /* redirect to new page */
-                res.redirect("../../comic/" + comicId);
-            });
+                })
+            } else {
+                /* look for comic in the database */
+                collection.find({"comicId": comicId}, function (err, docs) {
+                    var sequence:number;
+                    /* if the comic already exists in the database, we want to add the new image to the end */
+                    if (docs.length != 0) {
+                        var curMost:number = 0;
+                        /* for each image associated with that comic, find the last image (aka image with
+                         the highest sequence number) */
+                        for (var i = 0; i < docs.length; i++) {
+                            var seq = parseInt(docs[i]['sequence']);
+                            if (seq > curMost) {
+                                curMost = seq;
+                            }
+                        }
+                        sequence = curMost;
+                        /* if the comic doesn't exist in the database, set its seq to 0 */
+                    } else {
+                        sequence = 0;
+                    }
+
+                    /* insert the comic image (with its associated details) in the last
+                     sequence (or initial sequence) */
+                    for (var i = 0; i < req.files.length; i++) {
+                        var nextSequence:number = sequence + 1;
+
+
+                        collection.insert({
+                            "comicId": comicId,
+                            "creator": req.currentUser.getUsername(),
+                            "url": "/images/" + req.files[i].filename,
+                            "sequence": nextSequence.toString()
+                        });
+                        sequence = nextSequence;
+                    }
+                    /* redirect to new page */
+                    res.redirect("../../comic/" + comicId);
+                });
+            }
         });
 
         router.get('/', function (req, res) {

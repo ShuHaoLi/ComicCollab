@@ -38,7 +38,7 @@ var Application = (function () {
         var mongoose = require('mongoose');
         var http = require('http');
         var app = express();
-        mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://user:pass@ds060968.mongolab.com:60968/wecode_db');
+        mongoose.connect(process.env.MONGOLAB_URI || 'user:pass@ds060968.mongolab.com:60968/wecode_db');
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');

@@ -64,6 +64,11 @@ class Router{
         router.get('/home', function(req, res) {
             res.render('home');
         });
+        
+        /* GET home page. */
+        router.get('/', function(req, res) {
+            res.render('home');
+        });
 
         /* GET login page. */
         router.get('/login', function(req, res) {

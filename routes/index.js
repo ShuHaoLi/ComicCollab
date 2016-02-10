@@ -86,8 +86,22 @@ var Router = (function () {
             });
         });
         router.get('/comic/*', function (req, res) {
-            var comicNumber = req.params['0'];
-            res.render('comic', { comicNumber: comicNumber.toString() });
+            var comicId = req.params['0'];
+            var db = req.db;
+            var collection = db.get('comicimages');
+            collection.find({
+                "comicId": comicId
+            }, function (err, docs) {
+                var images = [];
+                if (docs.length != 0) {
+                    for (var i = 0; i < docs.length; i++) {
+                        images.push(docs[i]['url']);
+                    }
+                }
+                res.render('comic', {
+                    comicNumber: comicId.toString(),
+                    images: images });
+            });
         });
         /* GET Create Profile page. */
         router.get('/createprofile', function (req, res) {
@@ -153,13 +167,13 @@ var Router = (function () {
                     collection.insert({
                         "comicId": comicId,
                         "creator": req.currentUser.getUsername(),
-                        "url": "../public/images/" + req.files[i].filename,
+                        "url": "/images/" + req.files[i].filename,
                         "sequence": nextSequence.toString()
                     });
                     sequence = nextSequence;
                 }
+                res.redirect("../../comic/" + comicId);
             });
-            res.redirect("../../comic/" + comicId);
         });
         router.get('/', function (req, res) {
             res.render('index');

@@ -100,7 +100,7 @@ var Router = (function () {
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
             if (password.length < 4 || password.length > 10) {
-                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+                res.send("Password needs to be between 4 - 10 characters. Please try again!");
             }
             else if (password != confirmPassword) {
                 res.send("passwords do not match");
@@ -276,3 +276,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

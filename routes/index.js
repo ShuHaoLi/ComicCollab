@@ -18,6 +18,8 @@ var Router = (function () {
         var express = require('express');
         var router = express.Router();
         var multer = require('multer');
+        var path = require('path');
+        var fs = require('fs');
         /* GET home page. */
         router.get('/home', function (req, res) {
             res.render('home');
@@ -93,15 +95,20 @@ var Router = (function () {
         router.get('/uploadcomics/*', function (req, res) {
             res.render('uploadcomics', { cur: req.currentUser });
         });
+        var comicnum = 1;
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function (req, res) {
             var comicId = req.params[0];
             var db = req.db;
             var collection = db.get('comicimages');
+            /* look for comic in the database */
             collection.find({ "comicId": comicId }, function (err, docs) {
                 var sequence;
+                /* if the comic already exists in the database, we want to add the new image to the end */
                 if (docs.length != 0) {
                     var curMost = 0;
+                    /* for each image associated with that comic, find the last image (aka image with
+                       the highest sequence number) */
                     for (var i = 0; i < docs.length; i++) {
                         var seq = parseInt(docs[i]['sequence']);
                         if (seq > curMost) {
@@ -113,17 +120,20 @@ var Router = (function () {
                 else {
                     sequence = 0;
                 }
+                /* insert the comic image (with its associated details) in the last
+                   sequence (or initial sequence) */
                 for (var i = 0; i < req.files.length; i++) {
                     var nextSequence = sequence + 1;
                     collection.insert({
                         "comicId": comicId,
                         "creator": req.currentUser.getUsername(),
-                        "url": "../public/images/" + req.files[i].filename,
+                        "url": "/images/" + req.files[i].filename,
                         "sequence": nextSequence.toString()
                     });
                     sequence = nextSequence;
                 }
             });
+            /* redirect to new page */
             res.redirect("../../comic/" + comicId);
         });
         router.get('/', function (req, res) {

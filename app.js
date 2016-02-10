@@ -50,20 +50,7 @@ var Application = (function () {
         // THIS IS THE MULTER CODE (DO NOT TOUCH)
         app.use(multer({
             dest: './public/images',
-            limits: { fileSize: 1024 * 1024 },
-            rename: function (fieldname, filename) {
-                return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
-            },
-            onFileUploadStart: function (file, req, res) {
-                if (req.files.file.length > maxSize) {
-                    res.send("TOO BIG OF A FILE");
-                    return false;
-                }
-                if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png') {
-                    res.send("WRONG FORMAT");
-                    return false;
-                }
-            }
+            limits: { fileSize: 1024 * 1024 }
         }).array("file"));
         // Make our db accessible to our router
         app.use(function (req, res, next) {

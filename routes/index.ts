@@ -25,6 +25,8 @@ class Router{
         var express = require('express');
         var router = express.Router();
         var multer = require('multer');
+        var path = require('path');
+        var fs = require('fs');
 
         /* GET home page. */
         router.get('/home', function(req, res) {
@@ -117,17 +119,22 @@ class Router{
             res.render('uploadcomics', {cur: req.currentUser});
         });
 
+        var comicnum = 1;
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function(req, res) {
-            var comicId : String = req.params[0];
 
+            var comicId : String = req.params[0];
             var db = req.db;
             var collection = db.get('comicimages');
 
+            /* look for comic in the database */
             collection.find({"comicId": comicId}, function(err, docs) {
                 var sequence : number;
+                /* if the comic already exists in the database, we want to add the new image to the end */
                 if (docs.length != 0) {
                     var curMost : number = 0;
+                    /* for each image associated with that comic, find the last image (aka image with
+                       the highest sequence number) */
                     for (var i = 0; i < docs.length; i++) {
                         var seq = parseInt(docs[i]['sequence']);
                         if (seq > curMost) {
@@ -135,20 +142,24 @@ class Router{
                         }
                     }
                     sequence = curMost;
+                /* if the comic doesn't exist in the database, set its seq to 0 */
                 } else {
                     sequence = 0;
                 }
+                /* insert the comic image (with its associated details) in the last
+                   sequence (or initial sequence) */
                 for (var i = 0; i < req.files.length; i++ ) {
                     var nextSequence : number = sequence + 1;
                     collection.insert({
                         "comicId": comicId,
                         "creator": req.currentUser.getUsername(),
-                        "url": "../public/images/" + req.files[i].filename,
+                        "url": "/images/" + req.files[i].filename,
                         "sequence": nextSequence.toString()
                     });
                     sequence = nextSequence;
                 }
             });
+            /* redirect to new page */
             res.redirect("../../comic/" + comicId);
         });
 

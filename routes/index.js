@@ -33,7 +33,7 @@ var User = (function () {
         return this.age;
     };
     return User;
-})();
+}());
 var Router = (function () {
     function Router() {
         var express = require('express');
@@ -367,6 +367,5 @@ var Router = (function () {
         module.exports = router;
     }
     return Router;
-})();
+}());
 var router = new Router();
-//# sourceMappingURL=index.js.map

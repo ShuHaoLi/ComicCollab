@@ -81,6 +81,30 @@ class Router {
                 );
             });
         });
+        /* GET home page. */
+        router.get('/home', function (req, res) {
+            var db = req.db;
+            var collection = db.get('comicimages');
+            var username = req.body.text;
+            collection.findOne({
+                "username" : username
+            },function(err, docs) {
+                if (docs != null) {
+                    res.render('home', {
+                        userName: username,
+                        fullname: docs['fullname'],
+                        location: docs['location'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        aboutme: docs['aboutme']
+                    });
+                } else {
+                    res.render('home', {
+                       "The username does not exists": String
+                    });
+                }
+            });
+        });
         
         /* GET home page. */
         router.get('/', function (req, res) {

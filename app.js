@@ -20,7 +20,7 @@ var LoggedInUser = (function () {
         this.isLoggedIn = isLoggedIn;
     };
     return LoggedInUser;
-}());
+})();
 var Application = (function () {
     function Application() {
         var express = require('express');
@@ -96,7 +96,7 @@ var Application = (function () {
         module.exports = app;
     }
     return Application;
-}());
+})();
 var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map

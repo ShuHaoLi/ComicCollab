@@ -17,4 +17,4 @@ var Account = (function () {
         this.password = password;
     };
     return Account;
-}());
+})();

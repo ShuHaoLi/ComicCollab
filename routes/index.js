@@ -51,18 +51,28 @@ var Router = (function () {
                 if (err) {
                     res.send(err);
                 }
-                else if (docs.length > 0) {
-                    for (var i = 0; i < docs.length; i++) {
-                        comicIds.push("../comic/" + docs[i]['comicId']);
-                        for (var j = 0; j < docs[i]['images'].length; j++) {
-                            if (docs[i]['images'][j]['sequence'] == "1") {
-                                urls.push(docs[i]['images'][j]['url']);
-                                break;
-                            }
+                else if (docs != null) {
+                    var imagesCollection = db.get('comicimages');
+                    imagesCollection.find({
+                        "sequence": 1
+                    }, function (imagesErr, imagesDocs) {
+                        if (imagesErr) {
+                            res.send(imagesErr);
                         }
-                    }
+                        else if (imagesDocs != null) {
+                            for (var i = 0; i < docs.length; i++) {
+                                var curComicId = docs[i]['comicId'];
+                                comicIds.push("../comic/" + curComicId);
+                                for (var j = 0; j < imagesDocs.length; j++) {
+                                    if (imagesDocs[j]['comicId'] == curComicId) {
+                                        urls.push(imagesDocs[j]['url']);
+                                    }
+                                }
+                            }
+                            res.render('home', { cur: req.currentUser, urls: urls, comicIds: comicIds });
+                        }
+                    });
                 }
-                res.render('home', { cur: req.currentUser, urls: urls, comicIds: comicIds });
             });
         });
         /* GET home page. */
@@ -105,19 +115,20 @@ var Router = (function () {
         router.get('/comic/*', function (req, res) {
             var comicId = req.params['0'];
             var db = req.db;
-            var collection = db.get('comicimages');
-            collection.find({
+            var collection = db.get('comics');
+            collection.findOne({
                 "comicId": comicId
             }, function (err, docs) {
-                var images = [];
-                if (docs.length != 0) {
-                    for (var i = 0; i < docs.length; i++) {
-                        images.push(docs[i]['url']);
+                var urls = [];
+                if (docs != null) {
+                    for (var i = 0; i < docs['images'].length; i++) {
+                        urls.push(docs['images'][i]['url']);
                     }
                 }
                 res.render('comic', {
-                    comicNumber: comicId.toString(),
-                    images: images });
+                    comicId: comicId.toString(),
+                    urls: urls
+                });
             });
         });
         /* GET Create Profile page. */
@@ -364,9 +375,6 @@ var Router = (function () {
                     });
                 });
             }
-        });
-        router.get('/', function (req, res) {
-            res.render('index');
         });
         module.exports = router;
     }

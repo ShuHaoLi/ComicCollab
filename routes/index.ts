@@ -11,15 +11,16 @@ interface UserInterface {
     getAboutMe() : String;
 }
 class User implements UserInterface {
-    private username: String;
-    private password: String;
-    private fullname: String;
-    private gender: String;
-    private age: String;
-    private aboutme: String;
-    private location: String;
-    constructor(username: String, password: String, fullname: String,
-                gender: String, age: String, aboutme: String, location: String) {
+    private username:String;
+    private password:String;
+    private fullname:String;
+    private gender:String;
+    private age:String;
+    private aboutme:String;
+    private location:String;
+
+    constructor(username:String, password:String, fullname:String,
+                gender:String, age:String, aboutme:String, location:String) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -28,25 +29,32 @@ class User implements UserInterface {
         this.aboutme = aboutme;
         this.location = location;
     }
-    getUsername(){
+
+    getUsername() {
         return this.username;
     }
-    getPassword(){
+
+    getPassword() {
         return this.password;
     }
-    getFullName(){
+
+    getFullName() {
         return this.fullname;
     }
-    getGender(){
+
+    getGender() {
         return this.gender;
     }
-    getAboutMe(){
+
+    getAboutMe() {
         return this.aboutme;
     }
-    getLocation(){
+
+    getLocation() {
         return this.location;
     }
-    getAge(){
+
+    getAge() {
         return this.age;
     }
 }
@@ -68,23 +76,32 @@ class Router {
             collection.find({}, function (err, docs) {
                 if (err) {
                     res.send(err);
-                } else if (docs.length > 0) {
-                    for (var i = 0; i < docs.length; i++) {
-                        comicIds.push("../comic/" + docs[i]['comicId']);
-                        for (var j = 0; j < docs[i]['images'].length; j++) {
-                            if (docs[i]['images'][j]['sequence'] == "1") {
-                                urls.push(docs[i]['images'][j]['url']);
-                                break;
+                } else if (docs != null) {
+                    var imagesCollection = db.get('comicimages');
+                    imagesCollection.find({
+                        "sequence": 1
+                    }, function (imagesErr, imagesDocs) {
+                        if (imagesErr) {
+                            res.send(imagesErr);
+                        } else if (imagesDocs != null) {
+                            for (var i = 0; i < docs.length; i++) {
+                                var curComicId = docs[i]['comicId'];
+                                comicIds.push("../comic/" + curComicId);
+                                for (var j = 0; j < imagesDocs.length; j++) {
+                                    if (imagesDocs[j]['comicId'] == curComicId) {
+                                        urls.push(imagesDocs[j]['url']);
+                                    }
+                                }
                             }
+                            res.render('home',
+                                {cur: req.currentUser, urls: urls, comicIds: comicIds}
+                            );
                         }
-                    }
+                    });
                 }
-                res.render('home',
-                    {cur: req.currentUser, urls: urls, comicIds: comicIds}
-                );
             });
         });
-        
+
         /* GET home page. */
         router.get('/', function (req, res) {
             res.render('home',
@@ -125,22 +142,23 @@ class Router {
             }
         });
 
-        router.get('/comic/*', function(req, res) {
-            var comicId : String = req.params['0'];
+        router.get('/comic/*', function (req, res) {
+            var comicId:String = req.params['0'];
             var db = req.db;
-            var collection = db.get('comicimages');
-            collection.find({
-                "comicId": comicId
-            }, function(err, docs) {
-                var images = [];
-                if (docs.length != 0) {
-                    for (var i=0; i<docs.length; i++) {
-                        images.push(docs[i]['url']);
+            var collection = db.get('comics');
+            collection.findOne({
+                "comicId": comicId,
+            }, function (err, docs) {
+                var urls = [];
+                if (docs != null) {
+                    for (var i = 0; i < docs['images'].length; i++) {
+                        urls.push(docs['images'][i]['url']);
                     }
                 }
                 res.render('comic', {
-                    comicNumber: comicId.toString(),
-                    images: images});
+                    comicId: comicId.toString(),
+                    urls: urls
+                });
             });
         });
 
@@ -250,7 +268,7 @@ class Router {
                         largestId++;
                     }
                     /* redirect to new page */
-                    res.redirect("../../comic/" + (largestId-1).toString());
+                    res.redirect("../../comic/" + (largestId - 1).toString());
 
                 })
             } else {
@@ -336,8 +354,8 @@ class Router {
             var collection = db.get('usercollection');
             var userName = req.params['0'];
             collection.findOne({
-                "username" : userName
-            },function(e, docs) {
+                "username": userName
+            }, function (e, docs) {
                 if (docs != null) {
                     res.render('users', {
                         userName: userName,
@@ -417,9 +435,6 @@ class Router {
                     );
                 });
             }
-        });
-        router.get('/', function (req, res) {
-            res.render('index');
         });
 
         module.exports = router;

@@ -113,22 +113,39 @@ var Router = (function () {
             }
         });
         router.get('/comic/*', function (req, res) {
-            var comicId = req.params['0'];
+            var comicId = parseInt(req.params['0']);
             var db = req.db;
             var collection = db.get('comics');
             collection.findOne({
                 "comicId": comicId
             }, function (err, docs) {
-                var urls = [];
-                if (docs != null) {
-                    for (var i = 0; i < docs['images'].length; i++) {
-                        urls.push(docs['images'][i]['url']);
-                    }
+                if (err) {
+                    res.send(err);
                 }
-                res.render('comic', {
-                    comicId: comicId.toString(),
-                    urls: urls
-                });
+                else if (docs != null) {
+                    console.log(docs);
+                    var creator = docs['creator'];
+                    var imagesCollection = db.get('comicimages');
+                    imagesCollection.find({
+                        "comicId": comicId
+                    }, function (imagesErr, imagesDocs) {
+                        console.log(imagesDocs);
+                        if (imagesErr) {
+                            res.send(imagesErr);
+                        }
+                        else if (imagesDocs != null) {
+                            var urls = [];
+                            for (var i = 0; i < imagesDocs.length; i++) {
+                                urls.push(imagesDocs[i]['url']);
+                            }
+                            console.log(urls);
+                            res.render('comic', {
+                                comicId: comicId.toString(),
+                                urls: urls
+                            });
+                        }
+                    });
+                }
             });
         });
         /* GET Create Profile page. */
@@ -202,67 +219,61 @@ var Router = (function () {
         });
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function (req, res) {
-            var comicId = req.params[0];
+            var comicId = parseInt(req.params[0]) || 0;
             var db = req.db;
-            var collection = db.get('comicimages');
-            if (comicId == "") {
-                collection.find({ "sequence": "1" }, function (err, docs) {
-                    var largestId = 0;
-                    for (var i = 0; i < docs.length; i++) {
-                        var curId = parseInt(docs[i]['comicId']);
-                        if (curId > largestId) {
-                            largestId = curId;
+            if (comicId == 0) {
+                var collection = db.get('comics');
+                collection.findOne({}, { sort: { "comicId": -1 } }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        var largestId;
+                        if (docs != null) {
+                            largestId = docs['comicId'];
                         }
+                        else {
+                            largestId = 0;
+                        }
+                        var imagesCollection = db.get('comicimages');
+                        for (var i = 0; i < req.files.length; i++) {
+                            largestId++;
+                            collection.insert({
+                                "comicId": largestId,
+                                "creator": req.currentUser.getUsername()
+                            });
+                            imagesCollection.insert({
+                                "comicId": largestId,
+                                "uploader": req.currentUser.getUsername(),
+                                "url": "/images/" + req.files[i].filename,
+                                "sequence": 1
+                            });
+                        }
+                        res.redirect("../../comic/" + largestId.toString());
                     }
-                    largestId++;
-                    for (var i = 0; i < req.files.length; i++) {
-                        collection.insert({
-                            "comicId": largestId.toString(),
-                            "creator": req.currentUser.getUsername(),
-                            "url": "/images/" + req.files[i].filename,
-                            "sequence": "1"
-                        });
-                        largestId++;
-                    }
-                    /* redirect to new page */
-                    res.redirect("../../comic/" + (largestId - 1).toString());
                 });
             }
             else {
-                /* look for comic in the database */
-                collection.find({ "comicId": comicId }, function (err, docs) {
-                    var sequence;
-                    /* if the comic already exists in the database, we want to add the new image to the end */
-                    if (docs.length != 0) {
-                        var curMost = 0;
-                        /* for each image associated with that comic, find the last image (aka image with
-                         the highest sequence number) */
-                        for (var i = 0; i < docs.length; i++) {
-                            var seq = parseInt(docs[i]['sequence']);
-                            if (seq > curMost) {
-                                curMost = seq;
-                            }
-                        }
-                        sequence = curMost;
+                var imagesCollection = db.get('comicimages');
+                imagesCollection.findOne({
+                    "comicId": comicId
+                }, { sort: { "sequence": -1 } }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
                     }
                     else {
-                        sequence = 0;
+                        var largestSequence = docs['sequence'];
+                        for (var i = 0; i < req.files.length; i++) {
+                            imagesCollection.insert({
+                                "comicId": comicId,
+                                "uploader": req.currentUser.getUsername(),
+                                "url": "/images/" + req.files[i].filename,
+                                "sequence": largestSequence + 1
+                            });
+                        }
                     }
-                    /* insert the comic image (with its associated details) in the last
-                     sequence (or initial sequence) */
-                    for (var i = 0; i < req.files.length; i++) {
-                        var nextSequence = sequence + 1;
-                        collection.insert({
-                            "comicId": comicId,
-                            "creator": req.currentUser.getUsername(),
-                            "url": "/images/" + req.files[i].filename,
-                            "sequence": nextSequence.toString()
-                        });
-                        sequence = nextSequence;
-                    }
-                    /* redirect to new page */
-                    res.redirect("../../comic/" + comicId);
                 });
+                res.redirect("../../comic/" + comicId.toString());
             }
         });
         router.get('/', function (req, res) {

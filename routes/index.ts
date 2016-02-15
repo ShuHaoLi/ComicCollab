@@ -130,7 +130,9 @@ class Router {
                     "username": username.toLowerCase(),
                     "password": password
                 }, function (err, docs) {
-                    if (docs != null) {
+                    if (err) {
+                        res.send(err);
+                    } else if (docs != null) {
                         var currentUser = req.currentUser;
                         currentUser.setUsername(username);
                         currentUser.setIsLoggedIn(true);
@@ -152,13 +154,11 @@ class Router {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
-                    console.log(docs)
                     var creator = docs['creator'];
                     var imagesCollection = db.get('comicimages');
                     imagesCollection.find({
                         "comicId": comicId
                     }, function (imagesErr, imagesDocs) {
-                        console.log(imagesDocs)
                         if (imagesErr) {
                             res.send(imagesErr);
                         } else if (imagesDocs != null) {
@@ -166,7 +166,6 @@ class Router {
                             for (var i=0; i<imagesDocs.length; i++) {
                                 urls.push(imagesDocs[i]['url']);
                             }
-                            console.log(urls);
                             res.render('comic', {
                                 comicId: comicId.toString(),
                                 urls: urls
@@ -202,7 +201,7 @@ class Router {
             var db = req.db;
 
             // Get our form values. These rely on the "name" attributes
-            var userName = req.body.username;
+            var username = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
             if (password.length < 4 || password.length > 20) {
@@ -219,11 +218,12 @@ class Router {
                 var collection = db.get('usercollection');
                 // Submit to the DB
                 collection.findOne({
-                    "username": userName.toLowerCase()
+                    "username": username.toLowerCase()
                 }, function (err, docs) {
-                    if (docs != null) {
-                        res.send("Username has already exist. Please enter a new username");
-
+                    if (err) {
+                        res.send(err);
+                    } else if (docs != null) {
+                        res.send("Username already exists. Please enter a new username");
                     } else {
                         // Submit to the DB
                         collection.insert({
@@ -234,16 +234,15 @@ class Router {
                             "gender": "",
                             "location": "",
                             "aboutme": ""
-                        }, function (err, doc) {
+                        }, function (err) {
                             if (err) {
                                 // If it failed, return error
                                 res.send("There was a problem adding the information to the database.");
                             }
                             else {
-                                // And forward to home page
+                                // Forward to home page
                                 res.redirect("home");
                             }
-
                         });
                     }
                 });
@@ -257,7 +256,6 @@ class Router {
 
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function (req, res) {
-
             var comicId:number = parseInt(req.params[0]) || 0;
 
             var db = req.db;
@@ -315,10 +313,6 @@ class Router {
             }
         });
 
-        router.get('/', function (req, res) {
-            res.render('index');
-        });
-
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
@@ -327,8 +321,10 @@ class Router {
             var collection = db.get('usercollection');
             collection.findOne({
                 "username": current
-            }, function (e, docs) {
-                if (docs != null) {
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
                     res.render('myprofile', {
                         cur: currentUser,
                         fullname: docs['fullname'],
@@ -355,13 +351,15 @@ class Router {
         router.get('/users/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            var userName = req.params['0'];
+            var username = req.params['0'];
             collection.findOne({
-                "username": userName
-            }, function (e, docs) {
-                if (docs != null) {
+                "username": username
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
                     res.render('users', {
-                        userName: userName,
+                        userName: username,
                         fullname: docs['fullname'],
                         location: docs['location'],
                         age: docs['age'],
@@ -370,7 +368,7 @@ class Router {
                     });
                 } else {
                     res.render('users', {
-                        userName: userName,
+                        userName: username,
                         fullname: 'This user has not specified yet',
                         location: 'This user has not specified yet',
                         age: 'This user has not specified yet',
@@ -409,37 +407,40 @@ class Router {
 
                 collection.findOne({
                     "username": currentUser.getUsername()
-                }, function (e, docs) {
-                    var password:String = docs['password'];
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        var password:string = docs['password'];
 
-                    var user:User = new User(currentUser.getUsername(), password, fullname,
-                        gender, age, aboutme, location);
+                        var user:User = new User(currentUser.getUsername(), password, fullname,
+                            gender, age, aboutme, location);
 
-                    collection.update(
-                        {username: currentUser.getUsername()},
-                        {
-                            "username": user.getUsername(),
-                            "password": user.getPassword(),
-                            "fullname": user.getFullName(),
-                            "gender": user.getGender(),
-                            "age": user.getAge(),
-                            "aboutme": user.getAboutMe(),
-                            "location": user.getLocation()
-                        }, function (err, doc) {
-                            if (err) {
-                                // If it failed, return error
-                                res.send("There was a problem adding the information to the database.");
+                        collection.update(
+                            {username: currentUser.getUsername()},
+                            {
+                                "username": user.getUsername(),
+                                "password": user.getPassword(),
+                                "fullname": user.getFullName(),
+                                "gender": user.getGender(),
+                                "age": user.getAge(),
+                                "aboutme": user.getAboutMe(),
+                                "location": user.getLocation()
+                            }, function (err) {
+                                if (err) {
+                                    // If it failed, return error
+                                    res.send("There was a problem adding the information to the database.");
+                                }
+                                else {
+                                    // Forward back to my profile page
+                                    res.redirect("myprofile");
+                                }
                             }
-                            else {
-                                // And forward back to my profile page
-                                res.redirect("myprofile");
-                            }
-                        }
-                    );
+                        );
+                    }
                 });
             }
         });
-
         module.exports = router;
     }
 }

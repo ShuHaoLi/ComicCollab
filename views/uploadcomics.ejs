@@ -18,7 +18,11 @@
         <ul>
             <li>PNG, JPEG, or JPG</li>
         </ul>
-        <input placeholder="file" required="required" name="file" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg"><br><br>
+        <input placeholder="file" required="required" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg"><br />
+        <% if (newComic == 1) { %>
+        <p>Tags:</p>
+        <input placeholder="Add tags separated by commas" type="text" name="tags" id="tags" style="width:250px;"/><br /><br />
+        <% } %>
         <input type="submit" name="publish" value="Publish">
     </form>
 </div>

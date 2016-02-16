@@ -251,7 +251,16 @@ class Router {
 
         /* GET UPLOAD COMICS PAGE */
         router.get('/uploadcomics/*', function (req, res) {
-            res.render('uploadcomics', {cur: req.currentUser});
+            var comicId:number = parseInt(req.params[0]) || 0;
+            if (comicId == 0) {
+                var newComic:number = 1;
+            } else {
+                var newComic:number = 0;
+            }
+            res.render('uploadcomics', {
+                cur: req.currentUser,
+                newComic: newComic
+            });
         });
 
         /* POST TO UPLOAD COMICS PAGE */
@@ -261,6 +270,8 @@ class Router {
             var db = req.db;
 
             if (comicId == 0) {
+                var tagString:string = req.body['tags'];
+                var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
                 var collection = db.get('comics');
                 collection.findOne({}, {sort: {"comicId": -1}}, function (err, docs) {
                     if (err) {
@@ -277,7 +288,8 @@ class Router {
                             largestId++;
                             collection.insert({
                                 "comicId": largestId,
-                                "creator": req.currentUser.getUsername()
+                                "creator": req.currentUser.getUsername(),
+                                "tags": tags
                             });
                             imagesCollection.insert({
                                 "comicId": largestId,

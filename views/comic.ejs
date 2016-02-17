@@ -9,6 +9,11 @@
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
         <a href="../uploadcomics/<%=comicId%>">Edit</a>
+        <p>Tags:
+            <% for (var i=0; i<tags.length; i++) { %>
+            <%= tags[i]%>
+            <% } %>
+        </p>
     </div>
     <div style="min-width: 1250px">
     <% for (var i=0; i<urls.length; i++) { %>

@@ -163,12 +163,14 @@ class Router {
                             res.send(imagesErr);
                         } else if (imagesDocs != null) {
                             var urls = [];
-                            for (var i=0; i<imagesDocs.length; i++) {
+                            for (var i = 0; i < imagesDocs.length; i++) {
                                 urls.push(imagesDocs[i]['url']);
                             }
+                            var tags:string = docs['tags'];
                             res.render('comic', {
                                 comicId: comicId.toString(),
-                                urls: urls
+                                urls: urls,
+                                tags: tags
                             });
                         }
                     })

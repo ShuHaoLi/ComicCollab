@@ -139,9 +139,11 @@ var Router = (function () {
                             for (var i = 0; i < imagesDocs.length; i++) {
                                 urls.push(imagesDocs[i]['url']);
                             }
+                            var tags = docs['tags'];
                             res.render('comic', {
                                 comicId: comicId.toString(),
-                                urls: urls
+                                urls: urls,
+                                tags: tags
                             });
                         }
                     });

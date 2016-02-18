@@ -8,7 +8,8 @@
     </div>
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
-        <a href="../uploadcomics/<%=comicId%>">Edit</a>
+        <a href="../editcomic/<%=comicId%>">Edit comic</a><br />
+        <a href="../uploadcomics/<%=comicId%>">Upload new image</a><br />
         <p>Tags:
             <% for (var i=0; i<tags.length; i++) { %>
             <%= tags[i]%>

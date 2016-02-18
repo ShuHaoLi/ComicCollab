@@ -294,6 +294,64 @@ var Router = (function () {
                 res.redirect("../../comic/" + comicId.toString());
             }
         });
+        /* GET EDIT COMICS PAGE */
+        router.get('/editcomic/*', function (req, res) {
+            var comicId = parseInt(req.params[0]) || 0;
+            if (comicId == 0) {
+                res.render('editcomic', {
+                    cur: req.currentUser,
+                    comicId: comicId,
+                    tagsValue: ""
+                });
+            }
+            else {
+                var db = req.db;
+                var collection = db.get('comics');
+                collection.findOne({
+                    'comicId': comicId
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs != null) {
+                        var tags = docs['tags'];
+                        res.render('editcomic', {
+                            cur: req.currentUser,
+                            comicId: comicId,
+                            tagsValue: tags
+                        });
+                    }
+                });
+            }
+        });
+        /* POST TO UPLOAD COMICS PAGE */
+        router.post('/editcomic/*', function (req, res) {
+            var comicId = parseInt(req.params[0]) || 0;
+            var tagString = req.body['tags'];
+            var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
+            var db = req.db;
+            if (comicId == 0) {
+                res.send('Image does not exist');
+            }
+            else {
+                var collection = db.get('comics');
+                collection.findOne({
+                    "comicId": comicId
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        collection.update({ "comicId": comicId }, {
+                            "comicId": comicId,
+                            "creator": docs['creator'],
+                            "tags": tags
+                        });
+                    }
+                });
+            }
+            res.redirect("../../comic/" + comicId.toString());
+        });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
@@ -418,3 +476,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title></title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<% if (cur.getIsLoggedIn()) { %>
+<div class="container">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="../home">ComicCollab</a>
+    </div>
+    <div class="page-header" style="margin-top: 60px">
+        <h1>Edit Comic <%= comicId %></h1>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        <p>Tags:</p>
+        <input placeholder="Add tags separated by commas" value="<%=tagsValue%>" type="text" name="tags" id="tags" style="width:250px;"/><br /><br />
+        <input type="submit" name="publish" value="Publish">
+    </form>
+</div>
+<% } else { %>
+<div class="container">
+    <div>Please sign in to edit a comic.</div>
+</div>
+<% } %>
+</body>
+</html>

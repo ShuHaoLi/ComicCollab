@@ -408,14 +408,7 @@ var Router = (function () {
                     });
                 }
                 else {
-                    res.render('users', {
-                        userName: username,
-                        fullname: 'This user has not specified yet',
-                        location: 'This user has not specified yet',
-                        age: 'This user has not specified yet',
-                        gender: 'This user has not specified yet',
-                        aboutme: 'This user has not specified yet'
-                    });
+                    res.send("This user does not exist!");
                 }
             });
         });
@@ -476,4 +469,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

@@ -6,6 +6,23 @@
     <div class="navbar-header">
         <a class="navbar-brand" href="../home">ComicCollab</a>
     </div>
+    <!-- Functions to call for sharing -->
+    <script language="javascript">
+    function fbshareCurrentPage()
+    {window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function twittershareCurrentPage()
+    {window.open("http://twitter.com/share?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function googleshareCurrentPage()
+    {window.open("https://plus.google.com/share?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function redditshareCurrentPage()
+    {window.open("http://reddit.com/submit?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function linkedinshareCurrentPage()
+    {window.open("http://www.linkedin.com/shareArticle?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function tumblrshareCurrentPage()
+    {window.open("http://www.tumblr.com/share/link?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
+    function emailshareCurrentPage()
+    {window.open("mailto:?subject=Check Out This Comic&body=Here's this link: "+escape(window.location.href), '');return false; };
+    </script>
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
         <a href="../editcomic/<%=comicId%>">Edit comic</a><br />
@@ -15,6 +32,21 @@
             <%= tags[i]%>
             <% } %>
         </p>
+        <br>
+        <!-- Facebook (url) -->
+        <a href="javascript:fbshareCurrentPage()" target="_blank" alt="Share on Facebook"><img src="../color/Facebook.png"></a>
+        <!-- Twitter (url) -->
+        <a href="javascript:twittershareCurrentPage()" target="_blank" alt="Share on Twitter"><img src="../color/Twitter.png"></a>
+        <!-- Google Plus (url) -->
+        <a href="javascript:googleshareCurrentPage()" target="_blank" alt="Share on Google Plus"><img src="../color/Google+.png"></a>
+        <!-- Reddit (url) -->
+        <a href="javascript:redditshareCurrentPage()" target="_blank" alt="Share on Reddit"><img src="../color/Reddit.png"></a>
+        <!-- LinkedIn (url) -->
+        <a href="javascript:linkedinshareCurrentPage()" target="_blank" alt="Share on LinkedIN"><img src="../color/LinkedIn.png"></a>
+        <!-- Tumblr (url) -->
+        <a href="javascript:tumblrshareCurrentPage()" target="_blank" alt="Share on LinkedIN"><img src="../color/Tumblr.png"></a>
+        <!-- Email (subject, body) -->
+        <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img src="../color/Email.png"></a>
     </div>
     <div style="min-width: 1250px">
     <% for (var i=0; i<urls.length; i++) { %>

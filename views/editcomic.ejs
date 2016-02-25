@@ -10,25 +10,17 @@
         <a class="navbar-brand" href="../home">ComicCollab</a>
     </div>
     <div class="page-header" style="margin-top: 60px">
-        <h1>Upload a Comic</h1>
+        <h1>Edit Comic <%= comicId %></h1>
     </div>
     <form method="post" enctype="multipart/form-data">
-        <h3>Upload an Image:</h3>
-        <p>Image must be:</p>
-        <ul>
-            <li>PNG, JPEG, or JPG</li>
-        </ul>
-        <input placeholder="file" required="required" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg"><br />
-        <% if (newComic == 1) { %>
         <p>Tags:</p>
-        <input placeholder="Add tags separated by commas" type="text" name="tags" id="tags" style="width:250px;"/><br /><br />
-        <% } %>
+        <input placeholder="Add tags separated by commas" value="<%=tagsValue%>" type="text" name="tags" id="tags" style="width:250px;"/><br /><br />
         <input type="submit" name="publish" value="Publish">
     </form>
 </div>
 <% } else { %>
 <div class="container">
-    <div>Please sign in to upload a comic.</div>
+    <div>Please sign in to edit a comic.</div>
 </div>
 <% } %>
 </body>

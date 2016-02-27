@@ -104,8 +104,37 @@ class Router {
 
         /* GET home page. */
         router.get('/', function (req, res) {
-            res.render('home',
-                {cur: req.currentUser});
+            var db = req.db;
+            var collection = db.get('comics');
+            var comicIds = [];
+            var urls = [];
+            collection.find({}, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
+                    var imagesCollection = db.get('comicimages');
+                    imagesCollection.find({
+                        "sequence": 1
+                    }, function (imagesErr, imagesDocs) {
+                        if (imagesErr) {
+                            res.send(imagesErr);
+                        } else if (imagesDocs != null) {
+                            for (var i = 0; i < docs.length; i++) {
+                                var curComicId = docs[i]['comicId'];
+                                comicIds.push("../comic/" + curComicId);
+                                for (var j = 0; j < imagesDocs.length; j++) {
+                                    if (imagesDocs[j]['comicId'] == curComicId) {
+                                        urls.push(imagesDocs[j]['url']);
+                                    }
+                                }
+                            }
+                            res.render('home',
+                                {cur: req.currentUser, urls: urls, comicIds: comicIds}
+                            );
+                        }
+                    });
+                }
+            });
         });
 
         /* GET login page. */
@@ -144,6 +173,7 @@ class Router {
             }
         });
 
+        //Get Comic Page
         router.get('/comic/*', function (req, res) {
             var comicId:number = parseInt(req.params['0']);
             var db = req.db;
@@ -249,6 +279,17 @@ class Router {
                     }
                 });
             }
+        });
+        
+        /* GET Userlist page. */
+        router.get('/userlist', function(req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            collection.find({}, {}, function(e, docs) {
+                res.render('userlist', {
+                    "userlist": docs
+                });
+            });
         });
 
         /* GET UPLOAD COMICS PAGE */

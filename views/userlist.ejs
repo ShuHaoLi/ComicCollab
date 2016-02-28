@@ -12,11 +12,11 @@
         <div class="page-header" style="margin-top: 60px">
             <h1>Userlist</h1>
         </div>
-        <ul>
+        <ol>
             <% userlist.forEach(function(user) { %>
             <li><a href = "users/<%= user.username %>"><%= user.username %></a></li>
             <% }); %>
-        </ul>
+        </ol>
         <br>
         <br>
         <a href="../home">Back To Home Page</a>

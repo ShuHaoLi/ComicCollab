@@ -261,11 +261,13 @@ class Router {
                         collection.insert({
                             "username": user.getUsername(),
                             "password": user.getPassword(),
-                            "fullname": "",
-                            "age": "",
-                            "gender": "",
-                            "location": "",
-                            "aboutme": ""
+                            "fullname": "This user not filled out a bio",
+                            "age": "This user not filled out a bio",
+                            "gender": "This user not filled out a bio",
+                            "location": "This user not filled out a bio",
+                            "aboutme": "This user not filled out a bio",
+                            "fans": [],
+                            "following": []
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -398,7 +400,7 @@ class Router {
             }
         });
 
-        /* POST TO UPLOAD COMICS PAGE */
+        /* POST TO EDIT COMICS PAGE */
         router.post('/editcomic/*', function (req, res) {
             var comicId:number = parseInt(req.params[0]) || 0;
             var tagString:string = req.body['tags'];
@@ -460,7 +462,7 @@ class Router {
         });
 
 
-        //Get profile pages
+        /*Get profile pages*/
         router.get('/users/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
@@ -483,6 +485,48 @@ class Router {
                     res.send("This user does not exist!");
                 }
             });
+        });
+        
+        /*POST to profile pages - become a fan*/
+        router.post('/users/*', function (req, res) {
+            var currentUser = req.currentUser;
+            if (currentUser.getIsLoggedIn() != true) {
+                res.send("You must be logged in")
+            }else {
+                //db variable
+                var db = req.db;
+                //set our collection
+                var collection = db.get('usercollection');
+                //user to be followed
+                var following = req.params['0'];
+                //current user username to update followed person's fan list
+                var fan = currentUser.getUsername();
+                
+                collection.findOne({
+                    "username": fan
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        collection.update(
+                            {username: currentUser.getUsername()},
+                            { $addToSet: {"following": following } }
+                        );
+                    }
+                });
+                collection.findOne({
+                    "username": following
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        collection.update(
+                            {username: following},
+                            { $addToSet: {"fans": fan } }
+                        )
+                    }
+                })
+            }
         });
 
         /* GET editprofile page. */

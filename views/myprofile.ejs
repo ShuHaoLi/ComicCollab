@@ -13,10 +13,10 @@
         <a class="navbar-brand" href="home">ComicCollab</a>
     </div>
     <div class="page-header" style="margin-top: 60px">
-        <h1>My Profile</h1>
+        <h1><%=username%></h1>
     </div>
     <h4>Name</h4>
-    <p><%=fullname%></p>
+    <%=fullname%>
     <h4>Age</h4>
     <p><%=age%></p>
     <h4>Gender</h4>
@@ -25,6 +25,11 @@
     <p><%=location%></p>
     <h4>About Me</h4>
     <p><%=aboutme%></p>
+    <br>
+    <h4>My Fans</h4>
+    <p>- <%=fans%></p>
+    <h4>I'm Following</h4>
+    <p>- <%=following%></p>
     <br>
     <a href="editprofile">Edit Profile</a>
     <br>

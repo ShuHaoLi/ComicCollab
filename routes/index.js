@@ -414,7 +414,10 @@ var Router = (function () {
                         location: docs['location'],
                         age: docs['age'],
                         gender: docs['gender'],
-                        aboutme: docs['aboutme']
+                        aboutme: docs['aboutme'],
+                        username: current,
+                        fans: docs['fans'],
+                        following: docs['following']
                     });
                 }
                 else {
@@ -522,14 +525,15 @@ var Router = (function () {
                     else {
                         var password = docs['password'];
                         var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location);
-                        collection.update({ username: currentUser.getUsername() }, {
-                            "username": user.getUsername(),
-                            "password": user.getPassword(),
-                            "fullname": user.getFullName(),
-                            "gender": user.getGender(),
-                            "age": user.getAge(),
-                            "aboutme": user.getAboutMe(),
-                            "location": user.getLocation()
+                        collection.update({ username: currentUser.getUsername() }, { $set: {
+                                "username": user.getUsername(),
+                                "password": user.getPassword(),
+                                "fullname": user.getFullName(),
+                                "gender": user.getGender(),
+                                "age": user.getAge(),
+                                "aboutme": user.getAboutMe(),
+                                "location": user.getLocation()
+                            }
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error

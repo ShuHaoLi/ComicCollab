@@ -234,9 +234,7 @@ var Router = (function () {
                             "age": "This user not filled out a bio",
                             "gender": "This user not filled out a bio",
                             "location": "This user not filled out a bio",
-                            "aboutme": "This user not filled out a bio",
-                            "fans": [],
-                            "following": []
+                            "aboutme": "This user not filled out a bio"
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -468,31 +466,16 @@ var Router = (function () {
                 //db variable
                 var db = req.db;
                 //set our collection
-                var collection = db.get('usercollection');
+                var fanCollection = db.get('fans');
                 //user to be followed
                 var following = req.params['0'];
                 //current user username to update followed person's fan list
                 var fan = currentUser.getUsername();
-                collection.findOne({
-                    "username": fan
-                }, function (err, docs) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    else {
-                        collection.update({ username: currentUser.getUsername() }, { $addToSet: { "following": following } });
-                    }
+                fanCollection.insert({
+                    "fan": fan,
+                    "following": following
                 });
-                collection.findOne({
-                    "username": following
-                }, function (err, docs) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    else {
-                        collection.update({ username: following }, { $addToSet: { "fans": fan } });
-                    }
-                });
+                res.redirect(req.get('referer'));
             }
         });
         /* GET editprofile page. */

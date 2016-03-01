@@ -493,24 +493,58 @@ class Router {
             var db = req.db;
             var collection = db.get('usercollection');
             var username = req.params['0'];
-            collection.findOne({
-                "username": username
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                } else if (docs != null) {
-                    res.render('users', {
-                        userName: username,
-                        fullname: docs['fullname'],
-                        location: docs['location'],
-                        age: docs['age'],
-                        gender: docs['gender'],
-                        aboutme: docs['aboutme']
-                    });
-                } else {
-                    res.send("This user does not exist!");
-                }
-            });
+
+            if (username == req.currentUser.getUsername()) {
+                res.redirect('../myprofile');
+            } else {
+                collection.findOne({
+                    "username": username
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else if (docs != null) {
+                        var fanCollection = db.get('fans');
+                        fanCollection.find({
+                            "fan": username
+                        }, function (err, fanDocs) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                fanCollection.find({
+                                    "following": username
+                                }, function (err, followingDocs) {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        var fans = [];
+                                        var following = [];
+                                        for (var i=0; i<fanDocs.length; i++) {
+                                            following.push(fanDocs[i]['following']);
+                                        }
+                                        for (var i=0; i<followingDocs.length; i++) {
+                                            fans.push(followingDocs[i]['fan']);
+                                        }
+                                        var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
+                                        res.render('users', {
+                                            userName: username,
+                                            fullname: docs['fullname'],
+                                            location: docs['location'],
+                                            age: docs['age'],
+                                            gender: docs['gender'],
+                                            aboutme: docs['aboutme'],
+                                            notFan: notFan,
+                                            fans: fans,
+                                            following: following
+                                        });
+                                    }
+                                })
+                            }
+                        });
+                    } else {
+                        res.send("This user does not exist!");
+                    }
+                });
+            }
         });
         
         /*POST to profile pages - become a fan*/

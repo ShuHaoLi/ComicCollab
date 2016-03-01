@@ -1,4 +1,3 @@
-
 <html>
 
 <head>
@@ -7,33 +6,38 @@
 </head>
 <body>
 
-<%if (cur.getIsLoggedIn()) { %>
+<% if (cur.getIsLoggedIn()) { %>
 <div class="container" id="loggedIn">
     <div class="navbar-header">
         <a class="navbar-brand" href="home">ComicCollab</a>
     </div>
     <div class="page-header" style="margin-top: 60px">
-        <h1><%=username%></h1>
+        <h1><%= username %></h1>
     </div>
-    <h4>Name</h4>
-    <%=fullname%>
-    <h4>Age</h4>
-    <p><%=age%></p>
-    <h4>Gender</h4>
-    <p><%=gender%></p>
-    <h4>Location</h4>
-    <p><%=location%></p>
-    <h4>About Me</h4>
-    <p><%=aboutme%></p>
-    <br>
-    <h4>My Fans</h4>
-    <p>- <%=fans%></p>
-    <h4>I'm Following</h4>
-    <p>- <%=following%></p>
-    <br>
-    <a href="editprofile">Edit Profile</a>
-    <br>
-    <a href="home">Back To Home Page</a>
+    <div class="col-lg-6">
+        <h4>Name</h4>
+        <%= fullname %>
+        <h4>Age</h4>
+        <p><%= age %></p>
+        <h4>Gender</h4>
+        <p><%= gender %></p>
+        <h4>Location</h4>
+        <p><%= location %></p>
+        <h4>About Me</h4>
+        <p><%= aboutme %></p>
+        <br>
+        <a href="editprofile">Edit Profile</a>
+    </div>
+    <div class="col-lg-6">
+        <h4>My Fans</h4>
+        <% for (var i = 0; i < fans.length; i++) { %>
+        <a href="../users/<%= fans[i]%>"><%= fans[i] %></a><br>
+        <% } %>
+        <h4>I'm Following</h4>
+        <% for (var j = 0; j < following.length; j++) { %>
+        <a href="../users/<%= following[j]%>"><%= following[j] %></a><br>
+        <% } %>
+    </div>
 </div>
 <% } else { %>
 <div class="container" id="notLoggedIn">
@@ -43,9 +47,6 @@
     <br>
     <br>
     <a href="login">Login</a>
-    <br>
-    <br>
-    <a href="home">Back To Home Page</a>
 </div>
 <% } %>
 </body>

@@ -406,16 +406,43 @@ var Router = (function () {
                     res.send(err);
                 }
                 else if (docs != null) {
-                    res.render('myprofile', {
-                        cur: currentUser,
-                        fullname: docs['fullname'],
-                        location: docs['location'],
-                        age: docs['age'],
-                        gender: docs['gender'],
-                        aboutme: docs['aboutme'],
-                        username: current,
-                        fans: docs['fans'],
-                        following: docs['following']
+                    var fanCollection = db.get('fans');
+                    fanCollection.find({
+                        "fan": current
+                    }, function (err, fanDocs) {
+                        if (err) {
+                            res.send(err);
+                        }
+                        else {
+                            fanCollection.find({
+                                "following": current
+                            }, function (err, followingDocs) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else {
+                                    var fans = [];
+                                    var following = [];
+                                    for (var i = 0; i < fanDocs.length; i++) {
+                                        following.push(fanDocs[i]['following']);
+                                    }
+                                    for (var i = 0; i < followingDocs.length; i++) {
+                                        fans.push(followingDocs[i]['fan']);
+                                    }
+                                    res.render('myprofile', {
+                                        cur: currentUser,
+                                        fullname: docs['fullname'],
+                                        location: docs['location'],
+                                        age: docs['age'],
+                                        gender: docs['gender'],
+                                        aboutme: docs['aboutme'],
+                                        username: current,
+                                        fans: fans,
+                                        following: following
+                                    });
+                                }
+                            });
+                        }
                     });
                 }
                 else {

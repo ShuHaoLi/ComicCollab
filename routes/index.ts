@@ -429,7 +429,8 @@ class Router {
             }, function (err, docs) {
                 if (err) {
                     res.send(err);
-                } else if (docs != null) {
+                }
+                else if (docs != null) {
                     res.render('users', {
                         userName: username,
                         fullname: docs['fullname'],
@@ -442,6 +443,28 @@ class Router {
                     res.send("This user does not exist!");
                 }
             });
+        });
+
+        //get Search User page
+        router.get('/searchuser', function (req,res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            var username = req.body.username;
+            collection.findOne({
+                "username": username
+            }, function (err, docs){
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    res.render('/users/username');
+                }
+                else {
+                    res.send("This user does not exist!");
+                }
+            })
+
+
         });
 
         /* GET editprofile page. */

@@ -412,6 +412,25 @@ var Router = (function () {
                 }
             });
         });
+        //get Search User page
+        router.get('/searchuser', function (req, res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            var username = req.body.username;
+            collection.findOne({
+                "username": username
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    res.render('/users/username');
+                }
+                else {
+                    res.send("This user does not exist!");
+                }
+            });
+        });
         /* GET editprofile page. */
         router.get('/editprofile', function (req, res) {
             res.render('editprofile', { title: 'Edit Profile' });

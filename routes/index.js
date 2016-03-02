@@ -356,6 +356,10 @@ var Router = (function () {
         router.get('/resetpassword', function (req, res) {
             res.render('resetpassword');
         });
+        /*GET enteremail page */
+        router.get('/enteremail', function (req, res) {
+            res.render('enteremail');
+        });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;

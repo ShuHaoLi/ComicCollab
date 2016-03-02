@@ -385,6 +385,11 @@ class Router {
             res.redirect("../../comic/" + comicId.toString());
         });
 
+        /*GET resetpassword page */
+        router.get('/resetpassword', function (req, res) {
+            res.render('resetpassword');
+        });
+
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;

@@ -352,9 +352,17 @@ var Router = (function () {
             }
             res.redirect("../../comic/" + comicId.toString());
         });
-        /*GET resetpassword page */
-        router.get('/resetpassword', function (req, res) {
-            res.render('resetpassword');
+        /*GET resetpassword1 page */
+        router.get('/resetpassword1', function (req, res) {
+            res.render('resetpassword1');
+        });
+        /*GET resetpassword2 page */
+        router.get('/resetpassword2', function (req, res) {
+            res.render('resetpassword2');
+        });
+        /*GET resetpassword3 page */
+        router.get('/resetpassword3', function (req, res) {
+            res.render('resetpassword3');
         });
         /*GET enteremail page */
         router.get('/enteremail', function (req, res) {
@@ -442,10 +450,6 @@ var Router = (function () {
         /* GET editprofile page. */
         router.get('/editprofile', function (req, res) {
             res.render('editprofile', { title: 'Edit Profile' });
-        });
-        /* GET forgotpassword page. */
-        router.get('/forgotpassword', function (req, res) {
-            res.render('forgotpassword');
         });
         /* POST for editprofile page */
         router.post('/editprofile', function (req, res) {

@@ -443,6 +443,10 @@ var Router = (function () {
         router.get('/editprofile', function (req, res) {
             res.render('editprofile', { title: 'Edit Profile' });
         });
+        /* GET forgotpassword page. */
+        router.get('/forgotpassword', function (req, res) {
+            res.render('forgotpassword');
+        });
         /* POST for editprofile page */
         router.post('/editprofile', function (req, res) {
             var currentUser = req.currentUser;
@@ -496,3 +500,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

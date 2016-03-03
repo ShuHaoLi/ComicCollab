@@ -483,6 +483,11 @@ class Router {
             res.render('editprofile', {title: 'Edit Profile'});
         });
 
+        /* GET forgotpassword page. */
+        router.get('/forgotpassword', function (req, res) {
+            res.render('forgotpassword');
+        });
+
         /* POST for editprofile page */
         router.post('/editprofile', function (req, res) {
 

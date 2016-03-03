@@ -383,15 +383,14 @@ var Router = (function () {
                         res.send(err);
                     }
                     else {
-                        collection.update({ "comicId": comicId }, {
-                            "comicId": comicId,
-                            "creator": docs['creator'],
-                            "tags": tags
+                        collection.update({ "comicId": comicId }, { $set: {
+                                "tags": tags
+                            }
                         });
+                        res.redirect("../../comic/" + comicId.toString());
                     }
                 });
             }
-            res.redirect("../../comic/" + comicId.toString());
         });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
@@ -572,8 +571,6 @@ var Router = (function () {
                         var password = docs['password'];
                         var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location);
                         collection.update({ username: currentUser.getUsername() }, { $set: {
-                                "username": user.getUsername(),
-                                "password": user.getPassword(),
                                 "fullname": user.getFullName(),
                                 "gender": user.getGender(),
                                 "age": user.getAge(),

@@ -415,15 +415,16 @@ class Router {
                     if (err) {
                         res.send(err);
                     } else {
-                        collection.update({"comicId": comicId}, {
-                            "comicId": comicId,
-                            "creator": docs['creator'],
-                            "tags": tags
+                        collection.update(
+                            {"comicId": comicId},
+                            { $set: {
+                                "tags": tags
+                            }
                         });
+                        res.redirect("../../comic/" + comicId.toString());
                     }
                 });
             }
-            res.redirect("../../comic/" + comicId.toString());
         });
 
         /* GET myprofile page. */
@@ -612,8 +613,6 @@ class Router {
                             {username: currentUser.getUsername()},
                             { $set:
                                 {
-                                    "username": user.getUsername(),
-                                    "password": user.getPassword(),
                                     "fullname": user.getFullName(),
                                     "gender": user.getGender(),
                                     "age": user.getAge(),

@@ -29,7 +29,7 @@
         <a href="../uploadcomics/<%=comicId%>">Upload new image</a><br />
         <p>Tags:
             <% for (var i=0; i<tags.length; i++) { %>
-            <span class="label label-default"><%= tags[i]%></span>
+            <%= tags[i]%>
             <% } %>
         </p>
         <br>
@@ -49,10 +49,17 @@
         <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img src="../color/Email.png"></a>
     </div>
     <div style="min-width: 1250px">
-    <% for (var j=0; j<urls.length; j++) { %>
-    <img style="width: 300px; height:300px" src=<%= urls[j]%> />
+    <% for (var i=0; i<urls.length; i++) { %>
+    <img style="width: 300px; height:300px" src=<%= urls[i]%> />
     <% } %>
     </div>
-</div>
+    <br>
+    <form method="post" name="ratings">
+        <input type="submit" name="vote" value="like">
+        <input type="submit" name="vote" value="dislike">
+    </form>
+    <script></script>
+    <p>Likes: <%=liketotal%> Dislikes: <%=disliketotal%></p>
+    </div>
 </body>
 </html>

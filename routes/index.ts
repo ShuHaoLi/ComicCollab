@@ -193,6 +193,31 @@ class Router {
             var comicId:number = parseInt(req.params['0']);
             var db = req.db;
             var collection = db.get('comics');
+            // likes/dislikes counting
+            var userlist = db.get('usercollection');
+            var liketotal:number;
+            userlist.count(
+                {"likes": comicId},
+                function(err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        liketotal = Number(docs);
+                    }
+                }
+            );
+            var disliketotal:number;
+            userlist.count(
+                {"dislikes": comicId},
+                function(err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        disliketotal = Number(docs);
+                    }
+                }
+            );
+            //
             collection.findOne({
                 "comicId": comicId,
             }, function (err, docs) {
@@ -215,12 +240,65 @@ class Router {
                             res.render('comic', {
                                 comicId: comicId.toString(),
                                 urls: urls,
-                                tags: tags
+                                tags: tags,
+                                liketotal: liketotal,
+                                disliketotal: disliketotal
                             });
                         }
                     })
                 }
             });
+        });
+                
+        //Post To Comic Page - like/dislike
+        router.post('/comic/*', function (req, res) {
+            var currentUser = req.currentUser;
+            if (currentUser.getIsLoggedIn() != true) {
+                res.send("You must be logged in")
+            }else {
+                //db variable
+                var db = req.db;
+                //set our collection
+                var collection = db.get('usercollection');
+                //comic to be liked
+                var like:number = parseInt(req.params['0']);
+                //current user username to update user's like list
+                var liker = currentUser.getUsername();
+                //like or dislike input value
+                var inputValue = req.body.vote;
+                if (inputValue == "like"){
+                    console.log("hi");
+                    collection.findOne({
+                        "username": liker
+                    }, function (err, docs) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            collection.update(
+                                {username: liker},
+                                { $addToSet: {"likes": like },
+                                $unset: {"dislikes": like } }
+                            );
+                        }
+                    })    
+                } else {
+                    console.log("hey");
+                    collection.findOne({
+                        "username": liker
+                    }, function (err, docs) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            collection.update(
+                                {username: liker},
+                                { $addToSet: {"dislikes": like },
+                                $unset: {"likes": like } }
+                            );
+                        }
+                    });
+                }
+                res.redirect(req.get('referer'));
+            }
         });
 
         /* GET Create Profile page. */

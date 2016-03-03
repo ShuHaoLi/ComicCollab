@@ -2,7 +2,7 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password, fullname, gender, age, aboutme, location) {
+    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -10,6 +10,8 @@ var User = (function () {
         this.age = age;
         this.aboutme = aboutme;
         this.location = location;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
     }
     User.prototype.getUsername = function () {
         return this.username;
@@ -31,6 +33,12 @@ var User = (function () {
     };
     User.prototype.getAge = function () {
         return this.age;
+    };
+    User.prototype.getSecurityQuestion = function () {
+        return this.securityQuestion;
+    };
+    User.prototype.getSecurityAnswer = function () {
+        return this.securityAnswer;
     };
     return User;
 })();
@@ -205,6 +213,8 @@ var Router = (function () {
             var username = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
+            var securityQuestion = req.body.securityQuestion;
+            var securityAnswer = req.body.securityAnswer;
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
@@ -212,7 +222,7 @@ var Router = (function () {
                 res.send("passwords do not match");
             }
             else {
-                var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
+                var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, req.body.securityQuestion, req.body.securityAnswer);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -230,6 +240,8 @@ var Router = (function () {
                         collection.insert({
                             "username": user.getUsername(),
                             "password": user.getPassword(),
+                            "securityQuestion": user.getSecurityQuestion(),
+                            "securityAnswer": user.getSecurityAnswer(),
                             "fullname": "This user not filled out a bio",
                             "age": "This user not filled out a bio",
                             "gender": "This user not filled out a bio",
@@ -559,6 +571,8 @@ var Router = (function () {
                 var location = req.body.location;
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
+                var securityQuestion = req.body.securityQuestion;
+                var securityAnswer = req.body.securityAnswer;
                 // Set our collection
                 var collection = db.get('usercollection');
                 collection.findOne({
@@ -569,7 +583,7 @@ var Router = (function () {
                     }
                     else {
                         var password = docs['password'];
-                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location);
+                        var user = new User(currentUser.getUsername(), password, securityAnswer, securityQuestion, fullname, gender, age, aboutme, location);
                         collection.update({ username: currentUser.getUsername() }, { $set: {
                                 "fullname": user.getFullName(),
                                 "gender": user.getGender(),

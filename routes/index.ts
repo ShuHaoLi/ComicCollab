@@ -9,6 +9,8 @@ interface UserInterface {
     getAge() : String;
     getLocation() : String;
     getAboutMe() : String;
+    getSecurityQuestion() : String;
+    getSecurityAnswer() : String
 }
 class User implements UserInterface {
     private username:String;
@@ -18,9 +20,12 @@ class User implements UserInterface {
     private age:String;
     private aboutme:String;
     private location:String;
+    private securityQuestion:String;
+    private securityAnswer:String;
 
     constructor(username:String, password:String, fullname:String,
-                gender:String, age:String, aboutme:String, location:String) {
+                gender:String, age:String, aboutme:String, location:String,
+                securityQuestion:String, securityAnswer:String) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -28,6 +33,8 @@ class User implements UserInterface {
         this.age = age;
         this.aboutme = aboutme;
         this.location = location;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
     }
 
     getUsername() {
@@ -56,6 +63,14 @@ class User implements UserInterface {
 
     getAge() {
         return this.age;
+    }
+
+    getSecurityQuestion() {
+        return this.securityQuestion;
+    }
+
+    getSecurityAnswer() {
+        return this.securityAnswer;
     }
 }
 
@@ -236,6 +251,8 @@ class Router {
             var username = req.body.username;
             var password = req.body.password;
             var confirmPassword = req.body.confirmPassword;
+            var securityQuestion = req.body.securityQuestion;
+            var securityAnswer = req.body.securityAnswer;
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 6 - 20 characters. Please try again!");
             }
@@ -244,7 +261,8 @@ class Router {
             }
             else {
                 var user:User = new User(req.body.username, req.body.password, req.body.fullname,
-                    req.body.age, req.body.aboutme, req.body.gender, req.body.location);
+                    req.body.age, req.body.aboutme, req.body.gender, req.body.location,
+                    req.body.securityQuestion, req.body.securityAnswer);
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -261,6 +279,8 @@ class Router {
                         collection.insert({
                             "username": user.getUsername(),
                             "password": user.getPassword(),
+                            "securityQuestion": user.getSecurityQuestion(),
+                            "securityAnswer": user.getSecurityAnswer(),
                             "fullname": "This user not filled out a bio",
                             "age": "This user not filled out a bio",
                             "gender": "This user not filled out a bio",
@@ -594,6 +614,8 @@ class Router {
                 var location = req.body.location;
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
+                var securityQuestion = req.body.securityQuestion;
+                var securityAnswer = req.body.securityAnswer;
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -606,8 +628,8 @@ class Router {
                     } else {
                         var password:string = docs['password'];
 
-                        var user:User = new User(currentUser.getUsername(), password, fullname,
-                            gender, age, aboutme, location);
+                        var user:User = new User(currentUser.getUsername(), password, securityAnswer, securityQuestion,
+                            fullname, gender, age, aboutme, location);
 
                         collection.update(
                             {username: currentUser.getUsername()},

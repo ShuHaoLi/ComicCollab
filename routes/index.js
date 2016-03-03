@@ -352,9 +352,27 @@ var Router = (function () {
             }
             res.redirect("../../comic/" + comicId.toString());
         });
-        /*GET resetpassword1 page */
         router.get('/resetpassword1', function (req, res) {
             res.render('resetpassword1');
+        });
+        /*GET resetpassword1 page */
+        router.post('/resetpassword1', function (req, res) {
+            var db = req.db;
+            var username = req.body.username;
+            var collection = db.get('usercollection');
+            collection.findOne({
+                "username": username.toLowerCase()
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs == null) {
+                    res.send("The username does not exist, please re-enter again");
+                }
+                else {
+                    res.redirect("/resetpassword2");
+                }
+            });
         });
         /*GET resetpassword2 page */
         router.get('/resetpassword2', function (req, res) {

@@ -2,7 +2,7 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password, fullname, gender, age, aboutme, location) {
+    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -10,6 +10,8 @@ var User = (function () {
         this.age = age;
         this.aboutme = aboutme;
         this.location = location;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
     }
     User.prototype.getUsername = function () {
         return this.username;
@@ -31,6 +33,12 @@ var User = (function () {
     };
     User.prototype.getAge = function () {
         return this.age;
+    };
+    User.prototype.getSecurityQuestion = function () {
+        return this.securityQuestion;
+    };
+    User.prototype.getSecurityAnswer = function () {
+        return this.securityAnswer;
     };
     return User;
 })();
@@ -173,6 +181,8 @@ var Router = (function () {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
+            var securityQuestion = req.body.securityQuestion;
+            var securityAnswer = req.body.securityAnswer;
             var confirmPassword = req.body.confirmPassword;
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 6 - 20 characters. Please try again!");
@@ -181,7 +191,7 @@ var Router = (function () {
                 res.send("passwords do not match");
             }
             else {
-                var user = new User(req.body.username, req.body.password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location);
+                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -199,11 +209,13 @@ var Router = (function () {
                         collection.insert({
                             "username": user.getUsername(),
                             "password": user.getPassword(),
-                            "fullname": "",
-                            "age": "",
-                            "gender": "",
-                            "location": "",
-                            "aboutme": ""
+                            "fullname": "This user has not filled out a bio",
+                            "age": "This user has not filled out a bio",
+                            "gender": "This user has not filled out a bio",
+                            "location": "This user has not filled out a bio",
+                            "aboutme": "This user has not filled out a bio",
+                            "securityquestion": user.getSecurityQuestion(),
+                            "securityanswer": user.getSecurityAnswer()
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error

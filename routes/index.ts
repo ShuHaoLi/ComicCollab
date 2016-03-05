@@ -411,6 +411,26 @@ class Router {
                 res.render('resetpassword', {
                     step: step
                 });
+            } else if (step == 2) {
+                var db = req.db;
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs == null) {
+                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                    }
+                    else {
+                        res.render('resetpassword', {
+                            step: step,
+                            username: username,
+                            securityQuestion: docs['securityquestion']
+                        });
+                    }
+                })
             } else {
                 res.send('Invalid link');
             }
@@ -426,6 +446,31 @@ class Router {
 
             if (step == 1) {
                 res.redirect("../2/" + username);
+            } else if (step == 2) {
+                var db = req.db;
+                var username = req.params[0];
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs == null) {
+                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                    }
+                    else {
+                        if (docs['securityanswer'] == securityAnswer) {
+                            var security = req.currentSecurityResponse;
+                            security.setSecurityAnswer(securityAnswer);
+                            security.setIsConfirmed(true);
+                            res.redirect("../3/" + username);
+                        } else {
+                            req.currentSecurityResponse.clear();
+                            res.send("Security answer was incorrect. <a href='#' onClick='history.go(-1)'>Go Back</a>")
+                        }
+                    }
+                })
                 }
             }
         });

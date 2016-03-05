@@ -568,20 +568,21 @@ class Router {
                         res.send(err);
                     } else {
                         var password:string = docs['password'];
+                        var securityQuestion:string = docs['securityquestion'];
+                        var securityAnswer:string = docs['securityanswer'];
 
                         var user:User = new User(currentUser.getUsername(), password, fullname,
-                            gender, age, aboutme, location);
+                            gender, age, aboutme, location, securityQuestion, securityAnswer);
 
                         collection.update(
                             {username: currentUser.getUsername()},
-                            {
-                                "username": user.getUsername(),
-                                "password": user.getPassword(),
+                            { $set: {
                                 "fullname": user.getFullName(),
                                 "gender": user.getGender(),
                                 "age": user.getAge(),
                                 "aboutme": user.getAboutMe(),
-                                "location": user.getLocation()
+                                "location": user.getLocation(),
+                            }
                             }, function (err) {
                                 if (err) {
                                     // If it failed, return error

@@ -364,45 +364,34 @@ var Router = (function () {
             }
             res.redirect("../../comic/" + comicId.toString());
         });
-        /*GET resetpassword1 page */
-        router.get('/resetpassword1', function (req, res) {
-            res.render('resetpassword1');
+        /*GET resetpassword page */
+        router.get('/resetpassword/:step/*', function (req, res) {
+            var step = req.params['step'];
+            var username = req.params[0];
+            if (step == 1 || step == 4) {
+                res.render('resetpassword', {
+                    step: step
+                });
+            }
+            else {
+                res.send('Invalid link');
+            }
         });
-        /*post resetpassword1 page */
-        router.post('/resetpassword1', function (req, res) {
+        /*POST resetpassword page */
+        router.post('/resetpassword/:step/*', function (req, res) {
+            var step = req.params['step'];
             var username = req.body.username;
-            res.redirect("../resetpassword2/" + username);
-        });
-        /*GET resetpassword2 page */
-        router.get('/resetpassword2/*', function (req, res) {
-            var db = req.db;
-            var username = req.params['0'];
-            var collection = db.get('usercollection');
-            collection.findOne({
-                "username": username.toLowerCase()
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs == null) {
-                    res.send("The username does not exist, please re-enter again");
+            var securityAnswer = req.body.securityAnswer;
+            var password = req.body.password;
+            var confirmPassword = req.body.confirmPassword;
+            if (step == 1) {
+                res.redirect("../2/" + username);
+            }
                 }
                 else {
                     res.render('resetpassword2');
                 }
-            });
-        });
-        router.post('/resetpassword2/*', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-        });
-        /*GET resetpassword3 page */
-        router.get('/resetpassword3', function (req, res) {
-            res.render('resetpassword3');
-        });
-        /*GET enteremail page */
-        router.get('/enteremail', function (req, res) {
-            res.render('enteremail');
+            }
         });
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {

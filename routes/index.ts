@@ -431,6 +431,15 @@ class Router {
                         });
                     }
                 })
+            } else if (step == 3) {
+                var security = req.currentSecurityResponse;
+                var isConfirmed = security.getIsConfirmed();
+                security.clear();
+                res.render('resetpassword', {
+                    step: step,
+                    username: username,
+                    isConfirmed: isConfirmed
+                });
             } else {
                 res.send('Invalid link');
             }
@@ -471,6 +480,29 @@ class Router {
                         }
                     }
                 })
+            } else if (step == 3) {
+                if (password != confirmPassword) {
+                    res.send("Passwords did not match.")
+                } else {
+                    var db = req.db;
+                    var username = req.params[0];
+                    var collection = db.get('usercollection');
+                    collection.update(
+                        {username: username},
+                        { $set: {
+                            "password": password
+                        }
+                        }, function (err) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem updating your password.");
+                            }
+                            else {
+                                // Forward back to my profile page
+                                res.redirect("../4/");
+                            }
+                        }
+                    );
                 }
             }
         });

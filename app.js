@@ -21,6 +21,29 @@ var LoggedInUser = (function () {
     };
     return LoggedInUser;
 })();
+var SecurityResponse = (function () {
+    function SecurityResponse(securityAnswer, isConfirmed) {
+        this.securityAnswer = securityAnswer;
+        this.isConfirmed = isConfirmed;
+    }
+    SecurityResponse.prototype.getSecurityAnswer = function () {
+        return this.securityAnswer;
+    };
+    SecurityResponse.prototype.setSecurityAnswer = function (securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    };
+    SecurityResponse.prototype.getIsConfirmed = function () {
+        return this.isConfirmed;
+    };
+    SecurityResponse.prototype.setIsConfirmed = function (isConfirmed) {
+        this.isConfirmed = isConfirmed;
+    };
+    SecurityResponse.prototype.clear = function () {
+        this.securityAnswer = '';
+        this.isConfirmed = false;
+    };
+    return SecurityResponse;
+})();
 var Application = (function () {
     function Application() {
         var express = require('express');
@@ -57,6 +80,7 @@ var Application = (function () {
         app.use(function (req, res, next) {
             req.currentUser = currentUser;
             req.db = db;
+            req.currentSecurityResponse = currentSecurityResponse;
             next();
         });
         app.use('/', routes);
@@ -98,6 +122,8 @@ var Application = (function () {
     return Application;
 })();
 var currentUser = new LoggedInUser('', false);
+var currentSecurityResponse = new SecurityResponse('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
+//# sourceMappingURL=app.js.map

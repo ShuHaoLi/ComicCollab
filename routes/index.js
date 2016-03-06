@@ -741,62 +741,21 @@ var Router = (function () {
             var search = req.params['0'];
             var username;
             var userExists;
-            //    comiccollection.find({
-            //        "tags": search
-            //    }, function(err, docs) {
-            //        if (err) {
-            //            res.send(err);
-            //        } else if (docs != null) {
-            //            var comicIds = [];
-            //            for (var i = 0; i < docs.length; i++) {
-            //                comicIds.push(docs[i]['comicId']);
-            //            }
-            //            collection.findOne({
-            //                "username": search
-            //            }, function(err, docs) {
-            //                if (err) {
-            //                    res.send(err);
-            //                } else if (docs != null) {
-            //                        username = search;
-            //                        userExists = 1;
-            //                } else {
-            //                        username = "No user matches the criteria";
-            //                        userExists = -1
-            //                }
-            //            });
-            //            res.render('search', {
-            //                tags: search,
-            //                tagExists: 1,
-            //                comicIds: comicIds,
-            //                username: username,
-            //                userExists: userExists
-            //            });
-            //
-            //        } else {
-            //            collection.findOne({
-            //                "username": search
-            //            }, function(err, docs) {
-            //                if (err) {
-            //                    res.send(err);
-            //                } else if (docs != null) {
-            //                        username = search;
-            //                        userExists = 1;
-            //                } else {
-            //                        username = "No user matches the criteria";
-            //                        userExists = -1
-            //                }
-            //            });
-            //            res.render('search', {
-            //                tags: "No comic contains any of the tag criteria",
-            //                tagExists: -1,
-            //                comicIds: comicIds,
-            //                username: username,
-            //                userExists: userExists
-            //            })
-            //        }
-            //    })
-            //});
-            //
+            collection.findOne({
+                "username": search
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    username = search;
+                    userExists = 1;
+                }
+                else {
+                    username = "No user matches the criteria";
+                    userExists = -1;
+                }
+            });
             comiccollection.find({
                 "tags": search
             }, function (err, docs) {
@@ -808,28 +767,11 @@ var Router = (function () {
                     for (var i = 0; i < docs.length; i++) {
                         comicIds.push(docs[i]['comicId']);
                     }
-                    collection.findOne({
-                        "username": search
-                    }, function (err, docs) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        else if (docs != null) {
-                            console.log("123" + search);
-                            username = search;
-                            userExists = 1;
-                        }
-                        else {
-                            console.log("123123" + search);
-                            username = "No user matches the criteria";
-                            userExists = -1;
-                        }
-                    });
                     res.render('search', {
                         tags: search,
                         tagExists: 1,
                         comicIds: comicIds,
-                        username: search,
+                        username: username,
                         userExists: userExists
                     });
                 }
@@ -841,18 +783,16 @@ var Router = (function () {
                             res.send(err);
                         }
                         else if (docs != null) {
-                            console.log("dsdghs" + search);
                             username = search;
                             userExists = 1;
                         }
                         else {
-                            console.log("1212313cdcdc" + search);
                             username = "No user matches the criteria";
                             userExists = -1;
                         }
                     });
                     res.render('search', {
-                        tags: "No comic contains any of the tag criteria",
+                        tags: search,
                         tagExists: -1,
                         comicIds: comicIds,
                         username: username,
@@ -861,8 +801,10 @@ var Router = (function () {
                 }
             });
         });
+        //
         module.exports = router;
     }
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

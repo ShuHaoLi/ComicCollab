@@ -10,7 +10,7 @@ interface UserInterface {
     getLocation() : String;
     getAboutMe() : String;
     getSecurityQuestion() : String;
-    getSecurityAnswer() : String
+    getSecurityAnswer() : String;
 }
 class User implements UserInterface {
     private username:String;
@@ -328,6 +328,8 @@ class Router {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
+            var securityQuestion = req.body.securityQuestion;
+            var securityAnswer = req.body.securityAnswer;
             var confirmPassword = req.body.confirmPassword;
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;
@@ -338,9 +340,8 @@ class Router {
                 res.send("passwords do not match");
             }
             else {
-                var user:User = new User(req.body.username, req.body.password, req.body.fullname,
-                    req.body.age, req.body.aboutme, req.body.gender, req.body.location,
-                    req.body.securityQuestion, req.body.securityAnswer);
+                var user:User = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme,
+                    req.body.gender, req.body.location, securityQuestion, securityAnswer);
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -357,13 +358,13 @@ class Router {
                         collection.insert({
                             "username": user.getUsername(),
                             "password": user.getPassword(),
-                            "securityQuestion": user.getSecurityQuestion(),
-                            "securityAnswer": user.getSecurityAnswer(),
-                            "fullname": "This user not filled out a bio",
-                            "age": "This user not filled out a bio",
-                            "gender": "This user not filled out a bio",
-                            "location": "This user not filled out a bio",
-                            "aboutme": "This user not filled out a bio"
+                            "fullname": "This user has not filled out a bio",
+                            "age": "This user has not filled out a bio",
+                            "gender": "This user has not filled out a bio",
+                            "location": "This user has not filled out a bio",
+                            "aboutme": "This user has not filled out a bio",
+                            "securityquestion": user.getSecurityQuestion(),
+                            "securityanswer": user.getSecurityAnswer()
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -525,6 +526,110 @@ class Router {
             }
         });
 
+        /*GET resetpassword page */
+        router.get('/resetpassword/:step/*', function (req, res) {
+            var step = req.params['step'];
+            var username = req.params[0];
+            if (step == 1 || step == 4) {
+                res.render('resetpassword', {
+                    step: step
+                });
+            } else if (step == 2) {
+                var db = req.db;
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs == null) {
+                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                    }
+                    else {
+                        res.render('resetpassword', {
+                            step: step,
+                            username: username,
+                            securityQuestion: docs['securityquestion']
+                        });
+                    }
+                })
+            } else if (step == 3) {
+                var security = req.currentSecurityResponse;
+                var isConfirmed = security.getIsConfirmed();
+                security.clear();
+                res.render('resetpassword', {
+                    step: step,
+                    username: username,
+                    isConfirmed: isConfirmed
+                });
+            } else {
+                res.send('Invalid link');
+            }
+        });
+
+        /*POST resetpassword page */
+        router.post('/resetpassword/:step/*', function (req, res) {
+            var step = req.params['step'];
+            var username = req.body.username;
+            var securityAnswer = req.body.securityAnswer;
+            var password = req.body.password;
+            var confirmPassword = req.body.confirmPassword;
+
+            if (step == 1) {
+                res.redirect("../2/" + username);
+            } else if (step == 2) {
+                var db = req.db;
+                var username = req.params[0];
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": username.toLowerCase()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs == null) {
+                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                    }
+                    else {
+                        if (docs['securityanswer'] == securityAnswer) {
+                            var security = req.currentSecurityResponse;
+                            security.setSecurityAnswer(securityAnswer);
+                            security.setIsConfirmed(true);
+                            res.redirect("../3/" + username);
+                        } else {
+                            req.currentSecurityResponse.clear();
+                            res.send("Security answer was incorrect. <a href='#' onClick='history.go(-1)'>Go Back</a>")
+                        }
+                    }
+                })
+            } else if (step == 3) {
+                if (password != confirmPassword) {
+                    res.send("Passwords did not match.")
+                } else {
+                    var db = req.db;
+                    var username = req.params[0];
+                    var collection = db.get('usercollection');
+                    collection.update(
+                        {username: username},
+                        { $set: {
+                            "password": password
+                        }
+                        }, function (err) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem updating your password.");
+                            }
+                            else {
+                                // Forward back to my profile page
+                                res.redirect("../4/");
+                            }
+                        }
+                    );
+                }
+            }
+        });
+
         /* GET myprofile page. */
         router.get('/myprofile', function (req, res) {
             var db = req.db;
@@ -592,7 +697,6 @@ class Router {
             var db = req.db;
             var collection = db.get('usercollection');
             var username = req.params['0'];
-
             if (username == req.currentUser.getUsername()) {
                 res.redirect('../myprofile');
             } else {
@@ -670,6 +774,28 @@ class Router {
             }
         });
 
+        //get Search User page
+        router.get('/searchuser', function (req,res) {
+            var db = req.db;
+            var collection = db.get('usercollection');
+            var username = req.body.username;
+            collection.findOne({
+                "username": username
+            }, function (err, docs){
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    res.render('/users/username');
+                }
+                else {
+                    res.send("This user does not exist!");
+                }
+            })
+
+
+        });
+
         /* GET editprofile page. */
         router.get('/editprofile', function (req, res) {
             res.render('editprofile', {title: 'Edit Profile'});
@@ -705,20 +831,20 @@ class Router {
                         res.send(err);
                     } else {
                         var password:string = docs['password'];
-
-                        var user:User = new User(currentUser.getUsername(), password, securityAnswer, securityQuestion,
-                            fullname, gender, age, aboutme, location);
+                        var securityQuestion:string = docs['securityquestion'];
+                        var securityAnswer:string = docs['securityanswer'];
+                        var user:User = new User(currentUser.getUsername(), password, fullname,
+                            gender, age, aboutme, location, securityQuestion, securityAnswer);
 
                         collection.update(
                             {username: currentUser.getUsername()},
-                            { $set:
-                                {
-                                    "fullname": user.getFullName(),
-                                    "gender": user.getGender(),
-                                    "age": user.getAge(),
-                                    "aboutme": user.getAboutMe(),
-                                    "location": user.getLocation()
-                                }
+                            { $set: {
+                                "fullname": user.getFullName(),
+                                "gender": user.getGender(),
+                                "age": user.getAge(),
+                                "aboutme": user.getAboutMe(),
+                                "location": user.getLocation(),
+                            }
                             }, function (err) {
                                 if (err) {
                                     // If it failed, return error

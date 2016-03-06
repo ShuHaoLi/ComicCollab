@@ -741,6 +741,21 @@ var Router = (function () {
             var search = req.params['0'];
             var username;
             var userExists;
+            collection.findOne({
+                "username": search
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    username = search;
+                    userExists = 1;
+                }
+                else {
+                    username = "No user matches the criteria";
+                    userExists = -1;
+                }
+            });
             comiccollection.find({
                 "tags": search
             }, function (err, docs) {
@@ -752,21 +767,6 @@ var Router = (function () {
                     for (var i = 0; i < docs.length; i++) {
                         comicIds.push(docs[i]['comicId']);
                     }
-                    collection.findOne({
-                        "username": search
-                    }, function (err, docs) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        else if (docs != null) {
-                            username = search;
-                            userExists = 1;
-                        }
-                        else {
-                            username = "No user matches the criteria";
-                            userExists = -1;
-                        }
-                    });
                     res.render('search', {
                         tags: search,
                         tagExists: 1,
@@ -792,7 +792,7 @@ var Router = (function () {
                         }
                     });
                     res.render('search', {
-                        tags: "No comic contains any of the tag criteria",
+                        tags: search,
                         tagExists: -1,
                         comicIds: comicIds,
                         username: username,

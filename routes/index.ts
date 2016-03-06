@@ -857,6 +857,13 @@ class Router {
                 }
             })
         });
+
+        router.post('/home', function (req, res) {
+            var search = req.body.search;
+            res.redirect('/search/' + search);
+        });
+
+
         //
         module.exports = router;
     }

@@ -37,7 +37,7 @@
         <a href="../editcomic/<%=comicId%>">Edit Comic</a><br />
         <a href="../uploadcomics/<%=comicId%>">Upload New Image</a><br />
         <% if (isCreator) { %>
-            <form method="post" role="form" class="login btn btn-primary">
+            <form method="post" role="form">
                 <button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete</button>
             </form>
         <% } %>

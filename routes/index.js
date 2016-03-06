@@ -776,21 +776,6 @@ var Router = (function () {
                     });
                 }
                 else {
-                    collection.findOne({
-                        "username": search
-                    }, function (err, docs) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        else if (docs != null) {
-                            username = search;
-                            userExists = 1;
-                        }
-                        else {
-                            username = "No user matches the criteria";
-                            userExists = -1;
-                        }
-                    });
                     res.render('search', {
                         tags: search,
                         tagExists: -1,

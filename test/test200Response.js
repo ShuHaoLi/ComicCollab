@@ -28,25 +28,5 @@ describe("Check 200 response", function() {
 });
 
 
-describe('Test Register a User', function() {
-    var createprofile_url = "http://localhost:3000/createprofile";
-    it('create a user', function(done){
-        request(createprofile_url, function(error, response, body) {
-            send({
-                "username": "FakeUser",
-                "password": "1234567890"
-            });
-            expect('Content-Type', /json/);
-            expect(response.statusCode).to.equal(200);
-            end(function (err, res) {
-                res.body.username.should.equal('FakeUser');
-                res.body.password.should.equal('1234567890');
-            });
-        });
-        done();
-    });
-})
-
-
 
 

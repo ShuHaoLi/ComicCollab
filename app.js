@@ -36,7 +36,9 @@ var Application = (function () {
         var users = require('./routes/users');
         var multer = require('multer');
         var http = require('http');
+        var methodOverride = require('method-override');
         var app = express();
+        app.use(methodOverride('_method'));
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'ejs');
@@ -101,3 +103,4 @@ var currentUser = new LoggedInUser('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
+//# sourceMappingURL=app.js.map

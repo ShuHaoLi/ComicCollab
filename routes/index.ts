@@ -801,12 +801,69 @@ class Router {
             var username;
             var userExists;
             
+        //    comiccollection.find({
+        //        "tags": search
+        //    }, function(err, docs) {
+        //        if (err) {
+        //            res.send(err);
+        //        } else if (docs != null) {
+        //            var comicIds = [];
+        //            for (var i = 0; i < docs.length; i++) {
+        //                comicIds.push(docs[i]['comicId']);
+        //            }
+        //            collection.findOne({
+        //                "username": search
+        //            }, function(err, docs) {
+        //                if (err) {
+        //                    res.send(err);
+        //                } else if (docs != null) {
+        //                        username = search;
+        //                        userExists = 1;
+        //                } else {
+        //                        username = "No user matches the criteria";
+        //                        userExists = -1
+        //                }
+        //            });
+        //            res.render('search', {
+        //                tags: search,
+        //                tagExists: 1,
+        //                comicIds: comicIds,
+        //                username: username,
+        //                userExists: userExists
+        //            });
+        //
+        //        } else {
+        //            collection.findOne({
+        //                "username": search
+        //            }, function(err, docs) {
+        //                if (err) {
+        //                    res.send(err);
+        //                } else if (docs != null) {
+        //                        username = search;
+        //                        userExists = 1;
+        //                } else {
+        //                        username = "No user matches the criteria";
+        //                        userExists = -1
+        //                }
+        //            });
+        //            res.render('search', {
+        //                tags: "No comic contains any of the tag criteria",
+        //                tagExists: -1,
+        //                comicIds: comicIds,
+        //                username: username,
+        //                userExists: userExists
+        //            })
+        //        }
+        //    })
+        //});
+        //
             comiccollection.find({
                 "tags": search
             }, function(err, docs) {
                 if (err) {
                     res.send(err);
-                } else if (docs != null) {
+                }
+                else if (docs != null) {
                     var comicIds = [];
                     for (var i = 0; i < docs.length; i++) {
                         comicIds.push(docs[i]['comicId']);
@@ -817,33 +874,38 @@ class Router {
                         if (err) {
                             res.send(err);
                         } else if (docs != null) {
-                                username = search;
-                                userExists = 1;
+                            console.log("123" + search);
+                            username = search;
+                            userExists = 1;
                         } else {
-                                username = "No user matches the criteria";
-                                userExists = -1
+                            console.log("123123" + search);
+                            username = "No user matches the criteria";
+                            userExists = -1
                         }
                     });
                     res.render('search', {
                         tags: search,
                         tagExists: 1,
                         comicIds: comicIds,
-                        username: username,
+                        username: search,
                         userExists: userExists
                     });
-                    
-                } else {
+
+                }
+                else {
                     collection.findOne({
                         "username": search
                     }, function(err, docs) {
                         if (err) {
                             res.send(err);
                         } else if (docs != null) {
-                                username = search;
-                                userExists = 1;
+                            console.log("dsdghs" + search);
+                            username = search;
+                            userExists = 1;
                         } else {
-                                username = "No user matches the criteria";
-                                userExists = -1
+                            console.log("1212313cdcdc" + search);
+                            username = "No user matches the criteria";
+                            userExists = -1
                         }
                     });
                     res.render('search', {
@@ -856,7 +918,6 @@ class Router {
                 }
             })
         });
-        //
         module.exports = router;
     }
 }

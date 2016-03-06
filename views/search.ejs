@@ -14,14 +14,25 @@
     <div class="col-lg-6">
         <h4>Users</h4>
         <% if (userExists == 1) { %>
-        <p><a href = "../users/<%= username %>"><%= username %></a></p>
+        <p>
+            <a href = "../users/<%= username %>">
+                <%= username %>
+            </a>
+        </p>
         <% } else { %>
-        <p>No user exists with this name</p>
+        <!--<p>No user exists with this name</p>-->
+        <a href = "../users/<%= username %>">
+            <%= username %>
+        </a>
         <% } %>
         <h4>Comics</h4>
         <% if (tagExists == 1) { %>
         <% for (var i = 0; i < comicIds.length; i++) { %>
-        <p><a href = "../comic/<%= comicIds[i] %>"><%= comicIds[i] %></a></p>
+        <p>
+            <a href = "../comic/<%= comicIds[i] %>">
+                <%= comicIds[i] %>
+            </a>
+        </p>
         <% } %>
         <% } else { %>
         <p>No comic exists with this tag</p>

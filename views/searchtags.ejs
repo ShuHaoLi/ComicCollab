@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title></title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="../home">ComicCollab</a>
+    </div>
+    <div class="page-header" style="margin-top: 60px">
+        <h1>Search Results</h1>
+    </div>
+    <div class="col-lg-6">
+        <h4>Comics</h4>
+        <% if (tagExists == 1) { %>
+        <% for (var i = 0; i < comicIds.length; i++) { %>
+        <p><a href = "../comic/<%= comicIds[i] %>"><%= comicIds[i] %></a></p>
+        <% } %>
+        <% } else { %>
+        <p>No comic matches the tags</p>
+        <% } %>
+        <br>
+    </div>
+</div>
+</body>
+</html>

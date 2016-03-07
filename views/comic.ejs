@@ -29,13 +29,15 @@
             type: "DELETE",
             url: "/comic/"+document.URL.split("/")[document.URL.split("/").length-1]
         })
-    }
+    };
 
     </script>
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
-        <a href="../editcomic/<%=comicId%>">Edit Comic</a><br />
-        <a href="../uploadcomics/<%=comicId%>">Upload New Image</a><br />
+        <a href="../editcomic/<%=comicId%>"><button type="submit" class="login btn btn-primary">Edit Comic</button></a>
+        &nbsp;
+        <a href="../uploadcomics/<%=comicId%>"><button type="submit" class="login btn btn-primary">Upload New Image</button></a>
+        <br></br>
         <% if (isCreator) { %>
             <form method="post" role="form">
                 <button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete</button>

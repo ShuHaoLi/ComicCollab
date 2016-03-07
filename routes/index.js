@@ -423,7 +423,7 @@ var Router = (function () {
                         else {
                             collection.update({ username: liker }, {
                                 $addToSet: { "likes": like },
-                                $unset: { "dislikes": like }
+                                $pull: { "dislikes": like }
                             });
                         }
                     });
@@ -439,7 +439,7 @@ var Router = (function () {
                         else {
                             collection.update({ username: liker }, {
                                 $addToSet: { "dislikes": like },
-                                $unset: { "likes": like }
+                                $pull: { "likes": like }
                             });
                         }
                     });
@@ -1160,4 +1160,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

@@ -463,7 +463,7 @@ class Router {
                                 {username: liker},
                                 {
                                     $addToSet: {"likes": like},
-                                    $unset: {"dislikes": like}
+                                    $pull: {"dislikes": like}
                                 }
                             );
                         }
@@ -480,7 +480,7 @@ class Router {
                                 {username: liker},
                                 {
                                     $addToSet: {"dislikes": like},
-                                    $unset: {"likes": like}
+                                    $pull: {"likes": like}
                                 }
                             );
                         }

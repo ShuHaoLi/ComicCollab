@@ -469,18 +469,29 @@ var Router = (function () {
                     }
                 }
             });
+            var _comicId = parseInt(req.params['0']);
             var usercollection = db.get('usercollection');
             usercollection.find({
-                "likes": comicId
+                "likes": _comicId
             }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 }
                 else {
-                    collection.update({}, { $unSet: {
-                            "likes": comicId,
-                            "dislikes": comicId
-                        }
+                    usercollection.update({ "likes": _comicId }, {
+                        $pull: { "likes": _comicId }
+                    });
+                }
+            });
+            usercollection.find({
+                "dislikes": _comicId
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    usercollection.update({ "dislikes": _comicId }, {
+                        $pull: { "dislikes": _comicId }
                     });
                 }
             });
@@ -1152,6 +1163,11 @@ var Router = (function () {
         });
         /*POST home page*/
         router.post('/home', function (req, res) {
+            var search = req.body.search;
+            res.redirect('/search/' + search);
+        });
+        /*POST home page*/
+        router.post('/', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);
         });

@@ -256,8 +256,8 @@ var Router = (function () {
             }
         });
         //Get Comic Page
-        router.get('/comic/*', function (req, res) {
-            var comicId = parseInt(req.params['0']);
+        router.get('/comic/:comicId', function (req, res) {
+            var comicId = parseInt(req.params['comicId']);
             var db = req.db;
             var collection = db.get('comics');
             // likes/dislikes counting
@@ -280,7 +280,6 @@ var Router = (function () {
                     disliketotal = Number(docs);
                 }
             });
-            //
             collection.findOne({
                 "comicId": comicId
             }, function (err, docs) {
@@ -292,7 +291,7 @@ var Router = (function () {
                     var imagesCollection = db.get('comicimages');
                     imagesCollection.find({
                         "comicId": comicId
-                    }, function (imagesErr, imagesDocs) {
+                    }, { sort: { "sequence": 1 } }, function (imagesErr, imagesDocs) {
                         if (imagesErr) {
                             res.send(imagesErr);
                         }
@@ -340,8 +339,10 @@ var Router = (function () {
                             res.send(err);
                         }
                         else {
-                            collection.update({ username: liker }, { $addToSet: { "likes": like },
-                                $unset: { "dislikes": like } });
+                            collection.update({ username: liker }, {
+                                $addToSet: { "likes": like },
+                                $unset: { "dislikes": like }
+                            });
                         }
                     });
                 }
@@ -354,8 +355,10 @@ var Router = (function () {
                             res.send(err);
                         }
                         else {
-                            collection.update({ username: liker }, { $addToSet: { "dislikes": like },
-                                $unset: { "likes": like } });
+                            collection.update({ username: liker }, {
+                                $addToSet: { "dislikes": like },
+                                $unset: { "likes": like }
+                            });
                         }
                     });
                 }
@@ -570,7 +573,8 @@ var Router = (function () {
                         res.send(err);
                     }
                     else {
-                        collection.update({ "comicId": comicId }, { $set: {
+                        collection.update({ "comicId": comicId }, {
+                            $set: {
                                 "tags": tags
                             }
                         });
@@ -668,7 +672,8 @@ var Router = (function () {
                     var db = req.db;
                     var username = req.params[0];
                     var collection = db.get('usercollection');
-                    collection.update({ username: username }, { $set: {
+                    collection.update({ username: username }, {
+                        $set: {
                             "password": password
                         }
                     }, function (err) {
@@ -885,7 +890,8 @@ var Router = (function () {
                         var securityQuestion = docs['securityquestion'];
                         var securityAnswer = docs['securityanswer'];
                         var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer);
-                        collection.update({ username: currentUser.getUsername() }, { $set: {
+                        collection.update({ username: currentUser.getUsername() }, {
+                            $set: {
                                 "fullname": user.getFullName(),
                                 "gender": user.getGender(),
                                 "age": user.getAge(),

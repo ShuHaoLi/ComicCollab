@@ -291,8 +291,8 @@ class Router {
         });
 
         //Get Comic Page
-        router.get('/comic/*', function (req, res) {
-            var comicId:number = parseInt(req.params['0']);
+        router.get('/comic/:comicId', function (req, res) {
+            var comicId:number = parseInt(req.params['comicId']);
             var db = req.db;
             var collection = db.get('comics');
             // likes/dislikes counting
@@ -300,7 +300,7 @@ class Router {
             var liketotal:number;
             userlist.count(
                 {"likes": comicId},
-                function(err, docs) {
+                function (err, docs) {
                     if (err) {
                         res.send(err);
                     } else {
@@ -311,7 +311,7 @@ class Router {
             var disliketotal:number;
             userlist.count(
                 {"dislikes": comicId},
-                function(err, docs) {
+                function (err, docs) {
                     if (err) {
                         res.send(err);
                     } else {
@@ -319,7 +319,6 @@ class Router {
                     }
                 }
             );
-            //
             collection.findOne({
                 "comicId": comicId,
             }, function (err, docs) {
@@ -330,7 +329,7 @@ class Router {
                     var imagesCollection = db.get('comicimages');
                     imagesCollection.find({
                         "comicId": comicId
-                    }, function (imagesErr, imagesDocs) {
+                    }, {sort: {"sequence": 1}}, function (imagesErr, imagesDocs) {
                         if (imagesErr) {
                             res.send(imagesErr);
                         } else if (imagesDocs != null) {
@@ -351,13 +350,13 @@ class Router {
                 }
             });
         });
-                
+
         //Post To Comic Page - like/dislike
         router.post('/comic/*', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
                 res.send("You must be logged in")
-            }else {
+            } else {
                 //db variable
                 var db = req.db;
                 //set our collection
@@ -368,7 +367,7 @@ class Router {
                 var liker = currentUser.getUsername();
                 //like or dislike input value
                 var inputValue = req.body.vote;
-                if (inputValue == "like"){
+                if (inputValue == "like") {
                     console.log("hi");
                     collection.findOne({
                         "username": liker
@@ -378,11 +377,13 @@ class Router {
                         } else {
                             collection.update(
                                 {username: liker},
-                                { $addToSet: {"likes": like },
-                                $unset: {"dislikes": like } }
+                                {
+                                    $addToSet: {"likes": like},
+                                    $unset: {"dislikes": like}
+                                }
                             );
                         }
-                    })    
+                    })
                 } else {
                     console.log("hey");
                     collection.findOne({
@@ -393,8 +394,10 @@ class Router {
                         } else {
                             collection.update(
                                 {username: liker},
-                                { $addToSet: {"dislikes": like },
-                                $unset: {"likes": like } }
+                                {
+                                    $addToSet: {"dislikes": like},
+                                    $unset: {"likes": like}
+                                }
                             );
                         }
                     });
@@ -481,12 +484,12 @@ class Router {
                 });
             }
         });
-        
+
         /* GET Userlist page. */
-        router.get('/userlist', function(req, res) {
+        router.get('/userlist', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            collection.find({}, {}, function(e, docs) {
+            collection.find({}, {}, function (e, docs) {
                 res.render('userlist', {
                     "userlist": docs
                 });
@@ -618,10 +621,11 @@ class Router {
                     } else {
                         collection.update(
                             {"comicId": comicId},
-                            { $set: {
-                                "tags": tags
-                            }
-                        });
+                            {
+                                $set: {
+                                    "tags": tags
+                                }
+                            });
                         res.redirect("../../comic/" + comicId.toString());
                     }
                 });
@@ -714,9 +718,10 @@ class Router {
                     var collection = db.get('usercollection');
                     collection.update(
                         {username: username},
-                        { $set: {
-                            "password": password
-                        }
+                        {
+                            $set: {
+                                "password": password
+                            }
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -759,10 +764,10 @@ class Router {
                                 } else {
                                     var fans = [];
                                     var following = [];
-                                    for (var i=0; i<fanDocs.length; i++) {
+                                    for (var i = 0; i < fanDocs.length; i++) {
                                         following.push(fanDocs[i]['following']);
                                     }
-                                    for (var i=0; i<followingDocs.length; i++) {
+                                    for (var i = 0; i < followingDocs.length; i++) {
                                         fans.push(followingDocs[i]['fan']);
                                     }
                                     res.render('myprofile', {
@@ -823,10 +828,10 @@ class Router {
                                     } else {
                                         var fans = [];
                                         var following = [];
-                                        for (var i=0; i<fanDocs.length; i++) {
+                                        for (var i = 0; i < fanDocs.length; i++) {
                                             following.push(fanDocs[i]['following']);
                                         }
-                                        for (var i=0; i<followingDocs.length; i++) {
+                                        for (var i = 0; i < followingDocs.length; i++) {
                                             fans.push(followingDocs[i]['fan']);
                                         }
                                         var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
@@ -851,13 +856,13 @@ class Router {
                 });
             }
         });
-        
+
         /*POST to profile pages - become a fan*/
         router.post('/users/*', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
                 res.send("You must be logged in")
-            }else {
+            } else {
                 //db variable
                 var db = req.db;
                 //set our collection
@@ -877,13 +882,13 @@ class Router {
         });
 
         //get Search User page
-        router.get('/searchuser', function (req,res) {
+        router.get('/searchuser', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
             var username = req.body.username;
             collection.findOne({
                 "username": username
-            }, function (err, docs){
+            }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 }
@@ -940,13 +945,14 @@ class Router {
 
                         collection.update(
                             {username: currentUser.getUsername()},
-                            { $set: {
-                                "fullname": user.getFullName(),
-                                "gender": user.getGender(),
-                                "age": user.getAge(),
-                                "aboutme": user.getAboutMe(),
-                                "location": user.getLocation(),
-                            }
+                            {
+                                $set: {
+                                    "fullname": user.getFullName(),
+                                    "gender": user.getGender(),
+                                    "age": user.getAge(),
+                                    "aboutme": user.getAboutMe(),
+                                    "location": user.getLocation(),
+                                }
                             }, function (err) {
                                 if (err) {
                                     // If it failed, return error
@@ -963,7 +969,7 @@ class Router {
             }
         });
         //Get Search Users Page
-        router.get('/searchusers/*', function(req, res) {
+        router.get('/searchusers/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
             var comiccollection = db.get('comics');
@@ -971,7 +977,7 @@ class Router {
 
             collection.findOne({
                 "username": search
-            }, function(err, docs) {
+            }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
@@ -987,17 +993,17 @@ class Router {
                 }
             })
         });
-        
+
         //Get Search Tags Page
-        router.get('/searchtags/*', function(req, res) {
+        router.get('/searchtags/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
             var comiccollection = db.get('comics');
             var search = req.params['0'];
-            
+
             comiccollection.find({
                 "tags": search
-            }, function(err, docs) {
+            }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
@@ -1005,7 +1011,7 @@ class Router {
                     for (var i = 0; i < docs.length; i++) {
                         comicIds.push(docs[i]['comicId']);
                     }
-                    
+
                     res.render('searchtags', {
                         tags: search,
                         tagExists: 1,
@@ -1020,7 +1026,7 @@ class Router {
             })
         });
         //Get Search Page
-        router.get('/search/*', function(req, res) {
+        router.get('/search/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
             var comiccollection = db.get('comics');
@@ -1031,7 +1037,7 @@ class Router {
 
             collection.findOne({
                 "username": search
-            }, function(err, docs) {
+            }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
@@ -1045,7 +1051,7 @@ class Router {
 
             comiccollection.find({
                 "tags": search
-            }, function(err, docs) {
+            }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
@@ -1073,7 +1079,7 @@ class Router {
             })
         });
 
-        
+
         router.post('/home', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);

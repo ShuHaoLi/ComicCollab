@@ -81,7 +81,7 @@
     </div>
     <div style="min-width: 1250px">
     <% for (var j=0; j<urls.length; j++) { %>
-    <img style="width: 300px; height:300px" src=<%= urls[j]%> />
+    <a href="/comic/<%= comicId%><%= urls[j]%>"><img style="width: 300px; height:300px" src=<%= urls[j]%> /></a>
     <% } %>
     </div>
     <br>
@@ -89,7 +89,6 @@
         <input type="submit" name="vote" value="like">
         <input type="submit" name="vote" value="dislike">
     </form>
-    <script></script>
     <p>Likes: <%=liketotal%> Dislikes: <%=disliketotal%></p>
     </div>
 </body>

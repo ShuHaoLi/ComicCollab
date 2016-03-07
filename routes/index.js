@@ -153,6 +153,43 @@ var Router = (function () {
                 });
             }
         });
+        router.get('/comic/:comicId/images/*', function (req, res) {
+            var comicId = parseInt(req.params['comicId']);
+            var imageUrl = req.params['0'];
+            var db = req.db;
+            var imagesCollection = db.get('comicimages');
+            imagesCollection.findOne({
+                "comicId": comicId,
+                "url": "/images/" + imageUrl
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    imagesCollection.find({
+                        "comicId": comicId
+                    }, { sort: { "sequence": 1 } }, function (imagesErr, imagesDocs) {
+                        if (imagesErr) {
+                            res.send(imagesErr);
+                        }
+                        else if (imagesDocs != null) {
+                            var urls = [];
+                            for (var i = 0; i < imagesDocs.length; i++) {
+                                urls.push(imagesDocs[i]['url']);
+                            }
+                            res.render('comicimage', {
+                                comicId: comicId.toString(),
+                                url: "/images/" + imageUrl,
+                                urls: urls
+                            });
+                        }
+                    });
+                }
+                else {
+                    res.send('There is no image associated with this comic');
+                }
+            });
+        });
         //Get Comic Page
         router.get('/comic/*', function (req, res) {
             var comicId = parseInt(req.params['0']);

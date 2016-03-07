@@ -19,8 +19,12 @@
     <!-- Custom styles for this template -->
     <link href="../stylesheets/jumbotron.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../node_modules/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script src="../node_modules/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../node_modules/assets/js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -32,10 +36,11 @@
 
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+    <div class="navbar-header">
         <a class="navbar-brand" href="../home">ComicCollab</a>
     </div>
 </nav>
+
 <div class="container">
     <!-- Functions to call for sharing -->
     <script language="javascript">
@@ -53,11 +58,24 @@
     {window.open("http://www.tumblr.com/share/link?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
     function emailshareCurrentPage()
     {window.open("mailto:?subject=Check Out This Comic&body=Here's this link: "+escape(window.location.href), '');return false; };
+
+    function deleteButtonFunction(){
+        $.ajax({
+            type: "DELETE",
+            url: "/comic/"+document.URL.split("/")[document.URL.split("/").length-1]
+        })
+    };
+
     </script>
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
-        <a href="../editcomic/<%=comicId%>">Edit comic</a><br />
-        <a href="../uploadcomics/<%=comicId%>">Upload new image</a><br />
+        <a href="../editcomic/<%=comicId%>"><button type="submit" class="login btn btn-primary">Edit Comic</button></a>
+        &nbsp;
+        <a href="../uploadcomics/<%=comicId%>"><button type="submit" class="login btn btn-primary">Upload New Image</button></a><br>
+        </br>
+        <% if (isCreator) { %>
+            <a href="../home"><button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete</button></a>
+        <% } %>
         <p>Tags:
             <% for (var i=0; i<tags.length; i++) { %>
             <span class="label label-default"><%= tags[i]%></span>

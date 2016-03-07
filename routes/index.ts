@@ -193,32 +193,50 @@ class Router {
             var imageUrl:string = req.params['0'];
             var db = req.db;
             var imagesCollection = db.get('comicimages');
-            imagesCollection.findOne({
+            var comicCollection = db.get('comics');
+            comicCollection.findOne({
                 "comicId": comicId,
-                "url": "/images/" + imageUrl
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                } else if (docs != null) {
-                    imagesCollection.find({
-                        "comicId": comicId
-                    }, {sort: {"sequence": 1}}, function (imagesErr, imagesDocs) {
-                        if (imagesErr) {
-                            res.send(imagesErr);
-                        } else if (imagesDocs != null) {
-                            var urls = [];
-                            for (var i = 0; i < imagesDocs.length; i++) {
-                                urls.push(imagesDocs[i]['url']);
-                            }
-                            res.render('comicimage', {
-                                comicId: comicId.toString(),
-                                url: "/images/" + imageUrl,
-                                urls: urls,
+            }, function (comicErr, comicDocs) {
+                if (comicErr) {
+                    res.send(comicErr);
+                } else if (comicDocs != null) {
+                    var creator = comicDocs['creator'];
+                    imagesCollection.findOne({
+                        "comicId": comicId,
+                        "url": "/images/" + imageUrl
+                    }, function (err, docs) {
+                        if (err) {
+                            res.send(err);
+                        } else if (docs != null) {
+                            imagesCollection.find({
+                                "comicId": comicId
+                            }, {sort: {"sequence": 1}}, function (imagesErr, imagesDocs) {
+                                if (imagesErr) {
+                                    res.send(imagesErr);
+                                } else if (imagesDocs != null) {
+
+                                    var creator = creator;
+                                    var uploader = docs['uploader'];
+                                    var urls = [];
+                                    for (var i = 0; i < imagesDocs.length; i++) {
+                                        urls.push(imagesDocs[i]['url']);
+                                    }
+                                    console.log(creator);
+                                    console.log(req.currentUser.getUsername());
+                                    console.log(uploader);
+                                    console.log(req.currentUser.getUsername() == uploader);
+                                    res.render('comicimage', {
+                                        comicId: comicId.toString(),
+                                        url: "/images/" + imageUrl,
+                                        urls: urls,
+                                        isCreator: (req.currentUser.getUsername() == uploader || req.currentUser.getUsername() == creator)
+                                    });
+                                }
                             });
+                        } else {
+                            res.send('There is no image associated with this comic');
                         }
                     });
-                } else {
-                    res.send('There is no image associated with this comic');
                 }
             });
         });
@@ -290,6 +308,71 @@ class Router {
             }
         });
 
+        /* DELETE COMIC CELL */
+        router.delete('/comic/:comicId/images/*', function (req, res) {
+            console.log("hello I am in delete comic cell on server side");
+            var comicId:number = parseInt(req.params['comicId']);
+            var imageUrl:string = req.params['0'];
+            var db = req.db;
+            var imagesCollection = db.get('comicimages');
+            var comicCollection = db.get('comics')
+            imagesCollection.find({
+                "comicId": comicId
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
+                    var sequence:number = 0;
+                    var i:number = 0;
+                    var urls = [];
+                    var sequences = [];
+                    var reorder = false;
+                    if (docs.length == 1) {
+                        imagesCollection.remove({ "comicId": comicId});
+                        comicCollection.remove({"comicId": comicId});
+                    } else {
+                        while (sequence == 0 && i < docs.length) {
+                            if (docs[i]['url'] == "/images/" + imageUrl) {
+                                sequence = docs[i]['sequence'];
+                                var id = docs[i]['_id'];
+                                if (i != docs.length - 1) {
+                                    var newSequence = docs[i + 1]['sequence'];
+                                    reorder = true;
+                                }
+                                imagesCollection.remove({"_id": id});
+                            }
+                            i++;
+                        }
+                        if (reorder) {
+                            for (var j = 0; j < docs.length; j++) {
+                                if (docs[j]['sequence'] >= newSequence) {
+                                    urls.push(docs[j]['url']);
+                                    sequences.push(docs[j]['sequence'] - 1)
+                                }
+                            }
+                            for (var m = 0; m < urls.length; m++) {
+                                imagesCollection.update(
+                                    {url: urls[m]},
+                                    {
+                                        $set: {
+                                            "sequence": sequences[m]
+                                        }
+                                    }, function (err) {
+                                        if (err) {
+                                            // If it failed, return error
+                                            res.send("There was a problem adding the information to the database.");
+                                        }
+                                        else {
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    }
+                }
+            })
+        });
+
         //Get Comic Page
         router.get('/comic/:comicId', function (req, res) {
             var comicId:number = parseInt(req.params['comicId']);
@@ -343,7 +426,8 @@ class Router {
                                 urls: urls,
                                 tags: tags,
                                 liketotal: liketotal,
-                                disliketotal: disliketotal
+                                disliketotal: disliketotal,
+                                isCreator: (req.currentUser.getUsername() == creator)
                             });
                         }
                     })
@@ -405,6 +489,33 @@ class Router {
                 res.redirect(req.get('referer'));
             }
         });
+
+        /* DELETE COMIC */
+        router.delete('/comic/*', function (req, res) {
+            var comicId:number = parseInt(req.params[0]) || 0;
+            var db = req.db;
+            var collection = db.get('comics');
+            var comicimages = db.get('comicimages');
+            collection.findOne({
+                'comicId': comicId
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
+                    var currentUser = req.currentUser.getUsername();
+                    var creator = docs['creator'];
+                    if (currentUser == creator) {
+                        collection.remove({ "comicId": comicId });
+                        comicimages.remove({ "comicId": comicId });
+                        res.redirect('/');
+                    }
+                }
+            });
+        });
+
+        /*router.post('/comic/*', function (req,res) {
+            res.redirect('/');
+        }); */
 
         /* GET Create Profile page. */
         router.get('/createprofile', function (req, res) {
@@ -477,7 +588,7 @@ class Router {
                             }
                             else {
                                 // Forward to home page
-                                res.redirect("home");
+                                res.redirect('/home');
                             }
                         });
                     }
@@ -513,6 +624,7 @@ class Router {
         /* POST TO UPLOAD COMICS PAGE */
         router.post('/uploadcomics/*', function (req, res) {
             var comicId:number = parseInt(req.params[0]) || 0;
+
 
             var db = req.db;
 
@@ -968,6 +1080,7 @@ class Router {
                 });
             }
         });
+
         //Get Search Users Page
         router.get('/searchusers/*', function (req, res) {
             var db = req.db;
@@ -1085,8 +1198,6 @@ class Router {
             res.redirect('/search/' + search);
         });
 
-
-        //
         module.exports = router;
     }
 }

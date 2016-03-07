@@ -19,6 +19,9 @@
     <!-- Custom styles for this template -->
     <link href="../../../stylesheets/jumbotron.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../node_modules/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../../../node_modules/assets/js/ie-emulation-modes-warning.js"></script>
@@ -30,6 +33,17 @@
     <![endif]-->
 </head>
 
+<script language="javascript">
+    function deleteButtonFunction(){
+        console.log("did I get here");
+        console.log("/comic/"+document.URL.split("/")[document.URL.split("/").length-3]+"/images/"+document.URL.split("/")[document.URL.split("/").length-1]);
+        $.ajax({
+            type: "DELETE",
+            url: "/comic/"+document.URL.split("/")[document.URL.split("/").length-3]+"/images/"+document.URL.split("/")[document.URL.split("/").length-1]
+        })
+    };
+</script>
+
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -40,7 +54,10 @@
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
     </div>
-    <a  href='#' onClick='history.go(-1)'><button class="btn btn-default">Back to Comic</button></a>
+    <a  href='#' onClick='history.go(-1)'><button class="login btn btn-primary">Back to Comic</button></a>
+    <% if (isCreator) { %>
+        <a href="/comic/<%=comicId%>"><button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete Comic Image</button></a>
+    <% } %>
     <br><br>
     <p>The selected comic image is highlighted in red.
         To rearrange, type in the new position you want it to be in and click Publish.

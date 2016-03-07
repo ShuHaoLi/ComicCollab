@@ -18,4 +18,3 @@ var Account = (function () {
     };
     return Account;
 })();
-//# sourceMappingURL=account.js.map

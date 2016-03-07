@@ -804,63 +804,6 @@ var Router = (function () {
                 });
             }
         });
-        //Get Search Users Page
-        router.get('/searchusers/*', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            var comiccollection = db.get('comics');
-            var search = req.params['0'];
-            collection.findOne({
-                "username": search
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    res.render('searchusers', {
-                        username: search,
-                        userExists: 1
-                    });
-                }
-                else {
-                    res.render('searchusers', {
-                        username: "No user matches the criteria",
-                        userExists: -1
-                    });
-                }
-            });
-        });
-        //Get Search Tags Page
-        router.get('/searchtags/*', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            var comiccollection = db.get('comics');
-            var search = req.params['0'];
-            comiccollection.find({
-                "tags": search
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    var comicIds = [];
-                    for (var i = 0; i < docs.length; i++) {
-                        comicIds.push(docs[i]['comicId']);
-                    }
-                    res.render('searchtags', {
-                        tags: search,
-                        tagExists: 1,
-                        comicIds: comicIds
-                    });
-                }
-                else {
-                    res.render('searchtags', {
-                        tags: "No comic contains any of the tag criteria",
-                        tagExists: -1
-                    });
-                }
-            });
-        });
         //Get Search Page
         router.get('/search/*', function (req, res) {
             var db = req.db;
@@ -914,6 +857,12 @@ var Router = (function () {
                 }
             });
         });
+        /*POST search page*/
+        router.post('/search/*', function (req, res) {
+            var search = req.body.search;
+            res.redirect('/search/' + search);
+        });
+        /*POST home page*/
         router.post('/home', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);
@@ -924,4 +873,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

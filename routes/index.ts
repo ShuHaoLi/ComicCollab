@@ -335,8 +335,8 @@ class Router {
                             if (docs[i]['url'] == "/images/" + imageUrl) {
                                 sequence = docs[i]['sequence'];
                                 var id = docs[i]['_id'];
-                                if (i != docs.length - 1) {
-                                    var newSequence = docs[i + 1]['sequence'];
+                                if (sequence != docs.length - 1) {
+                                    var newSequence = sequence + 1;
                                     reorder = true;
                                 }
                                 imagesCollection.remove({"_id": id});

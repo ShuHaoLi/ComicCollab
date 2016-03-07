@@ -469,6 +469,21 @@ var Router = (function () {
                     }
                 }
             });
+            var usercollection = db.get('usercollection');
+            usercollection.find({
+                "likes": comicId
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    collection.update({}, { $unSet: {
+                            "likes": comicId,
+                            "dislikes": comicId
+                        }
+                    });
+                }
+            });
         });
         /*router.post('/comic/*', function (req,res) {
             res.redirect('/');
@@ -1145,4 +1160,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

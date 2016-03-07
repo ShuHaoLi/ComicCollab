@@ -510,7 +510,23 @@ class Router {
                         res.redirect('/');
                     }
                 }
-            });
+            })
+            var usercollection = db.get('usercollection')
+            usercollection.find({
+                "likes": comicId
+            }, function(err, docs) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    collection.update(
+                        {},
+                            { $unSet: {
+                                "likes": comicId,
+                                "dislikes": comicId,
+                            }
+                        });
+                }
+            })
         });
 
         /*router.post('/comic/*', function (req,res) {

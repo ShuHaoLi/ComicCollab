@@ -461,6 +461,7 @@ var Router = (function () {
                     }
                 }
             });
+            //remove likes and dislikes when a comic is deleted
             var _comicId = parseInt(req.params['0']);
             var usercollection = db.get('usercollection');
             usercollection.find({
@@ -1159,3 +1160,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

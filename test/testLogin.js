@@ -24,7 +24,7 @@ describe('Test Login a User', function() {
 
 describe('Test Login a User with missing username', function() {
     var login_url = "http://localhost:3000/login";
-    it('login a user', function (done) {
+    it('login a user with missing username', function (done) {
         request(login_url, function (error, response, body) {
             send({
                 "username": "",
@@ -39,7 +39,7 @@ describe('Test Login a User with missing username', function() {
 
 describe('Test Login a User with missing password', function() {
     var login_url = "http://localhost:3000/login";
-    it('login a user', function (done) {
+    it('login a user with massing password', function (done) {
         request(login_url, function (error, response, body) {
             send({
                 "username": "Fake User",
@@ -54,7 +54,7 @@ describe('Test Login a User with missing password', function() {
 
 describe('Test Login a User with no password and user name', function() {
     var login_url = "http://localhost:3000/login";
-    it('login a user', function (done) {
+    it('login a user with no password and user name', function (done) {
         request(login_url, function (error, response, body) {
             send({
                 "username": "",

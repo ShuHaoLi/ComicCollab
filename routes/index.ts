@@ -560,8 +560,6 @@ class Router {
             // Get our form values. These rely on the "name" attributes
             var username = req.body.username;
             var password = req.body.password;
-            var securityQuestion = req.body.securityQuestion;
-            var securityAnswer = req.body.securityAnswer;
             var confirmPassword = req.body.confirmPassword;
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;

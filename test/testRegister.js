@@ -4,7 +4,7 @@ var should = require('should');
 var send = require('send');
 describe('Test Register a User (minimum information)', function() {
     var createprofile_url = "http://localhost:3000/createprofile";
-    it('create a user', function (done) {
+    it('create a user with minimum info', function (done) {
         request(createprofile_url, function (error, response, body) {
             send({
                 "username": "FakeUser",
@@ -23,7 +23,7 @@ describe('Test Register a User (minimum information)', function() {
 
 describe('Test Register a User (max information)', function() {
     var createprofile_url = "http://localhost:3000/createprofile";
-    it('create a user', function (done) {
+    it('create a user with max info', function (done) {
         request(createprofile_url, function (error, response, body) {
             send({
                 "username": "FakeUser",
@@ -53,7 +53,7 @@ describe('Test Register a User (max information)', function() {
 
 describe('Test NULL Register', function() {
     var createprofile_url = "http://localhost:3000/createprofile";
-    it('create a user', function (done) {
+    it('create a user with null register', function (done) {
         request(createprofile_url, function (error, response, body) {
             send({
                 "username": "",
@@ -69,7 +69,7 @@ describe('Test NULL Register', function() {
 
 describe('Test Register a User with missing password', function() {
     var createprofile_url = "http://localhost:3000/createprofile";
-    it('create a user', function (done) {
+    it('create a user with missing password', function (done) {
         request(createprofile_url, function (error, response, body) {
             send({
                 "username": "FakeUser",

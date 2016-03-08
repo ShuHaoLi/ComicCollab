@@ -35,8 +35,6 @@
 
 <script language="javascript">
     function deleteButtonFunction(){
-        console.log("did I get here");
-        console.log("/comic/"+document.URL.split("/")[document.URL.split("/").length-3]+"/images/"+document.URL.split("/")[document.URL.split("/").length-1]);
         $.ajax({
             type: "DELETE",
             url: "/comic/"+document.URL.split("/")[document.URL.split("/").length-3]+"/images/"+document.URL.split("/")[document.URL.split("/").length-1]

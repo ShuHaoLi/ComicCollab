@@ -221,10 +221,6 @@ class Router {
                                     for (var i = 0; i < imagesDocs.length; i++) {
                                         urls.push(imagesDocs[i]['url']);
                                     }
-                                    console.log(creator);
-                                    console.log(req.currentUser.getUsername());
-                                    console.log(uploader);
-                                    console.log(req.currentUser.getUsername() == uploader);
                                     res.render('comicimage', {
                                         comicId: comicId.toString(),
                                         url: "/images/" + imageUrl,
@@ -310,7 +306,6 @@ class Router {
 
         /* DELETE COMIC CELL */
         router.delete('/comic/:comicId/images/*', function (req, res) {
-            console.log("hello I am in delete comic cell on server side");
             var comicId:number = parseInt(req.params['comicId']);
             var imageUrl:string = req.params['0'];
             var db = req.db;
@@ -452,7 +447,6 @@ class Router {
                 //like or dislike input value
                 var inputValue = req.body.vote;
                 if (inputValue == "like") {
-                    console.log("hi");
                     collection.findOne({
                         "username": liker
                     }, function (err, docs) {
@@ -469,7 +463,6 @@ class Router {
                         }
                     })
                 } else {
-                    console.log("hey");
                     collection.findOne({
                         "username": liker
                     }, function (err, docs) {
@@ -507,7 +500,6 @@ class Router {
                     if (currentUser == creator) {
                         collection.remove({ "comicId": comicId });
                         comicimages.remove({ "comicId": comicId });
-                        res.redirect('/');
                     }
                 }
             })
@@ -528,10 +520,6 @@ class Router {
                 }
             })
         });
-
-        /*router.post('/comic/*', function (req,res) {
-            res.redirect('/');
-        }); */
 
         /* GET Create Profile page. */
         router.get('/createprofile', function (req, res) {
@@ -1051,8 +1039,6 @@ class Router {
                 var location = req.body.location;
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
-                var securityQuestion = req.body.securityQuestion;
-                var securityAnswer = req.body.securityAnswer;
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -1099,7 +1085,6 @@ class Router {
         router.get('/searchusers/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            var comiccollection = db.get('comics');
             var search = req.params['0'];
 
             collection.findOne({
@@ -1124,7 +1109,6 @@ class Router {
         //Get Search Tags Page
         router.get('/searchtags/*', function (req, res) {
             var db = req.db;
-            var collection = db.get('usercollection');
             var comiccollection = db.get('comics');
             var search = req.params['0'];
 

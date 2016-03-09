@@ -69,10 +69,12 @@
     </script>
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
+        <% if (currentUser.getIsLoggedIn()) { %>
         <a href="../editcomic/<%=comicId%>"><button type="submit" class="login btn btn-primary">Edit Comic</button></a>
         &nbsp;
         <a href="../uploadcomics/<%=comicId%>"><button type="submit" class="login btn btn-primary">Upload New Image</button></a><br>
         </br>
+        <% } %>
         <% if (isCreator) { %>
             <a href="../home"><button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete</button></a>
         <% } %>
@@ -103,10 +105,12 @@
     <% } %>
     </div>
     <br>
+    <% if (currentUser.getIsLoggedIn()) { %>
     <form method="post" name="ratings">
         <input type="submit" name="vote" value="like">
         <input type="submit" name="vote" value="dislike">
     </form>
+    <% } %>
     <p>Likes: <%=liketotal%> Dislikes: <%=disliketotal%></p>
     </div>
 </body>

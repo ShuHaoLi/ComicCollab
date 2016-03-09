@@ -225,12 +225,15 @@ class Router {
                                         comicId: comicId.toString(),
                                         url: "/images/" + imageUrl,
                                         urls: urls,
-                                        isCreator: (req.currentUser.getUsername() == uploader || req.currentUser.getUsername() == creator)
+                                        isCreator: (req.currentUser.getUsername() == uploader || req.currentUser.getUsername() == creator),
+                                        currentUser: req.currentUser
                                     });
                                 }
                             });
                         } else {
-                            res.send('There is no image associated with this comic');
+                            res.render('error', {
+                                error: "There is no image associated with this comic."
+                            });
                         }
                     });
                 }
@@ -310,7 +313,7 @@ class Router {
             var imageUrl:string = req.params['0'];
             var db = req.db;
             var imagesCollection = db.get('comicimages');
-            var comicCollection = db.get('comics')
+            var comicCollection = db.get('comics');
             imagesCollection.find({
                 "comicId": comicId
             }, function (err, docs) {
@@ -365,7 +368,7 @@ class Router {
                         }
                     }
                 }
-            })
+            });
         });
 
         //Get Comic Page
@@ -422,10 +425,15 @@ class Router {
                                 tags: tags,
                                 liketotal: liketotal,
                                 disliketotal: disliketotal,
-                                isCreator: (req.currentUser.getUsername() == creator)
+                                isCreator: (req.currentUser.getUsername() == creator),
+                                currentUser: req.currentUser
                             });
                         }
                     })
+                } else {
+                    res.render('error', {
+                        error: "The specified comic does not exist."
+                    });
                 }
             });
         });
@@ -434,7 +442,9 @@ class Router {
         router.post('/comic/*', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
-                res.send("You must be logged in")
+                res.render('error', {
+                    error: "You must be logged in to like or dislike."
+                });
             } else {
                 //db variable
                 var db = req.db;
@@ -460,6 +470,7 @@ class Router {
                                     $pull: {"dislikes": like}
                                 }
                             );
+                            res.redirect(req.get('referer'));
                         }
                     })
                 } else {
@@ -476,10 +487,10 @@ class Router {
                                     $pull: {"likes": like}
                                 }
                             );
+                            res.redirect(req.get('referer'));
                         }
                     });
                 }
-                res.redirect(req.get('referer'));
             }
         });
 
@@ -502,7 +513,7 @@ class Router {
                         comicimages.remove({ "comicId": comicId });
                     }
                 }
-            })
+            });
             //remove likes and dislikes when a comic is deleted
             var _comicId:number = parseInt(req.params['0']);
             var usercollection = db.get('usercollection');
@@ -778,7 +789,9 @@ class Router {
                         res.send(err);
                     }
                     else if (docs == null) {
-                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                        res.render('error', {
+                            error: "Unfortunately this username does not exist."
+                        });
                     }
                     else {
                         res.render('resetpassword', {
@@ -798,7 +811,9 @@ class Router {
                     isConfirmed: isConfirmed
                 });
             } else {
-                res.send('Invalid link');
+                res.render('error', {
+                    error: "This page does not exist."
+                });
             }
         });
 
@@ -823,7 +838,9 @@ class Router {
                         res.send(err);
                     }
                     else if (docs == null) {
-                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                        res.render('error', {
+                            error: "Unfortunately this username does not exist."
+                        });
                     }
                     else {
                         if (docs['securityanswer'] == securityAnswer) {
@@ -833,13 +850,17 @@ class Router {
                             res.redirect("../3/" + username);
                         } else {
                             req.currentSecurityResponse.clear();
-                            res.send("Security answer was incorrect. <a href='#' onClick='history.go(-1)'>Go Back</a>")
+                            res.render('error', {
+                                error: "Security answer was incorrect."
+                            });
                         }
                     }
                 })
             } else if (step == 3) {
                 if (password != confirmPassword) {
-                    res.send("Passwords did not match.")
+                    res.render('error', {
+                        error: "Passwords did not match."
+                    });
                 } else {
                     var db = req.db;
                     var username = req.params[0];
@@ -853,7 +874,9 @@ class Router {
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
-                                res.send("There was a problem updating your password.");
+                                res.render('error', {
+                                    error: "There was a problem updating your password."
+                                });
                             }
                             else {
                                 // Forward back to my profile page

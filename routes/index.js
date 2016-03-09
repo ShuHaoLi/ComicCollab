@@ -1133,35 +1133,35 @@ var Router = (function () {
                     username = "No user matches the criteria";
                     userExists = -1;
                 }
-            });
-            comiccollection.find({
-                "tags": search
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    var comicIds = [];
-                    for (var i = 0; i < docs.length; i++) {
-                        comicIds.push(docs[i]['comicId']);
+                comiccollection.find({
+                    "tags": search
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
                     }
-                    res.render('search', {
-                        tags: search,
-                        tagExists: 1,
-                        comicIds: comicIds,
-                        username: username,
-                        userExists: userExists
-                    });
-                }
-                else {
-                    res.render('search', {
-                        tags: search,
-                        tagExists: -1,
-                        comicIds: comicIds,
-                        username: username,
-                        userExists: userExists
-                    });
-                }
+                    else if (docs != null) {
+                        var comicIds = [];
+                        for (var i = 0; i < docs.length; i++) {
+                            comicIds.push(docs[i]['comicId']);
+                        }
+                        res.render('search', {
+                            tags: search,
+                            tagExists: 1,
+                            comicIds: comicIds,
+                            username: username,
+                            userExists: userExists
+                        });
+                    }
+                    else {
+                        res.render('search', {
+                            tags: search,
+                            tagExists: -1,
+                            comicIds: comicIds,
+                            username: username,
+                            userExists: userExists
+                        });
+                    }
+                });
             });
         });
         /*POST search page*/

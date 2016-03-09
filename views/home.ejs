@@ -30,7 +30,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-
+<style>
+body  {
+    background-image: url("color/LightComicWall2.jpg");
+}
+</style>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -56,7 +60,7 @@
                 <a href="userlist" class="btn btn-info" role="button" id='button_createComic'>Users</a>
                 <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
                 <% }else {%>
-                <a href="createprofile" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
+                <a href="register" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
                 <a href="login" class="btn btn-info" role="button" id='button_login'>Login</a>
                 <%}%>
             </ul>

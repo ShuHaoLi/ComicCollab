@@ -548,8 +548,8 @@ class Router {
         });
 
         /* GET Create Profile page. */
-        router.get('/createprofile', function (req, res) {
-            res.render('createprofile');
+        router.get('/register', function (req, res) {
+            res.render('register');
         });
 
         /* GET logout */
@@ -566,7 +566,7 @@ class Router {
         });
 
         /* POST to UserList Page */
-        router.post('/createprofile', function (req, res) {
+        router.post('/register', function (req, res) {
 
             // Set our internal DB variable
             var db = req.db;
@@ -578,7 +578,7 @@ class Router {
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;
             if (password.length < 4 || password.length > 20) {
-                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+                res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
             else if (password != confirmPassword) {
                 res.send("passwords do not match");
@@ -853,11 +853,15 @@ class Router {
                             res.render('error', {
                                 error: "Security answer was incorrect."
                             });
+                            }
                         }
-                    }
-                })
+                    })
             } else if (step == 3) {
-                if (password != confirmPassword) {
+                if (password.length < 4 || password.length > 20) {
+                    res.render('error', {
+                        error: "Password needs to be between 4 - 20 characters."
+                    });
+                } else if (password != confirmPassword) {
                     res.render('error', {
                         error: "Passwords did not match."
                     });
@@ -1055,12 +1059,12 @@ class Router {
         });
 
         /* GET editprofile page. */
-        router.get('/editprofile', function (req, res) {
-            res.render('editprofile', {title: 'Edit Profile'});
+        router.get('/edit', function (req, res) {
+            res.render('edit', {title: 'Edit Profile'});
         });
 
         /* POST for editprofile page */
-        router.post('/editprofile', function (req, res) {
+        router.post('/edit', function (req, res) {
 
             var currentUser = req.currentUser;
 

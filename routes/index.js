@@ -502,8 +502,8 @@ var Router = (function () {
             });
         });
         /* GET Create Profile page. */
-        router.get('/createprofile', function (req, res) {
-            res.render('createprofile');
+        router.get('/register', function (req, res) {
+            res.render('register');
         });
         /* GET logout */
         router.get('/logout', function (req, res) {
@@ -518,7 +518,7 @@ var Router = (function () {
             }
         });
         /* POST to UserList Page */
-        router.post('/createprofile', function (req, res) {
+        router.post('/register', function (req, res) {
             // Set our internal DB variable
             var db = req.db;
             // Get our form values. These rely on the "name" attributes
@@ -528,7 +528,7 @@ var Router = (function () {
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;
             if (password.length < 4 || password.length > 20) {
-                res.send("Password needs to be between 6 - 20 characters. Please try again!");
+                res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
             else if (password != confirmPassword) {
                 res.send("passwords do not match");
@@ -807,7 +807,12 @@ var Router = (function () {
                 });
             }
             else if (step == 3) {
-                if (password != confirmPassword) {
+                if (password.length < 4 || password.length > 20) {
+                    res.render('error', {
+                        error: "Password needs to be between 4 - 20 characters."
+                    });
+                }
+                else if (password != confirmPassword) {
                     res.render('error', {
                         error: "Passwords did not match."
                     });
@@ -1003,11 +1008,11 @@ var Router = (function () {
             });
         });
         /* GET editprofile page. */
-        router.get('/editprofile', function (req, res) {
-            res.render('editprofile', { title: 'Edit Profile' });
+        router.get('/edit', function (req, res) {
+            res.render('edit', { title: 'Edit Profile' });
         });
         /* POST for editprofile page */
-        router.post('/editprofile', function (req, res) {
+        router.post('/edit', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
                 res.send("You must be logged in");
@@ -1188,4 +1193,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

@@ -1182,6 +1182,8 @@ class Router {
 
             var username;
             var userExists;
+            var comicIds = [];
+            var tagExists;
 
             collection.findOne({
                 "username": search
@@ -1192,31 +1194,33 @@ class Router {
                     username = search;
                     userExists = 1;
                 } else {
-                    username = "No user matches the criteria";
+                    username = "No user exists with this name";
                     userExists = -1
                 }
                 comiccollection.find({
                     "tags": search
-                }, function (err, docs) {
-                    if (err) {
-                        res.send(err);
-                    } else if (docs != null) {
-                        var comicIds = [];
-                        for (var i = 0; i < docs.length; i++) {
-                            comicIds.push(docs[i]['comicId']);
+                }, function (comicErr, comicDocs) {
+                    if (comicErr) {
+                        res.send(comicErr);
+                    } else if (comicDocs.length != 0) {
+                        tagExists = 1;
+                        comicIds = [];
+                        for (var i = 0; i < comicDocs.length; i++) {
+                            comicIds.push(comicDocs[i]['comicId']);
                         }
                         res.render('search', {
                             tags: search,
-                            tagExists: 1,
+                            tagExists: tagExists,
                             comicIds: comicIds,
                             username: username,
                             userExists: userExists
                         });
 
                     } else {
+                        tagExists = -1;
                         res.render('search', {
                             tags: search,
-                            tagExists: -1,
+                            tagExists: tagExists,
                             comicIds: comicIds,
                             username: username,
                             userExists: userExists

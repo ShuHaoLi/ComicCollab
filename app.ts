@@ -28,6 +28,31 @@ class LoggedInUser {
     }
 }
 
+class SecurityResponse {
+    private securityAnswer: String;
+    private isConfirmed: boolean;
+    constructor(securityAnswer: String, isConfirmed: boolean) {
+        this.securityAnswer = securityAnswer;
+        this.isConfirmed = isConfirmed;
+    }
+    getSecurityAnswer() {
+        return this.securityAnswer;
+    }
+    setSecurityAnswer(securityAnswer: String) {
+        this.securityAnswer = securityAnswer;
+    }
+    getIsConfirmed() {
+        return this.isConfirmed;
+    }
+    setIsConfirmed(isConfirmed: boolean) {
+        this.isConfirmed = isConfirmed;
+    }
+    clear() {
+        this.securityAnswer = '';
+        this.isConfirmed = false;
+    }
+}
+
 class Application {
     constructor() {
         var express = require('express');
@@ -68,6 +93,7 @@ class Application {
         app.use(function(req, res, next) {
             req.currentUser = currentUser;
             req.db = db;
+            req.currentSecurityResponse = currentSecurityResponse;
             next();
         });
 
@@ -115,6 +141,7 @@ class Application {
 }
 
 var currentUser = new LoggedInUser('', false);
+var currentSecurityResponse = new SecurityResponse('', false);
 var application = new Application();
 
 //# sourceMappingURL=app.js.map

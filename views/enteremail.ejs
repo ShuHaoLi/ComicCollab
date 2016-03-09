@@ -1,0 +1,50 @@
+
+<html>
+<head>
+    <title>ComicCollab</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="home">ComicCollab</a>
+        <!--<div class="navbar-header">-->
+            <!--<form class="navbar-form" role="search">-->
+                <!--<div class="input-group">-->
+                    <!--<input type="text" class="form-control" placeholder="Search" name="q">-->
+                    <!--<div class="input-group-btn">-->
+                        <!--<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</form>-->
+            <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
+            <!--</button>-->
+        <!--</div>-->
+    </div>
+</nav>
+
+<div class="container">
+    <div style="margin-top: 150px">
+    <h><font size="6">Forgot Password</font></h>
+    <p><small>When you fill in your registered email address, you will be sent instructions on how to reset your password.</small></p>
+    <form method="post" role="form" class="login-form form-horizontal">
+        <input name="_csrf" type="hidden"/>
+        <div class="form-group">
+            <label class="col-sm-4">Email</label>
+            <div class="col-sm-8">
+                <input placeholder="email" required="required" name="email" type="text" class="form-control"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8">
+                <button type="submit" class="login btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+    </form>
+    </div>
+</div>
+
+
+</body>
+</html>

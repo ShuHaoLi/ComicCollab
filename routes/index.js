@@ -558,7 +558,9 @@ var Router = (function () {
                             "location": "This user has not filled out a bio",
                             "aboutme": "This user has not filled out a bio",
                             "securityquestion": user.getSecurityQuestion(),
-                            "securityanswer": user.getSecurityAnswer()
+                            "securityanswer": user.getSecurityAnswer(),
+                            "likes": [],
+                            "dislikes": []
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -988,25 +990,6 @@ var Router = (function () {
                 res.redirect(req.get('referer'));
             }
         });
-        //get Search User page
-        router.get('/searchuser', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            var username = req.body.username;
-            collection.findOne({
-                "username": username
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    res.render('/users/username');
-                }
-                else {
-                    res.send("This user does not exist!");
-                }
-            });
-        });
         /* GET editprofile page. */
         router.get('/edit', function (req, res) {
             res.render('edit', { title: 'Edit Profile' });
@@ -1060,61 +1043,6 @@ var Router = (function () {
                     }
                 });
             }
-        });
-        //Get Search Users Page
-        router.get('/searchusers/*', function (req, res) {
-            var db = req.db;
-            var collection = db.get('usercollection');
-            var search = req.params['0'];
-            collection.findOne({
-                "username": search
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    res.render('searchusers', {
-                        username: search,
-                        userExists: 1
-                    });
-                }
-                else {
-                    res.render('searchusers', {
-                        username: "No user matches the criteria",
-                        userExists: -1
-                    });
-                }
-            });
-        });
-        //Get Search Tags Page
-        router.get('/searchtags/*', function (req, res) {
-            var db = req.db;
-            var comiccollection = db.get('comics');
-            var search = req.params['0'];
-            comiccollection.find({
-                "tags": search
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    var comicIds = [];
-                    for (var i = 0; i < docs.length; i++) {
-                        comicIds.push(docs[i]['comicId']);
-                    }
-                    res.render('searchtags', {
-                        tags: search,
-                        tagExists: 1,
-                        comicIds: comicIds
-                    });
-                }
-                else {
-                    res.render('searchtags', {
-                        tags: "No comic contains any of the tag criteria",
-                        tagExists: -1
-                    });
-                }
-            });
         });
         //Get Search Page
         router.get('/search/*', function (req, res) {
@@ -1178,12 +1106,12 @@ var Router = (function () {
             var search = req.body.search;
             res.redirect('/search/' + search);
         });
-        /*POST home page*/
+        /*POST search for home page*/
         router.post('/home', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);
         });
-        /*POST home page*/
+        /*POST search for home page*/
         router.post('/', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);

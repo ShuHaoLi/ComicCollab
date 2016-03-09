@@ -48,6 +48,7 @@
         <a class="navbar-brand" href="../../../home">ComicCollab</a>
     </div>
 </nav>
+<% if (currentUser.getIsLoggedIn()) { %>
 <div class="container">
     <div class="page-header" style="margin-top: 60px">
         <h1>Comic <%=comicId%></h1>
@@ -79,5 +80,10 @@
         <% } %>
     </div>
 </div>
+<% } else { %>
+<div class="container">
+    <h3>You must be logged in to edit a comic.</h3>
+</div>
+<% } %>
 </body>
 </html>

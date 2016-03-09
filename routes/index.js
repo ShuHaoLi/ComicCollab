@@ -192,13 +192,16 @@ var Router = (function () {
                                         comicId: comicId.toString(),
                                         url: "/images/" + imageUrl,
                                         urls: urls,
-                                        isCreator: (req.currentUser.getUsername() == uploader || req.currentUser.getUsername() == creator)
+                                        isCreator: (req.currentUser.getUsername() == uploader || req.currentUser.getUsername() == creator),
+                                        currentUser: req.currentUser
                                     });
                                 }
                             });
                         }
                         else {
-                            res.send('There is no image associated with this comic');
+                            res.render('error', {
+                                error: "There is no image associated with this comic."
+                            });
                         }
                     });
                 }
@@ -383,9 +386,15 @@ var Router = (function () {
                                 tags: tags,
                                 liketotal: liketotal,
                                 disliketotal: disliketotal,
-                                isCreator: (req.currentUser.getUsername() == creator)
+                                isCreator: (req.currentUser.getUsername() == creator),
+                                currentUser: req.currentUser
                             });
                         }
+                    });
+                }
+                else {
+                    res.render('error', {
+                        error: "The specified comic does not exist."
                     });
                 }
             });
@@ -394,7 +403,9 @@ var Router = (function () {
         router.post('/comic/*', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
-                res.send("You must be logged in");
+                res.render('error', {
+                    error: "You must be logged in to like or dislike."
+                });
             }
             else {
                 //db variable
@@ -419,6 +430,7 @@ var Router = (function () {
                                 $addToSet: { "likes": like },
                                 $pull: { "dislikes": like }
                             });
+                            res.redirect(req.get('referer'));
                         }
                     });
                 }
@@ -434,10 +446,10 @@ var Router = (function () {
                                 $addToSet: { "dislikes": like },
                                 $pull: { "likes": like }
                             });
+                            res.redirect(req.get('referer'));
                         }
                     });
                 }
-                res.redirect(req.get('referer'));
             }
         });
         /* DELETE COMIC */
@@ -724,7 +736,9 @@ var Router = (function () {
                         res.send(err);
                     }
                     else if (docs == null) {
-                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                        res.render('error', {
+                            error: "Unfortunately this username does not exist."
+                        });
                     }
                     else {
                         res.render('resetpassword', {
@@ -746,7 +760,9 @@ var Router = (function () {
                 });
             }
             else {
-                res.send('Invalid link');
+                res.render('error', {
+                    error: "This page does not exist."
+                });
             }
         });
         /*POST resetpassword page */
@@ -770,7 +786,9 @@ var Router = (function () {
                         res.send(err);
                     }
                     else if (docs == null) {
-                        res.send("Unfortunately this username does not exist. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                        res.render('error', {
+                            error: "Unfortunately this username does not exist."
+                        });
                     }
                     else {
                         if (docs['securityanswer'] == securityAnswer) {
@@ -781,14 +799,18 @@ var Router = (function () {
                         }
                         else {
                             req.currentSecurityResponse.clear();
-                            res.send("Security answer was incorrect. <a href='#' onClick='history.go(-1)'>Go Back</a>");
+                            res.render('error', {
+                                error: "Security answer was incorrect."
+                            });
                         }
                     }
                 });
             }
             else if (step == 3) {
                 if (password != confirmPassword) {
-                    res.send("Passwords did not match.");
+                    res.render('error', {
+                        error: "Passwords did not match."
+                    });
                 }
                 else {
                     var db = req.db;
@@ -801,7 +823,9 @@ var Router = (function () {
                     }, function (err) {
                         if (err) {
                             // If it failed, return error
-                            res.send("There was a problem updating your password.");
+                            res.render('error', {
+                                error: "There was a problem updating your password."
+                            });
                         }
                         else {
                             // Forward back to my profile page

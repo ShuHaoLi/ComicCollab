@@ -214,8 +214,6 @@ class Router {
                                 if (imagesErr) {
                                     res.send(imagesErr);
                                 } else if (imagesDocs != null) {
-
-                                    var creator = creator;
                                     var uploader = docs['uploader'];
                                     var urls = [];
                                     for (var i = 0; i < imagesDocs.length; i++) {

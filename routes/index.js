@@ -182,7 +182,6 @@ var Router = (function () {
                                     res.send(imagesErr);
                                 }
                                 else if (imagesDocs != null) {
-                                    var creator = creator;
                                     var uploader = docs['uploader'];
                                     var urls = [];
                                     for (var i = 0; i < imagesDocs.length; i++) {
@@ -1121,3 +1120,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

@@ -603,6 +603,7 @@ var Router = (function () {
             var comicId = parseInt(req.params[0]) || 0;
             var db = req.db;
             if (comicId == 0) {
+                var title = req.body['title'];
                 var tagString = req.body['tags'];
                 var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
                 var collection = db.get('comics');
@@ -623,6 +624,7 @@ var Router = (function () {
                             largestId++;
                             collection.insert({
                                 "comicId": largestId,
+                                "title": title,
                                 "creator": req.currentUser.getUsername(),
                                 "tags": tags
                             });

@@ -38,10 +38,17 @@
 <% if (cur.getIsLoggedIn()) { %>
 <div class="container">
     <div class="page-header" style="margin-top: 60px">
+        <% if (newComic == 1) { %>
         <h1>Upload a Comic</h1>
+        <% } else { %>
+        <h1>Upload an Image</h1>
+        <% } %>
     </div>
     <form method="post" enctype="multipart/form-data">
-        <h3>Upload an Image:</h3>
+        <% if (newComic == 1) { %>
+        <p>Title:</p>
+        <input placeholder="Comic Title" required="required" type="text" name="title" id="title" style="width:250px;"/><br /><br />
+        <% } %>
         <p>Image must be:</p>
         <ul>
             <li>PNG, JPEG, or JPG</li>

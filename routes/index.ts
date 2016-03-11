@@ -656,6 +656,7 @@ class Router {
             var db = req.db;
 
             if (comicId == 0) {
+                var title:string = req.body['title'];
                 var tagString:string = req.body['tags'];
                 var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
                 var collection = db.get('comics');
@@ -674,6 +675,7 @@ class Router {
                             largestId++;
                             collection.insert({
                                 "comicId": largestId,
+                                "title": title,
                                 "creator": req.currentUser.getUsername(),
                                 "tags": tags
                             });

@@ -68,7 +68,8 @@
 
     </script>
     <div class="page-header" style="margin-top: 60px">
-        <h1>Comic <%=comicId%></h1>
+        <h1><%=title%></h1>
+
         <% if (currentUser.getIsLoggedIn()) { %>
         <a href="../editcomic/<%=comicId%>"><button type="submit" class="login btn btn-primary">Edit Comic</button></a>
         &nbsp;

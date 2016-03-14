@@ -684,10 +684,12 @@ var Router = (function () {
                         res.send(err);
                     }
                     else if (docs != null) {
+                        var title = docs['title'];
                         var tags = docs['tags'];
                         res.render('editcomic', {
                             cur: req.currentUser,
                             comicId: comicId,
+                            title: title,
                             tagsValue: tags
                         });
                     }
@@ -697,6 +699,7 @@ var Router = (function () {
         /* POST TO EDIT COMICS PAGE */
         router.post('/editcomic/*', function (req, res) {
             var comicId = parseInt(req.params[0]) || 0;
+            var title = req.body['title'];
             var tagString = req.body['tags'];
             var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
             var db = req.db;
@@ -714,6 +717,7 @@ var Router = (function () {
                     else {
                         collection.update({ "comicId": comicId }, {
                             $set: {
+                                "title": title,
                                 "tags": tags
                             }
                         });

@@ -734,10 +734,12 @@ class Router {
                     if (err) {
                         res.send(err);
                     } else if (docs != null) {
+                        var title:string = docs['title'];
                         var tags:string = docs['tags'];
                         res.render('editcomic', {
                             cur: req.currentUser,
                             comicId: comicId,
+                            title: title,
                             tagsValue: tags
                         })
                     }
@@ -748,6 +750,7 @@ class Router {
         /* POST TO EDIT COMICS PAGE */
         router.post('/editcomic/*', function (req, res) {
             var comicId:number = parseInt(req.params[0]) || 0;
+            var title:string = req.body['title'];
             var tagString:string = req.body['tags'];
             var tags = tagString.split(',').map(Function.prototype.call, String.prototype.trim);
             var db = req.db;
@@ -766,6 +769,7 @@ class Router {
                             {"comicId": comicId},
                             {
                                 $set: {
+                                    "title": title,
                                     "tags": tags
                                 }
                             });

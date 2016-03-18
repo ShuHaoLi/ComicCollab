@@ -1060,6 +1060,7 @@ var Router = (function () {
             var username;
             var userExists;
             var comicIds = [];
+            var titles = [];
             var tagExists;
             collection.findOne({
                 "username": search
@@ -1084,13 +1085,16 @@ var Router = (function () {
                     else if (comicDocs.length != 0) {
                         tagExists = 1;
                         comicIds = [];
+                        titles = [];
                         for (var i = 0; i < comicDocs.length; i++) {
                             comicIds.push(comicDocs[i]['comicId']);
+                            titles.push(comicDocs[i]['title']);
                         }
                         res.render('search', {
                             tags: search,
                             tagExists: tagExists,
                             comicIds: comicIds,
+                            titles: titles,
                             username: username,
                             userExists: userExists
                         });
@@ -1101,6 +1105,7 @@ var Router = (function () {
                             tags: search,
                             tagExists: tagExists,
                             comicIds: comicIds,
+                            titles: titles,
                             username: username,
                             userExists: userExists
                         });

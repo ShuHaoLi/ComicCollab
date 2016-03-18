@@ -1117,6 +1117,7 @@ class Router {
             var username;
             var userExists;
             var comicIds = [];
+            var titles = [];
             var tagExists;
 
             collection.findOne({
@@ -1139,13 +1140,16 @@ class Router {
                     } else if (comicDocs.length != 0) {
                         tagExists = 1;
                         comicIds = [];
+                        titles = [];
                         for (var i = 0; i < comicDocs.length; i++) {
                             comicIds.push(comicDocs[i]['comicId']);
+                            titles.push(comicDocs[i]['title']);
                         }
                         res.render('search', {
                             tags: search,
                             tagExists: tagExists,
                             comicIds: comicIds,
+                            titles: titles,
                             username: username,
                             userExists: userExists
                         });
@@ -1156,6 +1160,7 @@ class Router {
                             tags: search,
                             tagExists: tagExists,
                             comicIds: comicIds,
+                            titles: titles,
                             username: username,
                             userExists: userExists
                         })

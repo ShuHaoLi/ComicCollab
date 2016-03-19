@@ -71,6 +71,11 @@
         <% for (var j = 0; j < following.length; j++) { %>
         <a href="../users/<%= following[j] %>"><%= following[j] %></a><br>
         <% } %>
+        <br>
+        <h4><%= userName%>'s Favourite Comics</h4>
+        <% for (var j = 0; j < favourites.length; j++) { %>
+        <a href="../comic/<%= favourites[j] %>"><%= favourites[j] %></a><br>
+        <% } %>
     </div>
 </div>
 </body>

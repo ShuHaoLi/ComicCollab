@@ -109,11 +109,13 @@
     <br>
     <% if (currentUser.getIsLoggedIn()) { %>
     <form method="post" name="ratings">
-        <input type="submit" name="vote" value="like">
-        <input type="submit" name="vote" value="dislike">
+        <input type="submit" name="vote" value="like" style="background-color:chartreuse">
+        <input type="submit" name="vote" value="dislike" style="background-color:f05c5c">
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <input type="submit" name="vote" value="favourite" style="background-color:lightblue">
     </form>
     <% } %>
-    <p>Likes: <%=liketotal%> Dislikes: <%=disliketotal%></p>
+    <p><b><font color="green">Likes: <%=liketotal%></font> &nbsp <font color="red">Dislikes: <%=disliketotal%></font></b></p>
     </div>
 </body>
 </html>

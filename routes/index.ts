@@ -438,7 +438,7 @@ class Router {
             });
         });
 
-        //Post To Comic Page - like/dislike
+        //Post To Comic Page - like/dislike/favourites
         router.post('/comic/*', function (req, res) {
             var currentUser = req.currentUser;
             if (currentUser.getIsLoggedIn() != true) {
@@ -473,7 +473,7 @@ class Router {
                             res.redirect(req.get('referer'));
                         }
                     })
-                } else {
+                } else if (inputValue == "dislike") {
                     collection.findOne({
                         "username": liker
                     }, function (err, docs) {
@@ -485,6 +485,22 @@ class Router {
                                 {
                                     $addToSet: {"dislikes": like},
                                     $pull: {"likes": like}
+                                }
+                            );
+                            res.redirect(req.get('referer'));
+                        }
+                    });
+                } else {
+                    collection.findOne({
+                        "username": liker
+                    }, function (err, docs) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            collection.update(
+                                {username: liker},
+                                {
+                                    $addToSet: {"following": like}
                                 }
                             );
                             res.redirect(req.get('referer'));
@@ -514,7 +530,7 @@ class Router {
                     }
                 }
             });
-            //remove likes and dislikes when a comic is deleted
+            //remove likes and dislikes and favourites when a comic is deleted
             var _comicId:number = parseInt(req.params['0']);
             var usercollection = db.get('usercollection');
             usercollection.find({
@@ -541,6 +557,20 @@ class Router {
                         { "dislikes": _comicId },
                         {
                             $pull: { "dislikes": _comicId }
+                        }
+                    );
+                }
+            });
+            usercollection.find({
+                "favourites": _comicId
+            }, function(err, docs) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    usercollection.update(
+                        { "favourites": _comicId },
+                        {
+                            $pull: { "favourites": _comicId }
                         }
                     );
                 }
@@ -611,7 +641,8 @@ class Router {
                             "securityquestion": user.getSecurityQuestion(),
                             "securityanswer": user.getSecurityAnswer(),
                             "likes": [],
-                            "dislikes": []
+                            "dislikes": [],
+                            "favourites": []
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -942,7 +973,8 @@ class Router {
                                         aboutme: docs['aboutme'],
                                         username: current,
                                         fans: fans,
-                                        following: following
+                                        following: following,
+                                        favourites: docs['favourites']
                                     });
                                 }
                             })
@@ -1007,7 +1039,8 @@ class Router {
                                             aboutme: docs['aboutme'],
                                             notFan: notFan,
                                             fans: fans,
-                                            following: following
+                                            following: following,
+                                            favourites: docs['favourites']
                                         });
                                     }
                                 })

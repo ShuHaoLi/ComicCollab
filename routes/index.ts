@@ -500,7 +500,7 @@ class Router {
                             collection.update(
                                 {username: liker},
                                 {
-                                    $addToSet: {"following": like}
+                                    $addToSet: {"favourites": like}
                                 }
                             );
                             res.redirect(req.get('referer'));
@@ -1218,6 +1218,10 @@ class Router {
         router.post('/', function (req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);
+        });
+        
+        router.get('/sortbylikes', function (req, res) {
+            res.render('sortbylike', {title: 'Sorted By Likes'});
         });
         
         module.exports = router;

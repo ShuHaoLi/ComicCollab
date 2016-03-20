@@ -100,6 +100,7 @@
         <a href="javascript:tumblrshareCurrentPage()" target="_blank" alt="Share on Tumblr"><img src="../color/Tumblr.png"></a>
         <!-- Email (subject, body) -->
         <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img src="../color/Email.png"></a>
+        <p style='float: right;'><font size="5" color="darkblue">Views: <b><%= viewcount %></b></font></p>
     </div>
     <div style="min-width: 1250px">
     <% for (var j=0; j<urls.length; j++) { %>
@@ -115,7 +116,7 @@
         <input type="submit" name="vote" value="favourite" style="background-color:lightblue">
     </form>
     <% } %>
-    <p><b><font color="green">Likes: <%=liketotal%></font> &nbsp <font color="red">Dislikes: <%=disliketotal%></font></b></p>
+    <p><font size = "4" color="green">Likes: <b><%=liketotal%></b></font> &nbsp <font size = "4" color="red">Dislikes: <b><%=disliketotal%></b></font></p>
     </div>
 </body>
 </html>

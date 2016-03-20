@@ -404,12 +404,15 @@ class Router {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
-                    //set like total in database
+                    //set like total and increment view count in database
                     collection.update(
                         { "comicId": comicId },
                         {
                             $set: {
                                 "liketotal": liketotal
+                            },
+                            $inc: {
+                                "viewcount":1
                             }
                         });
                     var creator = docs['creator'];
@@ -434,7 +437,8 @@ class Router {
                                 liketotal: liketotal,
                                 disliketotal: disliketotal,
                                 isCreator: (req.currentUser.getUsername() == creator),
-                                currentUser: req.currentUser
+                                currentUser: req.currentUser,
+                                viewcount: docs['viewcount']
                             });
                         }
                     })
@@ -1238,8 +1242,23 @@ class Router {
                     res.send(err);
                 } else if (docs != null) {
                     res.render('sortbylikes', {
-                        "comics": docs,
-                        title: 'Sorted By Likes'
+                        "comics": docs
+                    });
+                }
+            });
+        });
+        
+        //Get Sort By Views Page
+        router.get('/sortbyviews', function (req, res) {
+            var db = req.db;
+            var comicCollection = db.get('comics');            
+            
+            comicCollection.find({}, { sort: { "viewcount": -1 } }, function(err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
+                    res.render('sortbyviews', {
+                        "comics": docs
                     });
                 }
             });

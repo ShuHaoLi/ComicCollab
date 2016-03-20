@@ -365,10 +365,13 @@ var Router = (function () {
                     res.send(err);
                 }
                 else if (docs != null) {
-                    //set like total in database
+                    //set like total and increment view count in database
                     collection.update({ "comicId": comicId }, {
                         $set: {
                             "liketotal": liketotal
+                        },
+                        $inc: {
+                            "viewcount": 1
                         }
                     });
                     var creator = docs['creator'];
@@ -394,7 +397,8 @@ var Router = (function () {
                                 liketotal: liketotal,
                                 disliketotal: disliketotal,
                                 isCreator: (req.currentUser.getUsername() == creator),
-                                currentUser: req.currentUser
+                                currentUser: req.currentUser,
+                                viewcount: docs['viewcount']
                             });
                         }
                     });
@@ -1168,38 +1172,31 @@ var Router = (function () {
         router.get('/sortbylikes', function (req, res) {
             var db = req.db;
             var comicCollection = db.get('comics');
-            // comicCollection.find({},{}, function(e, docs) {
-            //     res.render('sortbylikes', {
-            //         "comics": docs,
-            //         title: 'Sorted By Likes'
-            //     });
-            // });
             comicCollection.find({}, { sort: { "liketotal": -1 } }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 }
                 else if (docs != null) {
                     res.render('sortbylikes', {
-                        "comics": docs,
-                        title: 'Sorted By Likes'
+                        "comics": docs
                     });
                 }
             });
-            // var docs = comicCollection.find(
-            //     {},
-            //     {sort : {"liketotal": -1 } }
-            // );
-            // res.render('sortbylikes', {
-            //     "comics": docs,
-            //     title: 'Sorted By Likes'
-            // });
-            // var collection = db.get('usercollection');
-            // collection.find({}, {}, function (e, docs) {
-            //     res.render('sortbylikes', {
-            //         "userlist": docs,
-            //         title: 'Sorted By Likes'
-            //     });
-            // });
+        });
+        //Get Sort By Views Page
+        router.get('/sortbyviews', function (req, res) {
+            var db = req.db;
+            var comicCollection = db.get('comics');
+            comicCollection.find({}, { sort: { "viewcount": -1 } }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    res.render('sortbyviews', {
+                        "comics": docs
+                    });
+                }
+            });
         });
         module.exports = router;
     }

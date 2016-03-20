@@ -110,10 +110,10 @@
     <br>
     <% if (currentUser.getIsLoggedIn()) { %>
     <form method="post" name="ratings">
-        <input type="submit" name="vote" value="like" style="background-color:chartreuse">
-        <input type="submit" name="vote" value="dislike" style="background-color:f05c5c">
-        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-        <input type="submit" name="vote" value="favourite" style="background-color:lightblue">
+        <button type="submit" class="btn btn-success" name="vote" value="like">Like</button>
+        <button type="submit" class="btn btn-danger" name="vote" value="dislike">DisLike</button>
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <button type="submit" class="btn btn-info" name="vote" value="favourite">Favourite</button>
     </form>
     <% } %>
     <p><font size = "4" color="green">Likes: <b><%=liketotal%></b></font> &nbsp <font size = "4" color="red">Dislikes: <b><%=disliketotal%></b></font></p>

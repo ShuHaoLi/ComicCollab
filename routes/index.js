@@ -900,6 +900,22 @@ var Router = (function () {
                     res.send(err);
                 }
                 else if (docs != null) {
+                    //
+                    var comicCollection = db.get('comics');
+                    var favourites = docs['favourites'];
+                    var favouriteTitles = [];
+                    for (var i = 0; i < favourites.length; i++) {
+                        comicCollection.findOne({ "comicId": favourites[i] }, function (err, docs) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            else {
+                                favouriteTitles.push(docs['title']);
+                            }
+                        });
+                    }
+                    ;
+                    //
                     var fanCollection = db.get('fans');
                     fanCollection.find({
                         "fan": current
@@ -933,7 +949,8 @@ var Router = (function () {
                                         username: current,
                                         fans: fans,
                                         following: following,
-                                        favourites: docs['favourites']
+                                        favourites: docs['favourites'],
+                                        favouriteTitles: favouriteTitles
                                     });
                                 }
                             });
@@ -968,6 +985,22 @@ var Router = (function () {
                         res.send(err);
                     }
                     else if (docs != null) {
+                        //
+                        var comicCollection = db.get('comics');
+                        var favourites = docs['favourites'];
+                        var favouriteTitles = [];
+                        for (var i = 0; i < favourites.length; i++) {
+                            comicCollection.findOne({ "comicId": favourites[i] }, function (err, docs) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else {
+                                    favouriteTitles.push(docs['title']);
+                                }
+                            });
+                        }
+                        ;
+                        //
                         var fanCollection = db.get('fans');
                         fanCollection.find({
                             "fan": username
@@ -1002,7 +1035,8 @@ var Router = (function () {
                                             notFan: notFan,
                                             fans: fans,
                                             following: following,
-                                            favourites: docs['favourites']
+                                            favourites: docs['favourites'],
+                                            favouriteTitles: favouriteTitles
                                         });
                                     }
                                 });

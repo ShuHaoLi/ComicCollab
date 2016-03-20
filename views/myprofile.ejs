@@ -12,8 +12,9 @@
 </nav>
 <% if (cur.getIsLoggedIn()) { %>
 <div class="container" id="loggedIn">
+<br>
     <div class="page-header" style="margin-top: 60px">
-        <h1><%= username %></h1>
+        <h1><b><%= username %></b></h1>
     </div>
     <div class="col-lg-6">
         <h4>Name</h4>
@@ -27,7 +28,7 @@
         <h4>About Me</h4>
         <p><%= aboutme %></p>
         <br>
-        <a href="edit">Edit Profile</a>
+        <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
     </div>
     <div class="col-lg-6">
         <h4>My Fans</h4>
@@ -41,7 +42,7 @@
         <br>
         <h4>My Favourite Comics</h4>
         <% for (var j = 0; j < favourites.length; j++) { %>
-        <a href="../comic/<%= favourites[j]%>"><%= favourites[j] %></a><br>
+        <a href="../comic/<%= favourites[j]%>"><%= favouriteTitles[j] %></a><br>
         <% } %>
     </div>
 </div>

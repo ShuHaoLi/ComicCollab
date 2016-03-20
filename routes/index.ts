@@ -404,6 +404,14 @@ class Router {
                 if (err) {
                     res.send(err);
                 } else if (docs != null) {
+                    //set like total in database
+                    collection.update(
+                        { "comicId": comicId },
+                        {
+                            $set: {
+                                "liketotal": liketotal
+                            }
+                        });
                     var creator = docs['creator'];
                     var imagesCollection = db.get('comicimages');
                     imagesCollection.find({
@@ -1144,7 +1152,7 @@ class Router {
         router.get('/search/*', function (req, res) {
             var db = req.db;
             var collection = db.get('usercollection');
-            var comiccollection = db.get('comics');
+            var comicCollection = db.get('comics');
             var search = req.params['0'];
 
             var username;
@@ -1165,7 +1173,7 @@ class Router {
                     username = "No user exists with this name";
                     userExists = -1
                 }
-                comiccollection.find({
+                comicCollection.find({
                     "tags": search
                 }, function (comicErr, comicDocs) {
                     if (comicErr) {
@@ -1220,8 +1228,21 @@ class Router {
             res.redirect('/search/' + search);
         });
         
+        //Get Sort By Likes Page
         router.get('/sortbylikes', function (req, res) {
-            res.render('sortbylike', {title: 'Sorted By Likes'});
+            var db = req.db;
+            var comicCollection = db.get('comics');            
+            
+            comicCollection.find({}, { sort: { "liketotal": -1 } }, function(err, docs) {
+                if (err) {
+                    res.send(err);
+                } else if (docs != null) {
+                    res.render('sortbylikes', {
+                        "comics": docs,
+                        title: 'Sorted By Likes'
+                    });
+                }
+            });
         });
         
         module.exports = router;

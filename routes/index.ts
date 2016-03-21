@@ -1286,13 +1286,30 @@ class Router {
         router.get('/sortbyviews', function(req, res) {
             var db = req.db;
             var comicCollection = db.get('comics');
-
+            var urls = [];
             comicCollection.find({}, { sort: { "viewcount": -1 } }, function(err, docs) {
                 if (err) {
                     res.send(err);
-                } else if (docs != null) {
+                }
+                else if (docs != null) {
+                    for (var i = 0; i < docs.length; i++){
+                        var imagesCollection = db.get('comicimages');
+                        imagesCollection.find({
+                            "sequence": 1
+                        }, function(imagesErr, imagesDocs){
+                            if (imagesErr){
+                                res.send(imagesErr);
+                            }
+                            else if (imagesDocs != null){
+                                for (var j = 0; j < imagesDocs.length; j++){
+                                        urls.push(imagesDocs[j]['url']);
+                                }
+                            }
+                        })
+                    }
                     res.render('sortbyviews', {
-                        "comics": docs
+                        //"comics": docs
+                        urls: urls
                     });
                 }
             });

@@ -12,11 +12,11 @@
 <div class="container">
     <div class="page-header" style="margin-top: 100px">
         <h1>Sorted By View Count</h1>
-        </div>
+    </div>
         <ol>
-            <% comics.forEach(function(comic) { %>
-            <li><a href = "comic/<%= comic.comicId %>"><%= comic.title %></a></li>
-            <% }); %>
+            <% for (var i=urls.length-1; i>=0; i--) { %>
+                <img style="width: 300px; height:300px" src="<%= urls[i]%>" />
+            <% } %>
         </ol>
     </div>
 </body>

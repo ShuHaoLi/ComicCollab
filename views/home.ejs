@@ -70,10 +70,14 @@ body  {
 </nav>
 <div class="container">
     <div class="page-header" style="margin-top: 60px">
-        <select class="selectpicker" data-live-search="true">
-            <option>Sort by Views</option>
-            <option>Sort by likes</option>
-        </select>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Sort By
+                <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a href="../sortbyviews">Sort By Views</a></li>
+                <li><a href="../sortbylikes">Sort By Likes</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 

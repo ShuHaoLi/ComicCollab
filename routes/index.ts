@@ -466,23 +466,23 @@ class Router {
                 //set our collection
                 var collection = db.get('usercollection');
                 //comic to be liked
-                var like: number = parseInt(req.params['0']);
+                var comicId: number = parseInt(req.params['0']);
                 //current user username to update user's like list
-                var liker = currentUser.getUsername();
+                var username = currentUser.getUsername();
                 //like or dislike input value
-                var inputValue = req.body.vote;
+                var inputValue = req.body.submit;
                 if (inputValue == "like") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function(err, docs) {
                         if (err) {
                             res.send(err);
                         } else {
                             collection.update(
-                                { username: liker },
+                                { username: username },
                                 {
-                                    $addToSet: { "likes": like },
-                                    $pull: { "dislikes": like }
+                                    $addToSet: { "likes": comicId },
+                                    $pull: { "dislikes": comicId }
                                 }
                             );
                             res.redirect(req.get('referer'));
@@ -490,37 +490,51 @@ class Router {
                     })
                 } else if (inputValue == "dislike") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function(err, docs) {
                         if (err) {
                             res.send(err);
                         } else {
                             collection.update(
-                                { username: liker },
+                                { username: username },
                                 {
-                                    $addToSet: { "dislikes": like },
-                                    $pull: { "likes": like }
+                                    $addToSet: { "dislikes": comicId },
+                                    $pull: { "likes": comicId }
                                 }
                             );
                             res.redirect(req.get('referer'));
                         }
                     });
-                } else {
+                } else if (inputValue == "favourite") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function(err, docs) {
                         if (err) {
                             res.send(err);
                         } else {
                             collection.update(
-                                { username: liker },
+                                { username: username },
                                 {
-                                    $addToSet: { "favourites": like }
+                                    $addToSet: { "favourites": comicId }
                                 }
                             );
                             res.redirect(req.get('referer'));
                         }
                     });
+                } else if (inputValue == "comment") {
+                    var comment = req.body.comment;
+                    var commentCollection = db.get('comments');
+                    commentCollection.insert({
+                        "comicId": comicId,
+                        "username": username,
+                        "comment": comment
+                    }, function(err) {
+                        if (err) {
+                            res.send("There was a problem adding the information to the database.");
+                        } else {
+                            res.redirect(req.get('referer'));
+                        }
+                    })
                 }
             }
         });
@@ -725,7 +739,8 @@ class Router {
                                 "comicId": largestId,
                                 "title": title,
                                 "creator": req.currentUser.getUsername(),
-                                "tags": tags
+                                "tags": tags,
+                                "comments": []
                             });
                             imagesCollection.insert({
                                 "comicId": largestId,

@@ -58,13 +58,34 @@
     {window.open("http://www.tumblr.com/share/link?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
     function emailshareCurrentPage()
     {window.open("mailto:?subject=Check Out This Comic&body=Here's this link: "+escape(window.location.href), '');return false; };
+        ;
+        function redditshareCurrentPage() {
+            window.open("http://reddit.com/submit?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
+        ;
+        function linkedinshareCurrentPage() {
+            window.open("http://www.linkedin.com/shareArticle?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
+        ;
+        function tumblrshareCurrentPage() {
+            window.open("http://www.tumblr.com/share/link?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
+        ;
+        function emailshareCurrentPage() {
+            window.open("mailto:?subject=Check Out This Comic&body=Here's this link: " + escape(window.location.href), '');
+            return false;
+        }
+        ;
 
-    function deleteButtonFunction(){
-        $.ajax({
-            type: "DELETE",
-            url: "/comic/"+document.URL.split("/")[document.URL.split("/").length-1]
-        })
-    };
+        function deleteButtonFunction() {
+            $.ajax({
+                type: "DELETE",
+                url: "/comic/" + document.URL.split("/")[document.URL.split("/").length - 1]
+            })
+        }
 
     </script>
     <div class="page-header" style="margin-top: 60px">
@@ -109,11 +130,18 @@
     </div>
     <br>
     <% if (currentUser.getIsLoggedIn()) { %>
-    <form method="post" name="ratings">
-        <button type="submit" class="btn btn-success" name="vote" value="like">Like</button>
-        <button type="submit" class="btn btn-danger" name="vote" value="dislike">DisLike</button>
+    <form method="post" name="ratings" id="form">
+        <button type="submit" class="btn btn-success" name="submit" value="like">Like</button>
+        <button type="submit" class="btn btn-danger" name="submit" value="dislike">DisLike</button>
         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-        <button type="submit" class="btn btn-info" name="vote" value="favourite">Favourite</button>
+        <button type="submit" class="btn btn-info" name="submit" value="favourite">Favourite</button>
+        <br>
+        <br>
+        <textarea title="comment" id="comment" name="comment" rows="4" cols="160" form="form"
+                  placeholder="Add a comment here."></textarea>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary" name="submit" value="comment">Post Comment</button>
     </form>
     <% } %>
     <p><font size = "4" color="green">Likes: <b><%=liketotal%></b></font> &nbsp <font size = "4" color="red">Dislikes: <b><%=disliketotal%></b></font></p>

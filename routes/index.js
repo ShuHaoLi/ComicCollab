@@ -358,57 +358,60 @@ var Router = (function () {
                     disliketotal = Number(docs);
                 }
             });
-            collection.findOne({
-                "comicId": comicId
-            }, function (err, docs) {
-                if (err) {
-                    res.send(err);
-                }
-                else if (docs != null) {
-                    //set like total and increment view count in database
-                    collection.update({ "comicId": comicId }, {
-                        $set: {
-                            "liketotal": liketotal
-                        },
-                        $inc: {
-                            "viewcount": 1
-                        }
-                    });
-                    var creator = docs['creator'];
-                    var imagesCollection = db.get('comicimages');
-                    imagesCollection.find({
-                        "comicId": comicId
-                    }, { sort: { "sequence": 1 } }, function (imagesErr, imagesDocs) {
-                        if (imagesErr) {
-                            res.send(imagesErr);
-                        }
-                        else if (imagesDocs != null) {
-                            var urls = [];
-                            for (var i = 0; i < imagesDocs.length; i++) {
-                                urls.push(imagesDocs[i]['url']);
+            //nodejs runs things asynchronously, so delaying a call by 100 ms should help so liketotal is calculated first
+            setTimeout(function () {
+                collection.findOne({
+                    "comicId": comicId
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else if (docs != null) {
+                        //set like total and increment view count in database
+                        collection.update({ "comicId": comicId }, {
+                            $set: {
+                                "liketotal": liketotal
+                            },
+                            $inc: {
+                                "viewcount": 1
                             }
-                            var title = docs['title'];
-                            var tags = docs['tags'];
-                            res.render('comic', {
-                                comicId: comicId.toString(),
-                                urls: urls,
-                                title: title,
-                                tags: tags,
-                                liketotal: liketotal,
-                                disliketotal: disliketotal,
-                                isCreator: (req.currentUser.getUsername() == creator),
-                                currentUser: req.currentUser,
-                                viewcount: docs['viewcount']
-                            });
-                        }
-                    });
-                }
-                else {
-                    res.render('error', {
-                        error: "The specified comic does not exist."
-                    });
-                }
-            });
+                        });
+                        var creator = docs['creator'];
+                        var imagesCollection = db.get('comicimages');
+                        imagesCollection.find({
+                            "comicId": comicId
+                        }, { sort: { "sequence": 1 } }, function (imagesErr, imagesDocs) {
+                            if (imagesErr) {
+                                res.send(imagesErr);
+                            }
+                            else if (imagesDocs != null) {
+                                var urls = [];
+                                for (var i = 0; i < imagesDocs.length; i++) {
+                                    urls.push(imagesDocs[i]['url']);
+                                }
+                                var title = docs['title'];
+                                var tags = docs['tags'];
+                                res.render('comic', {
+                                    comicId: comicId.toString(),
+                                    urls: urls,
+                                    title: title,
+                                    tags: tags,
+                                    liketotal: liketotal,
+                                    disliketotal: disliketotal,
+                                    isCreator: (req.currentUser.getUsername() == creator),
+                                    currentUser: req.currentUser,
+                                    viewcount: docs['viewcount']
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        res.render('error', {
+                            error: "The specified comic does not exist."
+                        });
+                    }
+                });
+            }, 500);
         });
         //Post To Comic Page - like/dislike/favourites
         router.post('/comic/*', function (req, res) {

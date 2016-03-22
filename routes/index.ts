@@ -398,6 +398,8 @@ class Router {
                     }
                 }
             );
+            //nodejs runs things asynchronously, so delaying a call by 500 ms should help so liketotal is calculated first
+            setTimeout(function(){  
             collection.findOne({
                 "comicId": comicId,
             }, function(err, docs) {
@@ -448,6 +450,7 @@ class Router {
                     });
                 }
             });
+        },500); 
         });
 
         //Post To Comic Page - like/dislike/favourites

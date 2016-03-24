@@ -431,16 +431,35 @@ class Router {
                             }
                             var title: string = docs['title'];
                             var tags: string = docs['tags'];
-                            res.render('comic', {
-                                comicId: comicId.toString(),
-                                urls: urls,
-                                title: title,
-                                tags: tags,
-                                liketotal: liketotal,
-                                disliketotal: disliketotal,
-                                isCreator: (req.currentUser.getUsername() == creator),
-                                currentUser: req.currentUser,
-                                viewcount: docs['viewcount']
+                            var commentCollection = db.get('comments');
+                            commentCollection.find({
+                                "comicId": comicId
+                            }, function(commentsErr, commentsDocs) {
+                                if (commentsErr) {
+                                    res.send(commentsErr);
+                                } else {
+                                    var usernames = [];
+                                    var comments = [];
+                                    if (commentsDocs != null) {
+                                        for (var j = commentsDocs.length - 1; j >= 0; j--) {
+                                            usernames.push(commentsDocs[j]['username']);
+                                            comments.push(commentsDocs[j]['comment']);
+                                        }
+                                    }
+                                    res.render('comic', {
+                                        comicId: comicId.toString(),
+                                        urls: urls,
+                                        title: title,
+                                        tags: tags,
+                                        liketotal: liketotal,
+                                        disliketotal: disliketotal,
+                                        isCreator: (req.currentUser.getUsername() == creator),
+                                        currentUser: req.currentUser,
+                                        viewcount: docs['viewcount'],
+                                        usernames: usernames,
+                                        comments: comments
+                                    });
+                                }
                             });
                         }
                     })

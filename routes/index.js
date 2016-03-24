@@ -358,7 +358,7 @@ var Router = (function () {
                     disliketotal = Number(docs);
                 }
             });
-            //nodejs runs things asynchronously, so delaying a call by 100 ms should help so liketotal is calculated first
+            //nodejs runs things asynchronously, so delaying a call by 500 ms should help so liketotal is calculated first
             setTimeout(function () {
                 collection.findOne({
                     "comicId": comicId
@@ -391,16 +391,36 @@ var Router = (function () {
                                 }
                                 var title = docs['title'];
                                 var tags = docs['tags'];
-                                res.render('comic', {
-                                    comicId: comicId.toString(),
-                                    urls: urls,
-                                    title: title,
-                                    tags: tags,
-                                    liketotal: liketotal,
-                                    disliketotal: disliketotal,
-                                    isCreator: (req.currentUser.getUsername() == creator),
-                                    currentUser: req.currentUser,
-                                    viewcount: docs['viewcount']
+                                var commentCollection = db.get('comments');
+                                commentCollection.find({
+                                    "comicId": comicId
+                                }, function (commentsErr, commentsDocs) {
+                                    if (commentsErr) {
+                                        res.send(commentsErr);
+                                    }
+                                    else {
+                                        var usernames = [];
+                                        var comments = [];
+                                        if (commentsDocs != null) {
+                                            for (var j = commentsDocs.length - 1; j >= 0; j--) {
+                                                usernames.push(commentsDocs[j]['username']);
+                                                comments.push(commentsDocs[j]['comment']);
+                                            }
+                                        }
+                                        res.render('comic', {
+                                            comicId: comicId.toString(),
+                                            urls: urls,
+                                            title: title,
+                                            tags: tags,
+                                            liketotal: liketotal,
+                                            disliketotal: disliketotal,
+                                            isCreator: (req.currentUser.getUsername() == creator),
+                                            currentUser: req.currentUser,
+                                            viewcount: docs['viewcount'],
+                                            usernames: usernames,
+                                            comments: comments
+                                        });
+                                    }
                                 });
                             }
                         });
@@ -427,22 +447,22 @@ var Router = (function () {
                 //set our collection
                 var collection = db.get('usercollection');
                 //comic to be liked
-                var like = parseInt(req.params['0']);
+                var comicId = parseInt(req.params['0']);
                 //current user username to update user's like list
-                var liker = currentUser.getUsername();
+                var username = currentUser.getUsername();
                 //like or dislike input value
-                var inputValue = req.body.vote;
+                var inputValue = req.body.submit;
                 if (inputValue == "like") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function (err, docs) {
                         if (err) {
                             res.send(err);
                         }
                         else {
-                            collection.update({ username: liker }, {
-                                $addToSet: { "likes": like },
-                                $pull: { "dislikes": like }
+                            collection.update({ username: username }, {
+                                $addToSet: { "likes": comicId },
+                                $pull: { "dislikes": comicId }
                             });
                             res.redirect(req.get('referer'));
                         }
@@ -450,31 +470,47 @@ var Router = (function () {
                 }
                 else if (inputValue == "dislike") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function (err, docs) {
                         if (err) {
                             res.send(err);
                         }
                         else {
-                            collection.update({ username: liker }, {
-                                $addToSet: { "dislikes": like },
-                                $pull: { "likes": like }
+                            collection.update({ username: username }, {
+                                $addToSet: { "dislikes": comicId },
+                                $pull: { "likes": comicId }
                             });
                             res.redirect(req.get('referer'));
                         }
                     });
                 }
-                else {
+                else if (inputValue == "favourite") {
                     collection.findOne({
-                        "username": liker
+                        "username": username
                     }, function (err, docs) {
                         if (err) {
                             res.send(err);
                         }
                         else {
-                            collection.update({ username: liker }, {
-                                $addToSet: { "favourites": like }
+                            collection.update({ username: username }, {
+                                $addToSet: { "favourites": comicId }
                             });
+                            res.redirect(req.get('referer'));
+                        }
+                    });
+                }
+                else if (inputValue == "comment") {
+                    var comment = req.body.comment;
+                    var commentCollection = db.get('comments');
+                    commentCollection.insert({
+                        "comicId": comicId,
+                        "username": username,
+                        "comment": comment
+                    }, function (err) {
+                        if (err) {
+                            res.send("There was a problem adding the information to the database.");
+                        }
+                        else {
                             res.redirect(req.get('referer'));
                         }
                     });
@@ -669,7 +705,8 @@ var Router = (function () {
                                 "comicId": largestId,
                                 "title": title,
                                 "creator": req.currentUser.getUsername(),
-                                "tags": tags
+                                "tags": tags,
+                                "comments": []
                             });
                             imagesCollection.insert({
                                 "comicId": largestId,
@@ -1241,3 +1278,4 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
+//# sourceMappingURL=index.js.map

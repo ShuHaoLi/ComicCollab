@@ -44,20 +44,20 @@
 <div class="container">
     <!-- Functions to call for sharing -->
     <script language="javascript">
-    function fbshareCurrentPage()
-    {window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function twittershareCurrentPage()
-    {window.open("http://twitter.com/share?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function googleshareCurrentPage()
-    {window.open("https://plus.google.com/share?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function redditshareCurrentPage()
-    {window.open("http://reddit.com/submit?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function linkedinshareCurrentPage()
-    {window.open("http://www.linkedin.com/shareArticle?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function tumblrshareCurrentPage()
-    {window.open("http://www.tumblr.com/share/link?url="+escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; };
-    function emailshareCurrentPage()
-    {window.open("mailto:?subject=Check Out This Comic&body=Here's this link: "+escape(window.location.href), '');return false; };
+        function fbshareCurrentPage() {
+            window.open("https://www.facebook.com/sharer/sharer.php?u=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
+        ;
+        function twittershareCurrentPage() {
+            window.open("http://twitter.com/share?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
+        ;
+        function googleshareCurrentPage() {
+            window.open("https://plus.google.com/share?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            return false;
+        }
         ;
         function redditshareCurrentPage() {
             window.open("http://reddit.com/submit?url=" + escape(window.location.href), '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
@@ -89,46 +89,61 @@
 
     </script>
     <div class="page-header" style="margin-top: 60px">
-        <h1><%=title%></h1>
+        <h1><%= title %></h1>
 
         <% if (currentUser.getIsLoggedIn()) { %>
-        <a href="../editcomic/<%=comicId%>"><button type="submit" class="login btn btn-primary">Edit Comic</button></a>
+        <a href="../editcomic/<%= comicId %>">
+            <button type="submit" class="login btn btn-primary">Edit Comic</button>
+        </a>
         &nbsp;
-        <a href="../uploadcomics/<%=comicId%>"><button type="submit" class="login btn btn-primary">Upload New Image</button></a>
+        <a href="../uploadcomics/<%= comicId %>">
+            <button type="submit" class="login btn btn-primary">Upload New Image</button>
+        </a>
         <% } %>
         <% if (isCreator) { %>
-            <a href="../home"><button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete Comic</button></a>
+        <a href="../home">
+            <button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete Comic</button>
+        </a>
         <% } %>
         <p>Tags:
-            <% for (var i=0; i<tags.length; i++) { %>
-            <span class="label label-default"><%= tags[i]%></span>
+            <% for (var i = 0; i < tags.length; i++) { %>
+            <span class="label label-default"><%= tags[i] %></span>
             <% } %>
         </p>
         <br>
         <p>To delete a comic cell or reorder the images, click on the image and follow the instructions.</p>
 
         <!-- Facebook (url) -->
-        <a href="javascript:fbshareCurrentPage()" target="_blank" alt="Share on Facebook"><img src="../color/Facebook.png"></a>
+        <a href="javascript:fbshareCurrentPage()" target="_blank" alt="Share on Facebook"><img
+                    src="../color/Facebook.png"></a>
         <!-- Twitter (url) -->
-        <a href="javascript:twittershareCurrentPage()" target="_blank" alt="Share on Twitter"><img src="../color/Twitter.png"></a>
+        <a href="javascript:twittershareCurrentPage()" target="_blank" alt="Share on Twitter"><img
+                    src="../color/Twitter.png"></a>
         <!-- Google Plus (url) -->
-        <a href="javascript:googleshareCurrentPage()" target="_blank" alt="Share on Google Plus"><img src="../color/Google+.png"></a>
+        <a href="javascript:googleshareCurrentPage()" target="_blank" alt="Share on Google Plus"><img
+                    src="../color/Google+.png"></a>
         <!-- Reddit (url) -->
-        <a href="javascript:redditshareCurrentPage()" target="_blank" alt="Share on Reddit"><img src="../color/Reddit.png"></a>
+        <a href="javascript:redditshareCurrentPage()" target="_blank" alt="Share on Reddit"><img
+                    src="../color/Reddit.png"></a>
         <!-- LinkedIn (url) -->
-        <a href="javascript:linkedinshareCurrentPage()" target="_blank" alt="Share on LinkedIN"><img src="../color/LinkedIn.png"></a>
+        <a href="javascript:linkedinshareCurrentPage()" target="_blank" alt="Share on LinkedIN"><img
+                    src="../color/LinkedIn.png"></a>
         <!-- Tumblr (url) -->
-        <a href="javascript:tumblrshareCurrentPage()" target="_blank" alt="Share on Tumblr"><img src="../color/Tumblr.png"></a>
+        <a href="javascript:tumblrshareCurrentPage()" target="_blank" alt="Share on Tumblr"><img
+                    src="../color/Tumblr.png"></a>
         <!-- Email (subject, body) -->
-        <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img src="../color/Email.png"></a>
+        <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img
+                    src="../color/Email.png"></a>
         <p style='float: right;'><font size="5" color="darkblue">Views: <b><%= viewcount %></b></font></p>
     </div>
     <div style="min-width: 1250px">
-    <% for (var j=0; j<urls.length; j++) { %>
-    <a href="/comic/<%= comicId%><%= urls[j]%>"><img style="width: 300px; height:300px" src=<%= urls[j]%> /></a>
-    <% } %>
+        <% for (var j = 0; j < urls.length; j++) { %>
+        <a href="/comic/<%= comicId %> <%= urls[j] %>"><img style="width: 300px; height:300px" src=<%= urls[j] %>/></a>
+        <% } %>
     </div>
     <br>
+    <p><font size="4" color="green">Likes: <b><%= liketotal %></b></font> &nbsp <font size="4" color="red">Dislikes:
+            <b><%= disliketotal %></b></font></p>
     <% if (currentUser.getIsLoggedIn()) { %>
     <form method="post" name="ratings" id="form">
         <button type="submit" class="btn btn-success" name="submit" value="like">Like</button>
@@ -144,7 +159,17 @@
         <button type="submit" class="btn btn-primary" name="submit" value="comment">Post Comment</button>
     </form>
     <% } %>
-    <p><font size = "4" color="green">Likes: <b><%=liketotal%></b></font> &nbsp <font size = "4" color="red">Dislikes: <b><%=disliketotal%></b></font></p>
-    </div>
+    <table class="table table-striped">
+        <% for (var k = 0; k < comments.length; k++) { %>
+        <tr>
+            <td style="max-width: 20px; overflow: auto; word-wrap: break-word;">
+                <b><%= usernames[k] %></b>
+                <br>
+                <%= comments[k] %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+</div>
 </body>
 </html>

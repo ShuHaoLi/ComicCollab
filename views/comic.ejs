@@ -134,16 +134,20 @@
         <!-- Email (subject, body) -->
         <a href="javascript:emailshareCurrentPage()" target="_blank" alt="Share via Email"><img
                     src="../color/Email.png"></a>
-        <p style='float: right;'><font size="5" color="darkblue">Views: <b><%= viewcount %></b></font></p>
+        <p style='float: right;'>
+            <span style="font-size: 200%; color:darkblue">Views: <b><%= viewcount %></b></span>
+        </p>
     </div>
     <div style="min-width: 1250px">
         <% for (var j = 0; j < urls.length; j++) { %>
-        <a href="/comic/<%= comicId %> <%= urls[j] %>"><img style="width: 300px; height:300px" src=<%= urls[j] %>/></a>
+        <a href="/comic/<%= comicId %> <%= urls[j] %>"><img style="width: 300px; height:300px" src=<%= urls[j] %> /></a>
         <% } %>
     </div>
     <br>
-    <p><font size="4" color="green">Likes: <b><%= liketotal %></b></font> &nbsp <font size="4" color="red">Dislikes:
-            <b><%= disliketotal %></b></font></p>
+    <p>
+        <span style="font-size: 150%; color:green">Likes: <b><%= liketotal %></b></span>&nbsp
+        <span style="font-size: 150%; color: red">Dislikes: <b><%= disliketotal %></b></span>
+    </p>
     <% if (currentUser.getIsLoggedIn()) { %>
     <form method="post" name="ratings" id="form">
         <button type="submit" class="btn btn-success" name="submit" value="like">Like</button>

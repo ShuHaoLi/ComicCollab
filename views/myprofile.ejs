@@ -27,9 +27,20 @@
         <p><%= location %></p>
         <h4>About Me</h4>
         <p><%= aboutme %></p>
-        <h4>DeviantArt Username</h4>
-        <p><%= deviantartusername%></p>
         <br>
+        <br>
+        <h3>Check out my other artwork</h3>
+        <% if (deviantartusername != "N/A") { %>
+        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com">DeviantArt</a></h4>
+        
+        
+        
+        <% } else { %>
+        <div> A DeviantArt account is not associated with this profile.</div>
+        <% } %>
+        <br>
+        <h4>Tumblr<h4>
+            <br>
         <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
     </div>
     <div class="col-lg-6">

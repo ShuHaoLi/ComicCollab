@@ -612,6 +612,10 @@ var Router = (function () {
             if (deviantartusername == "") {
                 deviantartusername = "N/A";
             }
+            var tumblrusername = req.body.tumblrusername;
+            if (tumblrusername == "") {
+                tumblrusername = "N/A";
+            }
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
@@ -644,7 +648,8 @@ var Router = (function () {
                             "aboutme": "This user has not filled out a bio",
                             "securityquestion": user.getSecurityQuestion(),
                             "securityanswer": user.getSecurityAnswer(),
-                            "deviantartusername": user.getDeviantArtUsername(),
+                            "deviantartusername": deviantartusername,
+                            "tumblrusername": tumblrusername,
                             "likes": [],
                             "dislikes": [],
                             "favourites": []
@@ -1134,7 +1139,31 @@ var Router = (function () {
         });
         /* GET editprofile page. */
         router.get('/edit', function (req, res) {
-            res.render('edit', { title: 'Edit Profile' });
+            var db = req.db;
+            var collection = db.get('usercollection');
+            var currentUser = req.currentUser;
+            var current = currentUser.getUsername();
+            collection.findOne({
+                'username': current
+            }, function (err, docs) {
+                if (err) {
+                    res.send(err);
+                }
+                else if (docs != null) {
+                    var title = docs['title'];
+                    var tags = docs['tags'];
+                    res.render('edit', {
+                        cur: currentUser,
+                        fullname: docs['fullname'],
+                        age: docs['age'],
+                        gender: docs['gender'],
+                        location: docs['location'],
+                        aboutme: docs['aboutme'],
+                        tumblrusername: docs['tumblrusername'],
+                        deviantartusername: docs['deviantartusername']
+                    });
+                }
+            });
         });
         /* POST for editprofile page */
         router.post('/edit', function (req, res) {
@@ -1152,6 +1181,13 @@ var Router = (function () {
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
                 var deviantartusername = req.body.deviantartusername;
+                if (deviantartusername == "") {
+                    deviantartusername = "N/A";
+                }
+                var tumblrusername = req.body.tumblrusername;
+                if (tumblrusername == "") {
+                    tumblrusername = "N/A";
+                }
                 // Set our collection
                 var collection = db.get('usercollection');
                 collection.findOne({
@@ -1172,7 +1208,8 @@ var Router = (function () {
                                 "age": user.getAge(),
                                 "aboutme": user.getAboutMe(),
                                 "location": user.getLocation(),
-                                "deviantartusername": user.getDeviantArtUsername()
+                                "deviantartusername": deviantartusername,
+                                "tumblrusername": tumblrusername
                             }
                         }, function (err) {
                             if (err) {
@@ -1301,4 +1338,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

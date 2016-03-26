@@ -965,12 +965,13 @@ var Router = (function () {
                     var deviantartusername = docs['deviantartusername'];
                     var deviantartimages = [];
                     var deviantart = req.deviantart;
-                    deviantart.submissions({ username: deviantartusername, type: 'image' }, function (err, data) {
-                        if (err) {
-                            res.send(err);
+                    var deviantartclient = new deviantart.RSSClient(deviantartusername);
+                    deviantartclient.images(function (deviantArtErr, deviantArtData) {
+                        if (deviantArtErr) {
+                            console.log(deviantArtErr);
                         }
                         else {
-                            console.log(data); // parse data and add URLs for the images into deviantartimages
+                            console.log(deviantArtData);
                         }
                     });
                     var fanCollection = db.get('fans');

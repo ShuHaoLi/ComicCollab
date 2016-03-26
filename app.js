@@ -59,6 +59,8 @@ var Application = (function () {
         var users = require('./routes/users');
         var multer = require('multer');
         var http = require('http');
+        var deviantart = require('node-deviantart');
+        var deviantartclient = new deviantart.RSSClient;
         var app = express();
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
@@ -81,6 +83,7 @@ var Application = (function () {
             req.currentUser = currentUser;
             req.db = db;
             req.currentSecurityResponse = currentSecurityResponse;
+            req.deviantart = deviantartclient;
             next();
         });
         app.use('/', routes);

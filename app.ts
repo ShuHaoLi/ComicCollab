@@ -68,6 +68,8 @@ class Application {
         var users = require('./routes/users');
         var multer = require('multer');
         var http = require('http');
+        var deviantart = require('node-deviantart');
+        var deviantartclient = new deviantart.RSSClient;
         var app = express();
 
         // view engine setup
@@ -94,6 +96,7 @@ class Application {
             req.currentUser = currentUser;
             req.db = db;
             req.currentSecurityResponse = currentSecurityResponse;
+            req.deviantart = deviantartclient;
             next();
         });
 

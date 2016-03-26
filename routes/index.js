@@ -949,7 +949,6 @@ var Router = (function () {
                     res.send(err);
                 }
                 else if (docs != null) {
-                    //
                     var comicCollection = db.get('comics');
                     var favourites = docs['favourites'];
                     var favouriteTitles = [];
@@ -963,21 +962,30 @@ var Router = (function () {
                             }
                         });
                     }
-                    ;
-                    //
-                    var fanCollection = db.get('fans');
-                    fanCollection.find({
-                        "fan": current
-                    }, function (err, fanDocs) {
+                    var deviantartusername = docs['deviantartusername'];
+                    var deviantartimages = [];
+                    var deviantart = req.deviantart;
+                    deviantart.submissions({ username: deviantartusername, type: 'image' }, function (err, data) {
                         if (err) {
                             res.send(err);
                         }
                         else {
+                            console.log(data); // parse data and add URLs for the images into deviantartimages
+                        }
+                    });
+                    var fanCollection = db.get('fans');
+                    fanCollection.find({
+                        "fan": current
+                    }, function (fanErr, fanDocs) {
+                        if (fanErr) {
+                            res.send(fanErr);
+                        }
+                        else {
                             fanCollection.find({
                                 "following": current
-                            }, function (err, followingDocs) {
-                                if (err) {
-                                    res.send(err);
+                            }, function (followingErr, followingDocs) {
+                                if (followingErr) {
+                                    res.send(followingErr);
                                 }
                                 else {
                                     var fans = [];
@@ -1000,7 +1008,8 @@ var Router = (function () {
                                         fans: fans,
                                         following: following,
                                         favourites: docs['favourites'],
-                                        favouriteTitles: favouriteTitles
+                                        favouriteTitles: favouriteTitles,
+                                        deviantartimages: deviantartimages
                                     });
                                 }
                             });

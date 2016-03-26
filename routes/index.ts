@@ -11,6 +11,7 @@ interface UserInterface {
     getAboutMe(): String;
     getSecurityQuestion(): String;
     getSecurityAnswer(): String;
+    getDeviantArtUsername();
 }
 class User implements UserInterface {
     private username: String;
@@ -22,10 +23,11 @@ class User implements UserInterface {
     private location: String;
     private securityQuestion: String;
     private securityAnswer: String;
+    private deviantartusername: String;
 
     constructor(username: String, password: String, fullname: String,
         gender: String, age: String, aboutme: String, location: String,
-        securityQuestion: String, securityAnswer: String) {
+        securityQuestion: String, securityAnswer: String, deviantartusername: String) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -35,6 +37,7 @@ class User implements UserInterface {
         this.location = location;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
+        this.deviantartusername = deviantartusername;
     }
 
     getUsername() {
@@ -71,6 +74,10 @@ class User implements UserInterface {
 
     getSecurityAnswer() {
         return this.securityAnswer;
+    }
+
+    getDeviantArtUsername() {
+        return this.deviantartusername;
     }
 }
 
@@ -655,6 +662,10 @@ class Router {
             var confirmPassword = req.body.confirmPassword;
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;
+            var deviantartusername = req.body.deviantartusername;
+            if (deviantartusername == "") {
+                deviantartusername = "N/A";
+            }
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
@@ -663,7 +674,7 @@ class Router {
             }
             else {
                 var user: User = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme,
-                    req.body.gender, req.body.location, securityQuestion, securityAnswer);
+                    req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername);
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -688,6 +699,7 @@ class Router {
                             "aboutme": "This user has not filled out a bio",
                             "securityquestion": user.getSecurityQuestion(),
                             "securityanswer": user.getSecurityAnswer(),
+                            "deviantartusername": user.getDeviantArtUsername(),
                             "likes": [],
                             "dislikes": [],
                             "favourites": []
@@ -1037,6 +1049,7 @@ class Router {
                                         gender: docs['gender'],
                                         aboutme: docs['aboutme'],
                                         username: current,
+                                        deviantartusername: docs['deviantartusername'],
                                         fans: fans,
                                         following: following,
                                         favourites: docs['favourites'],
@@ -1053,7 +1066,8 @@ class Router {
                         location: '',
                         age: '',
                         gender: '',
-                        aboutme: ''
+                        aboutme: '',
+                        deviantartusername: ''
                     });
                 }
             });
@@ -1121,6 +1135,7 @@ class Router {
                                             aboutme: docs['aboutme'],
                                             notFan: notFan,
                                             fans: fans,
+                                            deviantartusername: docs['deviantartusername'],
                                             following: following,
                                             favourites: docs['favourites'],
                                             favouriteTitles: favouriteTitles
@@ -1182,6 +1197,7 @@ class Router {
                 var location = req.body.location;
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
+                var deviantartusername = req.body.deviantartusername;
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -1196,7 +1212,7 @@ class Router {
                         var securityQuestion: string = docs['securityquestion'];
                         var securityAnswer: string = docs['securityanswer'];
                         var user: User = new User(currentUser.getUsername(), password, fullname,
-                            gender, age, aboutme, location, securityQuestion, securityAnswer);
+                            gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername);
                         collection.update(
                             { username: currentUser.getUsername() },
                             {
@@ -1206,6 +1222,7 @@ class Router {
                                     "age": user.getAge(),
                                     "aboutme": user.getAboutMe(),
                                     "location": user.getLocation(),
+                                    "deviantartusername": user.getDeviantArtUsername()
                                 }
                             }, function(err) {
                                 if (err) {

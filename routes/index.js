@@ -2,7 +2,7 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer) {
+    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -12,6 +12,7 @@ var User = (function () {
         this.location = location;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
+        this.deviantartusername = deviantartusername;
     }
     User.prototype.getUsername = function () {
         return this.username;
@@ -39,6 +40,9 @@ var User = (function () {
     };
     User.prototype.getSecurityAnswer = function () {
         return this.securityAnswer;
+    };
+    User.prototype.getDeviantArtUsername = function () {
+        return this.deviantartusername;
     };
     return User;
 })();
@@ -604,6 +608,10 @@ var Router = (function () {
             var confirmPassword = req.body.confirmPassword;
             var securityQuestion = req.body.securityQuestion;
             var securityAnswer = req.body.securityAnswer;
+            var deviantartusername = req.body.deviantartusername;
+            if (deviantartusername == "") {
+                deviantartusername = "N/A";
+            }
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
@@ -611,7 +619,7 @@ var Router = (function () {
                 res.send("passwords do not match");
             }
             else {
-                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer);
+                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -636,6 +644,7 @@ var Router = (function () {
                             "aboutme": "This user has not filled out a bio",
                             "securityquestion": user.getSecurityQuestion(),
                             "securityanswer": user.getSecurityAnswer(),
+                            "deviantartusername": user.getDeviantArtUsername(),
                             "likes": [],
                             "dislikes": [],
                             "favourites": []
@@ -987,6 +996,7 @@ var Router = (function () {
                                         gender: docs['gender'],
                                         aboutme: docs['aboutme'],
                                         username: current,
+                                        deviantartusername: docs['deviantartusername'],
                                         fans: fans,
                                         following: following,
                                         favourites: docs['favourites'],
@@ -1004,7 +1014,8 @@ var Router = (function () {
                         location: '',
                         age: '',
                         gender: '',
-                        aboutme: ''
+                        aboutme: '',
+                        deviantartusername: ''
                     });
                 }
             });
@@ -1074,6 +1085,7 @@ var Router = (function () {
                                             aboutme: docs['aboutme'],
                                             notFan: notFan,
                                             fans: fans,
+                                            deviantartusername: docs['deviantartusername'],
                                             following: following,
                                             favourites: docs['favourites'],
                                             favouriteTitles: favouriteTitles
@@ -1130,6 +1142,7 @@ var Router = (function () {
                 var location = req.body.location;
                 var gender = req.body.gender;
                 var aboutme = req.body.aboutme;
+                var deviantartusername = req.body.deviantartusername;
                 // Set our collection
                 var collection = db.get('usercollection');
                 collection.findOne({
@@ -1142,14 +1155,15 @@ var Router = (function () {
                         var password = docs['password'];
                         var securityQuestion = docs['securityquestion'];
                         var securityAnswer = docs['securityanswer'];
-                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer);
+                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername);
                         collection.update({ username: currentUser.getUsername() }, {
                             $set: {
                                 "fullname": user.getFullName(),
                                 "gender": user.getGender(),
                                 "age": user.getAge(),
                                 "aboutme": user.getAboutMe(),
-                                "location": user.getLocation()
+                                "location": user.getLocation(),
+                                "deviantartusername": user.getDeviantArtUsername()
                             }
                         }, function (err) {
                             if (err) {

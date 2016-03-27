@@ -968,7 +968,7 @@ var Router = (function () {
                         });
                     }
                     var deviantartusername = docs['deviantartusername'];
-                    var deviantartimages = [];
+                    var deviantUrls = [];
                     var deviantart = req.deviantart;
                     var deviantartclient = new deviantart.RSSClient(deviantartusername);
                     deviantartclient.images(function (deviantArtErr, deviantArtData) {
@@ -976,51 +976,59 @@ var Router = (function () {
                             console.log(deviantArtErr);
                         }
                         else {
-                            console.log(deviantArtData);
+                            //console.log(deviantArtData);
+                            console.log("hello");
+                            deviantArtData.forEach(function (obj) {
+                                deviantUrls.push(obj.content.url);
+                            });
+                            console.log(deviantUrls);
                         }
                     });
                     var fanCollection = db.get('fans');
-                    fanCollection.find({
-                        "fan": current
-                    }, function (fanErr, fanDocs) {
-                        if (fanErr) {
-                            res.send(fanErr);
-                        }
-                        else {
-                            fanCollection.find({
-                                "following": current
-                            }, function (followingErr, followingDocs) {
-                                if (followingErr) {
-                                    res.send(followingErr);
-                                }
-                                else {
-                                    var fans = [];
-                                    var following = [];
-                                    for (var i = 0; i < fanDocs.length; i++) {
-                                        following.push(fanDocs[i]['following']);
+                    setTimeout(function () {
+                        fanCollection.find({
+                            "fan": current
+                        }, function (fanErr, fanDocs) {
+                            if (fanErr) {
+                                res.send(fanErr);
+                            }
+                            else {
+                                fanCollection.find({
+                                    "following": current
+                                }, function (followingErr, followingDocs) {
+                                    if (followingErr) {
+                                        res.send(followingErr);
                                     }
-                                    for (var i = 0; i < followingDocs.length; i++) {
-                                        fans.push(followingDocs[i]['fan']);
+                                    else {
+                                        var fans = [];
+                                        var following = [];
+                                        for (var i = 0; i < fanDocs.length; i++) {
+                                            following.push(fanDocs[i]['following']);
+                                        }
+                                        for (var i = 0; i < followingDocs.length; i++) {
+                                            fans.push(followingDocs[i]['fan']);
+                                        }
+                                        console.log(deviantUrls);
+                                        res.render('myprofile', {
+                                            cur: currentUser,
+                                            fullname: docs['fullname'],
+                                            location: docs['location'],
+                                            age: docs['age'],
+                                            gender: docs['gender'],
+                                            aboutme: docs['aboutme'],
+                                            username: current,
+                                            deviantartusername: docs['deviantartusername'],
+                                            fans: fans,
+                                            following: following,
+                                            favourites: docs['favourites'],
+                                            favouriteTitles: favouriteTitles,
+                                            deviantartimages: deviantUrls
+                                        });
                                     }
-                                    res.render('myprofile', {
-                                        cur: currentUser,
-                                        fullname: docs['fullname'],
-                                        location: docs['location'],
-                                        age: docs['age'],
-                                        gender: docs['gender'],
-                                        aboutme: docs['aboutme'],
-                                        username: current,
-                                        deviantartusername: docs['deviantartusername'],
-                                        fans: fans,
-                                        following: following,
-                                        favourites: docs['favourites'],
-                                        favouriteTitles: favouriteTitles,
-                                        deviantartimages: deviantartimages
-                                    });
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
+                    }, 1000);
                 }
                 else {
                     res.render('myprofile', {

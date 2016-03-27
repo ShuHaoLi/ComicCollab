@@ -1025,17 +1025,24 @@ class Router {
                         );
                     }
                     var deviantartusername = docs['deviantartusername'];
-                    var deviantartimages = [];
+                    var deviantUrls = [];
                     var deviantart = req.deviantart;
                     var deviantartclient = new deviantart.RSSClient(deviantartusername);
                     deviantartclient.images(function(deviantArtErr, deviantArtData) {
                         if (deviantArtErr) {
                             console.log(deviantArtErr);
                         } else {
-                            console.log(deviantArtData);
+                            //console.log(deviantArtData);
+                            console.log("hello");
+                            
+                            deviantArtData.forEach(function(obj) {
+                                deviantUrls.push(obj.content.url)
+                            });
+                            console.log(deviantUrls);
                         }
-                    });
+                    });                    
                     var fanCollection = db.get('fans');
+                    setTimeout(function(){  
                     fanCollection.find({
                         "fan": current
                     }, function(fanErr, fanDocs) {
@@ -1056,6 +1063,7 @@ class Router {
                                     for (var i = 0; i < followingDocs.length; i++) {
                                         fans.push(followingDocs[i]['fan']);
                                     }
+                                    console.log(deviantUrls);
                                     res.render('myprofile', {
                                         cur: currentUser,
                                         fullname: docs['fullname'],
@@ -1069,12 +1077,13 @@ class Router {
                                         following: following,
                                         favourites: docs['favourites'],
                                         favouriteTitles: favouriteTitles,
-                                        deviantartimages: deviantartimages
+                                        deviantartimages: deviantUrls
                                     });
                                 }
                             })
                         }
                     })
+                    },1000); 
                 } else {
                     res.render('myprofile', {
                         cur: currentUser,

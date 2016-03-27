@@ -1132,7 +1132,30 @@ class Router {
                             );
                         };
                         //
+                        var deviantartusername = docs['deviantartusername'];
+                        var deviantArtImages = [];
+                        var deviantUrls = [];
+                        var deviantart = req.deviantart;
+                        var deviantartclient = new deviantart.RSSClient(deviantartusername);
+                        deviantartclient.images(function(deviantArtErr, deviantArtData) {
+                            if (deviantArtErr) {
+                                console.log(deviantArtErr);
+                            } else {
+                                //console.log(deviantArtData);
+                                console.log("hello");
+
+                                deviantArtData.forEach(function(obj) {
+                                    deviantArtImages.push(obj.content.url);
+                                    deviantUrls.push(obj.link);
+                                });
+                                console.log(deviantArtImages);
+                                console.log(deviantUrls);
+                            }
+                        });  
+                        //
                         var fanCollection = db.get('fans');
+                        //timeout to delay
+                        setTimeout(function(){  
                         fanCollection.find({
                             "fan": username
                         }, function(err, fanDocs) {
@@ -1166,12 +1189,15 @@ class Router {
                                             deviantartusername: docs['deviantartusername'],
                                             following: following,
                                             favourites: docs['favourites'],
-                                            favouriteTitles: favouriteTitles
+                                            favouriteTitles: favouriteTitles,
+                                            deviantartimages: deviantArtImages,
+                                            devianturls: deviantUrls
                                         });
                                     }
                                 })
                             }
                         });
+                        },1500);
                     } else {
                         res.send("This user does not exist!");
                     }

@@ -1078,48 +1078,74 @@ var Router = (function () {
                         }
                         ;
                         //
-                        var fanCollection = db.get('fans');
-                        fanCollection.find({
-                            "fan": username
-                        }, function (err, fanDocs) {
-                            if (err) {
-                                res.send(err);
+                        var deviantartusername = docs['deviantartusername'];
+                        var deviantArtImages = [];
+                        var deviantUrls = [];
+                        var deviantart = req.deviantart;
+                        var deviantartclient = new deviantart.RSSClient(deviantartusername);
+                        deviantartclient.images(function (deviantArtErr, deviantArtData) {
+                            if (deviantArtErr) {
+                                console.log(deviantArtErr);
                             }
                             else {
-                                fanCollection.find({
-                                    "following": username
-                                }, function (err, followingDocs) {
-                                    if (err) {
-                                        res.send(err);
-                                    }
-                                    else {
-                                        var fans = [];
-                                        var following = [];
-                                        for (var i = 0; i < fanDocs.length; i++) {
-                                            following.push(fanDocs[i]['following']);
-                                        }
-                                        for (var i = 0; i < followingDocs.length; i++) {
-                                            fans.push(followingDocs[i]['fan']);
-                                        }
-                                        var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
-                                        res.render('users', {
-                                            userName: username,
-                                            fullname: docs['fullname'],
-                                            location: docs['location'],
-                                            age: docs['age'],
-                                            gender: docs['gender'],
-                                            aboutme: docs['aboutme'],
-                                            notFan: notFan,
-                                            fans: fans,
-                                            deviantartusername: docs['deviantartusername'],
-                                            following: following,
-                                            favourites: docs['favourites'],
-                                            favouriteTitles: favouriteTitles
-                                        });
-                                    }
+                                //console.log(deviantArtData);
+                                console.log("hello");
+                                deviantArtData.forEach(function (obj) {
+                                    deviantArtImages.push(obj.content.url);
+                                    deviantUrls.push(obj.link);
                                 });
+                                console.log(deviantArtImages);
+                                console.log(deviantUrls);
                             }
                         });
+                        //
+                        var fanCollection = db.get('fans');
+                        //timeout to delay
+                        setTimeout(function () {
+                            fanCollection.find({
+                                "fan": username
+                            }, function (err, fanDocs) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else {
+                                    fanCollection.find({
+                                        "following": username
+                                    }, function (err, followingDocs) {
+                                        if (err) {
+                                            res.send(err);
+                                        }
+                                        else {
+                                            var fans = [];
+                                            var following = [];
+                                            for (var i = 0; i < fanDocs.length; i++) {
+                                                following.push(fanDocs[i]['following']);
+                                            }
+                                            for (var i = 0; i < followingDocs.length; i++) {
+                                                fans.push(followingDocs[i]['fan']);
+                                            }
+                                            var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
+                                            res.render('users', {
+                                                userName: username,
+                                                fullname: docs['fullname'],
+                                                location: docs['location'],
+                                                age: docs['age'],
+                                                gender: docs['gender'],
+                                                aboutme: docs['aboutme'],
+                                                notFan: notFan,
+                                                fans: fans,
+                                                deviantartusername: docs['deviantartusername'],
+                                                following: following,
+                                                favourites: docs['favourites'],
+                                                favouriteTitles: favouriteTitles,
+                                                deviantartimages: deviantArtImages,
+                                                devianturls: deviantUrls
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }, 1500);
                     }
                     else {
                         res.send("This user does not exist!");

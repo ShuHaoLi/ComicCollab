@@ -55,9 +55,35 @@
         <% } %>
         <br>
         <!--deviantartend -->
-        <h4>Tumblr</h4>
-            <br>
+        <!--tumblrstart -->
+        <% if (tumblrusername != "N/A") { %>
+        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com">Tumblr</a></h4>
+        
+        <% if (tumblrurls.length > 10) { %>
+        <% for (var m = 0; m < 10; m++) { %>
+        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <% } %>
+        <% } else { %>
+        <% for (var m = 0; m < tumblrurls.length; m++) { %>
+        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <% } %>
+        <% } %>
+        <% if (tumblrurls.length > 10) { %>
+        <br>
+        <br>
+        <a href = "http://www.<%= tumblrusername%>.tumblr.com"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <% } %>
+        <br>
+        
+        <% } else { %>
+        <div> A Tumblr account is not associated with this profile.</div>
+        <% } %>
+        <br>
+        <!--tumblrend -->
+        
         <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
+        <br>
+        <br>
     </div>
     <div class="col-lg-5">
         <h4>My Fans</h4>

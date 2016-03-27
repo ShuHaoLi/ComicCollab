@@ -2,7 +2,7 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername) {
+    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -13,6 +13,7 @@ var User = (function () {
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         this.deviantartusername = deviantartusername;
+        this.tumblrusername = tumblrusername;
     }
     User.prototype.getUsername = function () {
         return this.username;
@@ -43,6 +44,9 @@ var User = (function () {
     };
     User.prototype.getDeviantArtUsername = function () {
         return this.deviantartusername;
+    };
+    User.prototype.getTumblrUsername = function () {
+        return this.tumblrusername;
     };
     return User;
 })();
@@ -623,7 +627,7 @@ var Router = (function () {
                 res.send("passwords do not match");
             }
             else {
-                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername);
+                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -984,6 +988,23 @@ var Router = (function () {
                             });
                         }
                     });
+                    var tumblr_urls = [];
+                    var tumblrusername = docs['tumblrusername'];
+                    var Tumblr = require('tumblrwks');
+                    var tumblr = new Tumblr({
+                        consumerKey: 'B0aoP9VFQz0Aspq8tYkPs7UHg0ijvyZS36fg5JYQP4TeHLF210'
+                    });
+                    tumblr.get('/posts', { hostname: tumblrusername + '.tumblr.com' }, function (err, json) {
+                        var posts_length = json.posts.length;
+                        //console.log(json.posts[0].photos[0].alt_sizes[0].url);
+                        for (var i = 0; i < posts_length; i++) {
+                            var photos_length = json.posts[i].photos.length;
+                            for (var j = 0; j < photos_length; j++) {
+                                var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
+                                tumblr_urls.push(tumblr_url);
+                            }
+                        }
+                    });
                     var fanCollection = db.get('fans');
                     setTimeout(function () {
                         fanCollection.find({
@@ -1022,13 +1043,15 @@ var Router = (function () {
                                             favourites: docs['favourites'],
                                             favouriteTitles: favouriteTitles,
                                             deviantartimages: deviantArtImages,
-                                            devianturls: deviantUrls
+                                            devianturls: deviantUrls,
+                                            tumblrusername: docs['tumblrusername'],
+                                            tumblrurls: tumblr_urls
                                         });
                                     }
                                 });
                             }
                         });
-                    }, 1500);
+                    }, 2000);
                 }
                 else {
                     res.render('myprofile', {
@@ -1038,7 +1061,8 @@ var Router = (function () {
                         age: '',
                         gender: '',
                         aboutme: '',
-                        deviantartusername: ''
+                        deviantartusername: '',
+                        tumblrusername: ''
                     });
                 }
             });
@@ -1093,6 +1117,24 @@ var Router = (function () {
                             }
                         });
                         //
+                        var tumblr_urls = [];
+                        var tumblrusername = docs['tumblrusername'];
+                        var Tumblr = require('tumblrwks');
+                        var tumblr = new Tumblr({
+                            consumerKey: 'B0aoP9VFQz0Aspq8tYkPs7UHg0ijvyZS36fg5JYQP4TeHLF210'
+                        });
+                        tumblr.get('/posts', { hostname: tumblrusername + '.tumblr.com' }, function (err, json) {
+                            var posts_length = json.posts.length;
+                            //console.log(json.posts[0].photos[0].alt_sizes[0].url);
+                            for (var i = 0; i < posts_length; i++) {
+                                var photos_length = json.posts[i].photos.length;
+                                for (var j = 0; j < photos_length; j++) {
+                                    var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
+                                    tumblr_urls.push(tumblr_url);
+                                }
+                            }
+                        });
+                        //
                         var fanCollection = db.get('fans');
                         //timeout to delay
                         setTimeout(function () {
@@ -1133,13 +1175,15 @@ var Router = (function () {
                                                 favourites: docs['favourites'],
                                                 favouriteTitles: favouriteTitles,
                                                 deviantartimages: deviantArtImages,
-                                                devianturls: deviantUrls
+                                                devianturls: deviantUrls,
+                                                tumblrusername: docs['tumblrusername'],
+                                                tumblrurls: tumblr_urls
                                             });
                                         }
                                     });
                                 }
                             });
-                        }, 1500);
+                        }, 2000);
                     }
                     else {
                         res.send("This user does not exist!");
@@ -1232,7 +1276,7 @@ var Router = (function () {
                         var password = docs['password'];
                         var securityQuestion = docs['securityquestion'];
                         var securityAnswer = docs['securityanswer'];
-                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername);
+                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
                         collection.update({ username: currentUser.getUsername() }, {
                             $set: {
                                 "fullname": user.getFullName(),

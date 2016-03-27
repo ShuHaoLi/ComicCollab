@@ -16,7 +16,7 @@
     <div class="page-header" style="margin-top: 60px">
         <h1><b><%= username %></b></h1>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-7">
         <h4>Name</h4>
         <%= fullname %>
         <h4>Age</h4>
@@ -30,22 +30,36 @@
         <br>
         <br>
         <h3>Check out my other artwork</h3>
+        <!--deviantartstart -->
         <% if (deviantartusername != "N/A") { %>
         <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com">DeviantArt</a></h4>
         
-        <% for (var m = 0; m < deviantartimages.length; m++) { %>
-        <img style="height:150px" src=<%= deviantartimages[m] %> />
+        <% if (deviantartimages.length > 10) { %>
+        <% for (var m = 0; m < 10; m++) { %>
+        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
         <% } %>
+        <% } else { %>
+        <% for (var m = 0; m < deviantartimages.length; m++) { %>
+        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
+        <% } %>
+        <% } %>
+        <% if (deviantartimages.length > 10) { %>
+        <br>
+        <br>
+        <a href = "http://www.<%= deviantartusername%>.deviantart.com/gallery"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <% } %>
+        <br>
         
         <% } else { %>
         <div> A DeviantArt account is not associated with this profile.</div>
         <% } %>
         <br>
+        <!--deviantartend -->
         <h4>Tumblr<h4>
             <br>
         <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-5">
         <h4>My Fans</h4>
         <% for (var i = 0; i < fans.length; i++) { %>
         <a href="../users/<%= fans[i]%>"><%= fans[i] %></a><br>

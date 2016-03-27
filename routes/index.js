@@ -968,6 +968,7 @@ var Router = (function () {
                         });
                     }
                     var deviantartusername = docs['deviantartusername'];
+                    var deviantArtImages = [];
                     var deviantUrls = [];
                     var deviantart = req.deviantart;
                     var deviantartclient = new deviantart.RSSClient(deviantartusername);
@@ -979,8 +980,10 @@ var Router = (function () {
                             //console.log(deviantArtData);
                             console.log("hello");
                             deviantArtData.forEach(function (obj) {
-                                deviantUrls.push(obj.content.url);
+                                deviantArtImages.push(obj.content.url);
+                                deviantUrls.push(obj.link);
                             });
+                            console.log(deviantArtImages);
                             console.log(deviantUrls);
                         }
                     });
@@ -1008,7 +1011,6 @@ var Router = (function () {
                                         for (var i = 0; i < followingDocs.length; i++) {
                                             fans.push(followingDocs[i]['fan']);
                                         }
-                                        console.log(deviantUrls);
                                         res.render('myprofile', {
                                             cur: currentUser,
                                             fullname: docs['fullname'],
@@ -1022,13 +1024,14 @@ var Router = (function () {
                                             following: following,
                                             favourites: docs['favourites'],
                                             favouriteTitles: favouriteTitles,
-                                            deviantartimages: deviantUrls
+                                            deviantartimages: deviantArtImages,
+                                            devianturls: deviantUrls
                                         });
                                     }
                                 });
                             }
                         });
-                    }, 1000);
+                    }, 1500);
                 }
                 else {
                     res.render('myprofile', {

@@ -1025,6 +1025,7 @@ class Router {
                         );
                     }
                     var deviantartusername = docs['deviantartusername'];
+                    var deviantArtImages = [];
                     var deviantUrls = [];
                     var deviantart = req.deviantart;
                     var deviantartclient = new deviantart.RSSClient(deviantartusername);
@@ -1036,8 +1037,10 @@ class Router {
                             console.log("hello");
                             
                             deviantArtData.forEach(function(obj) {
-                                deviantUrls.push(obj.content.url)
+                                deviantArtImages.push(obj.content.url);
+                                deviantUrls.push(obj.link);
                             });
+                            console.log(deviantArtImages);
                             console.log(deviantUrls);
                         }
                     });                    
@@ -1063,7 +1066,6 @@ class Router {
                                     for (var i = 0; i < followingDocs.length; i++) {
                                         fans.push(followingDocs[i]['fan']);
                                     }
-                                    console.log(deviantUrls);
                                     res.render('myprofile', {
                                         cur: currentUser,
                                         fullname: docs['fullname'],
@@ -1077,13 +1079,14 @@ class Router {
                                         following: following,
                                         favourites: docs['favourites'],
                                         favouriteTitles: favouriteTitles,
-                                        deviantartimages: deviantUrls
+                                        deviantartimages: deviantArtImages,
+                                        devianturls: deviantUrls
                                     });
                                 }
                             })
                         }
                     })
-                    },1000); 
+                    },1500); 
                 } else {
                     res.render('myprofile', {
                         cur: currentUser,

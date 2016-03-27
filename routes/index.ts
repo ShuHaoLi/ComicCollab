@@ -1034,14 +1034,13 @@ class Router {
                             console.log(deviantArtErr);
                         } else {
                             //console.log(deviantArtData);
-                            console.log("hello");
                             
                             deviantArtData.forEach(function(obj) {
                                 deviantArtImages.push(obj.content.url);
                                 deviantUrls.push(obj.link);
                             });
-                            console.log(deviantArtImages);
-                            console.log(deviantUrls);
+                            //console.log(deviantArtImages);
+                            //console.log(deviantUrls);
                         }
                     });                    
                     var fanCollection = db.get('fans');
@@ -1142,14 +1141,13 @@ class Router {
                                 console.log(deviantArtErr);
                             } else {
                                 //console.log(deviantArtData);
-                                console.log("hello");
 
                                 deviantArtData.forEach(function(obj) {
                                     deviantArtImages.push(obj.content.url);
                                     deviantUrls.push(obj.link);
                                 });
-                                console.log(deviantArtImages);
-                                console.log(deviantUrls);
+                                //console.log(deviantArtImages);
+                                //console.log(deviantUrls);
                             }
                         });  
                         //

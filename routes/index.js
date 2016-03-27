@@ -978,13 +978,10 @@ var Router = (function () {
                         }
                         else {
                             //console.log(deviantArtData);
-                            console.log("hello");
                             deviantArtData.forEach(function (obj) {
                                 deviantArtImages.push(obj.content.url);
                                 deviantUrls.push(obj.link);
                             });
-                            console.log(deviantArtImages);
-                            console.log(deviantUrls);
                         }
                     });
                     var fanCollection = db.get('fans');
@@ -1089,13 +1086,10 @@ var Router = (function () {
                             }
                             else {
                                 //console.log(deviantArtData);
-                                console.log("hello");
                                 deviantArtData.forEach(function (obj) {
                                     deviantArtImages.push(obj.content.url);
                                     deviantUrls.push(obj.link);
                                 });
-                                console.log(deviantArtImages);
-                                console.log(deviantUrls);
                             }
                         });
                         //

@@ -1263,13 +1263,42 @@ class Router {
                                     } else {
                                         var fans = [];
                                         var following = [];
+                                        var followingprofilepics = [];
+                                        var fanprofilepics = [];
+                                        //following and followingprofilepics
                                         for (var i = 0; i < fanDocs.length; i++) {
                                             following.push(fanDocs[i]['following']);
                                         }
+                                        //
+                                        for (var i = 0; i < following.length; i++) {
+                                            collection.findOne({
+                                                "username": following[i]
+                                            }, function(err, followdoc) {
+                                                if (err) {
+                                                    res.send(err);
+                                                } else {
+                                                    followingprofilepics.push(followdoc["profilepicture"]);
+                                                }
+                                            });
+                                        }
+                                        //fans and fan profilepics
                                         for (var i = 0; i < followingDocs.length; i++) {
                                             fans.push(followingDocs[i]['fan']);
                                         }
+                                        for (var i = 0; i < fans.length; i++) {
+                                            collection.findOne({
+                                                "username": fans[i]
+                                            }, function(err, fandoc) {
+                                                if (err) {
+                                                    res.send(err);
+                                                } else {
+                                                    fanprofilepics.push(fandoc["profilepicture"]);
+                                                }
+                                            });
+                                        }
+                                    //
                                         var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
+                                        setTimeout(function(){
                                         res.render('users', {
                                             userName: username,
                                             fullname: docs['fullname'],
@@ -1287,8 +1316,11 @@ class Router {
                                             devianturls: deviantUrls,
                                             tumblrusername: docs['tumblrusername'],
                                             tumblrurls: tumblr_urls,
-                                            profilepicture: docs['profilepicture']
+                                            profilepicture: docs['profilepicture'],
+                                            followingprofilepics: followingprofilepics,
+                                            fanprofilepics: fanprofilepics
                                         });
+                                        },200);
                                     }
                                 })
                             }

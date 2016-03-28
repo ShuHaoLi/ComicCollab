@@ -89,11 +89,11 @@
     <div class="col-lg-5">
         <h4>My Fans</h4>
         <% for (var i = 0; i < fans.length; i++) { %>
-        <a href="../users/<%= fans[i]%>"><img style="height:25px" src = "<%= fanprofilepics[i] %>"><%= fans[i] %></a><br>
+        <a href="../users/<%= fans[i]%>"><img style="height:25px" src = "<%= fanprofilepics[i] %>"> <%= fans[i] %></a><br>
         <% } %>
         <h4>I'm Following</h4>
         <% for (var j = 0; j < following.length; j++) { %>
-        </img><a href="../users/<%= following[j]%>"><img style="height:25px" src = "<%= followingprofilepics[j] %>"></img><%= following[j] %></a><br>
+        </img><a href="../users/<%= following[j]%>"><img style="height:25px" src = "<%= followingprofilepics[j] %>"></img> <%= following[j] %></a><br>
         <% } %>
         <br>
         <h4>My Favourite Comics</h4>

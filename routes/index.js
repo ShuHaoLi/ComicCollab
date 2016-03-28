@@ -1448,11 +1448,13 @@ var Router = (function () {
             var db = req.db;
             var collection = db.get('usercollection');
             var comicCollection = db.get('comics');
+            var imagesCollection = db.get('comicimages');
             var search = req.params['0'];
             var username;
             var userExists;
             var comicIds = [];
             var titles = [];
+            var comicThumbnails = [];
             var tagExists;
             collection.findOne({
                 "username": search
@@ -1478,18 +1480,33 @@ var Router = (function () {
                         tagExists = 1;
                         comicIds = [];
                         titles = [];
+                        comicThumbnails = [];
                         for (var i = 0; i < comicDocs.length; i++) {
                             comicIds.push(comicDocs[i]['comicId']);
                             titles.push(comicDocs[i]['title']);
+                            imagesCollection.findOne({
+                                "comicId": comicDocs[i]['comicId'],
+                                "sequence": 1
+                            }, function (imagesErr, imagesDocs) {
+                                if (imagesErr) {
+                                    res.send(imagesErr);
+                                }
+                                else {
+                                    comicThumbnails.push(imagesDocs['url']);
+                                }
+                            });
                         }
-                        res.render('search', {
-                            tags: search,
-                            tagExists: tagExists,
-                            comicIds: comicIds,
-                            titles: titles,
-                            username: username,
-                            userExists: userExists
-                        });
+                        setTimeout(function () {
+                            res.render('search', {
+                                tags: search,
+                                tagExists: tagExists,
+                                comicIds: comicIds,
+                                titles: titles,
+                                comicThumbnails: comicThumbnails,
+                                username: username,
+                                userExists: userExists
+                            });
+                        }, 500);
                     }
                     else {
                         tagExists = -1;
@@ -1498,6 +1515,7 @@ var Router = (function () {
                             tagExists: tagExists,
                             comicIds: comicIds,
                             titles: titles,
+                            comicThumbnails: comicThumbnails,
                             username: username,
                             userExists: userExists
                         });

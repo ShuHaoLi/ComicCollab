@@ -39,6 +39,7 @@
         <% for (var i = 0; i < comicIds.length; i++) { %>
         <p>
             <a href = "../comic/<%= comicIds[i] %>">
+                <img style="height:25px; width:25px;" src="<%= comicThumbnails[i] %>">
                 <%= titles[i] %>
             </a>
         </p>

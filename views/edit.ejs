@@ -11,6 +11,22 @@
             <a class="navbar-brand" href="../home">ComicCollab</a>
         </div>
     </nav>
+    <!--profilepic-->
+    <div class="container">
+    <div class="page-header" style="margin-top: 60px">
+        <br>
+        <h1>Upload a Profile Picture </h1>
+    </div>
+    <form action="uploadprofilepic" method="post" enctype="multipart/form-data">
+        <p>Image must be:</p>
+        <ul>
+            <li>PNG, JPEG, or JPG</li>
+        </ul>
+        <input placeholder="file" required="required" type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg"><br />
+        <input type="submit" name="publish" value="Publish">
+    </form>
+    </div>
+    <!--editprofile data-->
     <div class="container">
         <div class="page-header" style="margin-top: 60px">
             <br>

@@ -11,7 +11,9 @@ interface UserInterface {
     getAboutMe(): String;
     getSecurityQuestion(): String;
     getSecurityAnswer(): String;
-    getDeviantArtUsername();
+    getDeviantArtUsername(): String;
+    getTumblrUsername(): String;
+    getProfilePicture(): String;
 }
 class User implements UserInterface {
     private username: String;
@@ -25,11 +27,12 @@ class User implements UserInterface {
     private securityAnswer: String;
     private deviantartusername: String;
     private tumblrusername: String;
+    private profilepicture: String;
 
     constructor(username: String, password: String, fullname: String,
         gender: String, age: String, aboutme: String, location: String,
         securityQuestion: String, securityAnswer: String, deviantartusername: String,
-        tumblrusername: String) {
+        tumblrusername: String, profilepicture: String) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -41,6 +44,7 @@ class User implements UserInterface {
         this.securityAnswer = securityAnswer;
         this.deviantartusername = deviantartusername;
         this.tumblrusername = tumblrusername;
+        this.profilepicture = profilepicture;
     }
 
     getUsername() {
@@ -85,6 +89,9 @@ class User implements UserInterface {
     
     getTumblrUsername() {
         return this.tumblrusername;
+    }
+    getProfilePicture() {
+        return this.profilepicture;
     }
 }
 
@@ -677,6 +684,7 @@ class Router {
             if (tumblrusername == "") {
                 tumblrusername = "N/A";
             }
+            var profilepicture = "http://4.bp.blogspot.com/-GJmGz4H0PkY/TiGyFMAF0iI/AAAAAAAAHcA/fU0iW7zIl1g/s1600/batman-for-facebook.jpg"
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
@@ -685,7 +693,8 @@ class Router {
             }
             else {
                 var user: User = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme,
-                    req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
+                    req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, 
+                    tumblrusername, profilepicture);
 
                 // Set our collection
                 var collection = db.get('usercollection');
@@ -714,7 +723,8 @@ class Router {
                             "tumblrusername": tumblrusername,
                             "likes": [],
                             "dislikes": [],
-                            "favourites": []
+                            "favourites": [],
+                            "profilepicture": profilepicture
                         }, function(err) {
                             if (err) {
                                 // If it failed, return error
@@ -1108,7 +1118,8 @@ class Router {
                                         deviantartimages: deviantArtImages,
                                         devianturls: deviantUrls,
                                         tumblrusername: docs['tumblrusername'],
-                                        tumblrurls:tumblr_urls
+                                        tumblrurls:tumblr_urls,
+                                        profilepicture: docs['profilepicture']
                                     });
                                 }
                             })
@@ -1243,7 +1254,8 @@ class Router {
                                             deviantartimages: deviantArtImages,
                                             devianturls: deviantUrls,
                                             tumblrusername: docs['tumblrusername'],
-                                            tumblrurls: tumblr_urls
+                                            tumblrurls: tumblr_urls,
+                                            profilepicture: docs['profilepicture']
                                         });
                                     }
                                 })
@@ -1308,6 +1320,54 @@ class Router {
                 }
             });
         });
+        
+        router.get('/uploadprofilepic', function(req, res) {
+            res.render('uploadprofilepic', { title: 'Upload Profile Profile' });
+        });
+        
+        //post to profilepicture
+        router.post('/uploadprofilepic', function(req, res) {
+            var currentUser = req.currentUser;
+
+            if (currentUser.getIsLoggedIn() != true) {
+                res.send("You must be logged in")
+            } else {
+                // Set our internal DB variable
+                var db = req.db;
+
+                for (var i = 0; i < req.files.length; i++) {
+                    var profilepicture = "/images/" + req.files[i].filename;
+                    currentUser.setProfilePicture(profilepicture);
+                }
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": currentUser.getUsername()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        collection.update({
+                                username: currentUser.getUsername()
+                            },
+                            {
+                                $set: {
+                                    "profilepicture": profilepicture,
+                                }
+                            }, function (err) {
+                                if (err) {
+                                    // If it failed, return error
+                                    res.send("There was a problem adding the information to the database.");
+                                }
+                                else {
+                                    // Forward back to my profile page
+                                    res.redirect("myprofile");
+                                }
+                            }
+                        );
+                    }
+                });
+            }
+        });
 
         /* POST for editprofile page */
         router.post('/edit', function(req, res) {
@@ -1334,7 +1394,7 @@ class Router {
                 if (tumblrusername == "") {
                     tumblrusername = "N/A";
                 }
-
+                
                 // Set our collection
                 var collection = db.get('usercollection');
 
@@ -1347,8 +1407,10 @@ class Router {
                         var password: string = docs['password'];
                         var securityQuestion: string = docs['securityquestion'];
                         var securityAnswer: string = docs['securityanswer'];
+                        var profilepicture: string = docs['profilepicture'];
                         var user: User = new User(currentUser.getUsername(), password, fullname,
-                            gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
+                            gender, age, aboutme, location, securityQuestion, securityAnswer, 
+                            deviantartusername, tumblrusername, profilepicture);
                         collection.update(
                             { username: currentUser.getUsername() },
                             {

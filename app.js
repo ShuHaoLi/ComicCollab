@@ -3,9 +3,10 @@
 //import session = BrowserStorage.session;
 //'use strict';
 var LoggedInUser = (function () {
-    function LoggedInUser(username, isLoggedIn) {
+    function LoggedInUser(username, isLoggedIn, profilepicture) {
         this.username = username;
         this.isLoggedIn = isLoggedIn;
+        this.profilepicture = profilepicture;
     }
     LoggedInUser.prototype.getUsername = function () {
         return this.username;
@@ -18,6 +19,12 @@ var LoggedInUser = (function () {
     };
     LoggedInUser.prototype.setIsLoggedIn = function (isLoggedIn) {
         this.isLoggedIn = isLoggedIn;
+    };
+    LoggedInUser.prototype.getProfilePicture = function () {
+        return this.profilepicture;
+    };
+    LoggedInUser.prototype.setProfilePicture = function (profilepicture) {
+        this.profilepicture = profilepicture;
     };
     return LoggedInUser;
 })();
@@ -123,9 +130,8 @@ var Application = (function () {
     }
     return Application;
 })();
-var currentUser = new LoggedInUser('', false);
+var currentUser = new LoggedInUser('', false, '');
 var currentSecurityResponse = new SecurityResponse('', false);
 var application = new Application();
 //# sourceMappingURL=app.js.map
 //# sourceMappingURL=app.js.map 
-//# sourceMappingURL=app.js.map

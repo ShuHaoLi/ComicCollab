@@ -10,9 +10,11 @@ interface Error {
 class LoggedInUser {
     private username: String;
     private isLoggedIn: boolean;
-    constructor(username: String, isLoggedIn: boolean) {
+    private profilepicture: String;
+    constructor(username: String, isLoggedIn: boolean, profilepicture: String) {
         this.username = username;
         this.isLoggedIn = isLoggedIn;
+        this.profilepicture = profilepicture;
     }
     getUsername(){
         return this.username;
@@ -25,6 +27,12 @@ class LoggedInUser {
     }
     setIsLoggedIn(isLoggedIn: boolean){
         this.isLoggedIn = isLoggedIn;
+    }
+    getProfilePicture() {
+        return this.profilepicture;
+    }
+    setProfilePicture(profilepicture: String) {
+        this.profilepicture = profilepicture;
     }
 }
 
@@ -142,7 +150,7 @@ class Application {
     }
 }
 
-var currentUser = new LoggedInUser('', false);
+var currentUser = new LoggedInUser('', false, '');
 var currentSecurityResponse = new SecurityResponse('', false);
 var application = new Application();
 

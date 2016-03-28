@@ -2,7 +2,7 @@
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/>
 ///<reference path='../db_objects/account.ts'/>
 var User = (function () {
-    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername) {
+    function User(username, password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername, profilepicture) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
@@ -14,6 +14,7 @@ var User = (function () {
         this.securityAnswer = securityAnswer;
         this.deviantartusername = deviantartusername;
         this.tumblrusername = tumblrusername;
+        this.profilepicture = profilepicture;
     }
     User.prototype.getUsername = function () {
         return this.username;
@@ -47,6 +48,9 @@ var User = (function () {
     };
     User.prototype.getTumblrUsername = function () {
         return this.tumblrusername;
+    };
+    User.prototype.getProfilePicture = function () {
+        return this.profilepicture;
     };
     return User;
 })();
@@ -620,6 +624,7 @@ var Router = (function () {
             if (tumblrusername == "") {
                 tumblrusername = "N/A";
             }
+            var profilepicture = "http://4.bp.blogspot.com/-GJmGz4H0PkY/TiGyFMAF0iI/AAAAAAAAHcA/fU0iW7zIl1g/s1600/batman-for-facebook.jpg";
             if (password.length < 4 || password.length > 20) {
                 res.send("Password needs to be between 4 - 20 characters. Please try again!");
             }
@@ -627,7 +632,7 @@ var Router = (function () {
                 res.send("passwords do not match");
             }
             else {
-                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
+                var user = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme, req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, tumblrusername, profilepicture);
                 // Set our collection
                 var collection = db.get('usercollection');
                 // Submit to the DB
@@ -656,7 +661,8 @@ var Router = (function () {
                             "tumblrusername": tumblrusername,
                             "likes": [],
                             "dislikes": [],
-                            "favourites": []
+                            "favourites": [],
+                            "profilepicture": profilepicture
                         }, function (err) {
                             if (err) {
                                 // If it failed, return error
@@ -1047,7 +1053,8 @@ var Router = (function () {
                                             deviantartimages: deviantArtImages,
                                             devianturls: deviantUrls,
                                             tumblrusername: docs['tumblrusername'],
-                                            tumblrurls: tumblr_urls
+                                            tumblrurls: tumblr_urls,
+                                            profilepicture: docs['profilepicture']
                                         });
                                     }
                                 });
@@ -1181,7 +1188,8 @@ var Router = (function () {
                                                 deviantartimages: deviantArtImages,
                                                 devianturls: deviantUrls,
                                                 tumblrusername: docs['tumblrusername'],
-                                                tumblrurls: tumblr_urls
+                                                tumblrurls: tumblr_urls,
+                                                profilepicture: docs['profilepicture']
                                             });
                                         }
                                     });
@@ -1245,6 +1253,50 @@ var Router = (function () {
                 }
             });
         });
+        router.get('/uploadprofilepic', function (req, res) {
+            res.render('uploadprofilepic', { title: 'Upload Profile Profile' });
+        });
+        //post to profilepicture
+        router.post('/uploadprofilepic', function (req, res) {
+            var currentUser = req.currentUser;
+            if (currentUser.getIsLoggedIn() != true) {
+                res.send("You must be logged in");
+            }
+            else {
+                // Set our internal DB variable
+                var db = req.db;
+                for (var i = 0; i < req.files.length; i++) {
+                    var profilepicture = "/images/" + req.files[i].filename;
+                    currentUser.setProfilePicture(profilepicture);
+                }
+                var collection = db.get('usercollection');
+                collection.findOne({
+                    "username": currentUser.getUsername()
+                }, function (err, docs) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        collection.update({
+                            username: currentUser.getUsername()
+                        }, {
+                            $set: {
+                                "profilepicture": profilepicture
+                            }
+                        }, function (err) {
+                            if (err) {
+                                // If it failed, return error
+                                res.send("There was a problem adding the information to the database.");
+                            }
+                            else {
+                                // Forward back to my profile page
+                                res.redirect("myprofile");
+                            }
+                        });
+                    }
+                });
+            }
+        });
         /* POST for editprofile page */
         router.post('/edit', function (req, res) {
             var currentUser = req.currentUser;
@@ -1280,7 +1332,8 @@ var Router = (function () {
                         var password = docs['password'];
                         var securityQuestion = docs['securityquestion'];
                         var securityAnswer = docs['securityanswer'];
-                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername);
+                        var profilepicture = docs['profilepicture'];
+                        var user = new User(currentUser.getUsername(), password, fullname, gender, age, aboutme, location, securityQuestion, securityAnswer, deviantartusername, tumblrusername, profilepicture);
                         collection.update({ username: currentUser.getUsername() }, {
                             $set: {
                                 "fullname": user.getFullName(),

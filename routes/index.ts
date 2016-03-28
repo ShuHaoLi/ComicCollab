@@ -1164,7 +1164,7 @@ class Router {
                                         followingprofilepics: followingprofilepics,
                                         fanprofilepics: fanprofilepics
                                     });
-                                    },200);
+                                    },500);
                                 }
                             })
                         }
@@ -1338,7 +1338,7 @@ class Router {
                                             followingprofilepics: followingprofilepics,
                                             fanprofilepics: fanprofilepics
                                         });
-                                        },200);
+                                        },500);
                                     }
                                 })
                             }
@@ -1535,6 +1535,7 @@ class Router {
             var titles = [];
             var comicThumbnails = [];
             var tagExists;
+            var profilepicture
 
             collection.findOne({
                 "username": search
@@ -1544,6 +1545,7 @@ class Router {
                 } else if (docs != null) {
                     username = search;
                     userExists = 1;
+                    profilepicture = docs['profilepicture'];
                 } else {
                     username = "No user exists with this name";
                     userExists = -1
@@ -1580,7 +1582,8 @@ class Router {
                                 titles: titles,
                                 comicThumbnails: comicThumbnails,
                                 username: username,
-                                userExists: userExists
+                                userExists: userExists,
+                                profilepicture: profilepicture
                             });
                         },500);
 
@@ -1593,7 +1596,8 @@ class Router {
                             titles: titles,
                             comicThumbnails: comicThumbnails,
                             username: username,
-                            userExists: userExists
+                            userExists: userExists,
+                            profilepicture: profilepicture
                         })
                     }
                 })

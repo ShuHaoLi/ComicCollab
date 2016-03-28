@@ -1100,7 +1100,7 @@ var Router = (function () {
                                                 followingprofilepics: followingprofilepics,
                                                 fanprofilepics: fanprofilepics
                                             });
-                                        }, 200);
+                                        }, 500);
                                     }
                                 });
                             }
@@ -1275,7 +1275,7 @@ var Router = (function () {
                                                     followingprofilepics: followingprofilepics,
                                                     fanprofilepics: fanprofilepics
                                                 });
-                                            }, 200);
+                                            }, 500);
                                         }
                                     });
                                 }
@@ -1456,6 +1456,7 @@ var Router = (function () {
             var titles = [];
             var comicThumbnails = [];
             var tagExists;
+            var profilepicture;
             collection.findOne({
                 "username": search
             }, function (err, docs) {
@@ -1465,6 +1466,7 @@ var Router = (function () {
                 else if (docs != null) {
                     username = search;
                     userExists = 1;
+                    profilepicture = docs['profilepicture'];
                 }
                 else {
                     username = "No user exists with this name";
@@ -1504,7 +1506,8 @@ var Router = (function () {
                                 titles: titles,
                                 comicThumbnails: comicThumbnails,
                                 username: username,
-                                userExists: userExists
+                                userExists: userExists,
+                                profilepicture: profilepicture
                             });
                         }, 500);
                     }
@@ -1517,7 +1520,8 @@ var Router = (function () {
                             titles: titles,
                             comicThumbnails: comicThumbnails,
                             username: username,
-                            userExists: userExists
+                            userExists: userExists,
+                            profilepicture: profilepicture
                         });
                     }
                 });
@@ -1609,4 +1613,3 @@ var Router = (function () {
     return Router;
 })();
 var router = new Router();
-//# sourceMappingURL=index.js.map

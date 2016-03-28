@@ -14,8 +14,8 @@
         <h1>Sorted By Likes</h1>
         </div>
         <ol>
-            <% comics.forEach(function(comic) { %>
-            <li><a href = "comic/<%= comic.comicId %>"><%= comic.title %></a></li>
+            <% comics.forEach(function(comic, index) { %>
+            <li><a href = "comic/<%= comic.comicId %>"><img style="height:25px; width:25px;" src="<%= comicThumbnails[index] %>"> <%= comic.title %></a></li>
             <% }); %>
         </ol>
     </div>

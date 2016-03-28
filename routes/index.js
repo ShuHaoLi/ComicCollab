@@ -1542,14 +1542,32 @@ var Router = (function () {
         router.get('/sortbylikes', function (req, res) {
             var db = req.db;
             var comicCollection = db.get('comics');
+            var imagesCollection = db.get('comicimages');
             comicCollection.find({}, { sort: { "liketotal": -1 } }, function (err, docs) {
                 if (err) {
                     res.send(err);
                 }
                 else if (docs != null) {
-                    res.render('sortbylikes', {
-                        "comics": docs
-                    });
+                    var comicThumbnails = [];
+                    for (var i = 0; i < docs.length; i++) {
+                        imagesCollection.findOne({
+                            "comicId": docs[i]['comicId'],
+                            "sequence": 1
+                        }, function (imagesErr, imagesDocs) {
+                            if (imagesErr) {
+                                res.send(imagesErr);
+                            }
+                            else {
+                                comicThumbnails.push(imagesDocs['url']);
+                            }
+                        });
+                    }
+                    setTimeout(function () {
+                        res.render('sortbylikes', {
+                            "comics": docs,
+                            "comicThumbnails": comicThumbnails
+                        });
+                    }, 500);
                 }
             });
         });

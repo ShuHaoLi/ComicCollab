@@ -1655,15 +1655,32 @@ class Router {
         router.get('/sortbyviews', function(req, res) {
             var db = req.db;
             var comicCollection = db.get('comics');
-            var comicIds = [];
+            var imagesCollection = db.get('comicimages');
+
             comicCollection.find({}, { sort: { "viewcount": -1 } }, function(err, docs) {
                 if (err) {
                     res.send(err);
                 }
                 else if (docs != null) {
-                    res.render('sortbyviews', {
-                        "comics": docs
-                    });
+                    var comicThumbnails = [];
+                    for (var i = 0; i < docs.length; i++) {
+                        imagesCollection.findOne({
+                            "comicId": docs[i]['comicId'],
+                            "sequence": 1
+                        }, function(imagesErr, imagesDocs) {
+                            if (imagesErr) {
+                                res.send(imagesErr);
+                            } else {
+                                comicThumbnails.push(imagesDocs['url']);
+                            }
+                        })
+                    }
+                    setTimeout(function() {
+                        res.render('sortbyviews', {
+                            "comics": docs,
+                            "comicThumbnails": comicThumbnails
+                        });
+                    }, 500);
                 }
             });
         });

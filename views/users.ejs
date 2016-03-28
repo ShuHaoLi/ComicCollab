@@ -95,16 +95,16 @@
     <div class="col-lg-6">
         <h4><%= userName%>'s Fans</h4>
         <% for (var i = 0; i < fans.length; i++) { %>
-        <a href="../users/<%= fans[i] %>"><img style="height:25px" src = "<%= fanprofilepics[i] %>"></img> <%= fans[i] %></a><br>
+        <a href="../users/<%= fans[i] %>"><img style="height:25px" src = "<%= fanprofilepics[i] %>"> <%= fans[i] %></a><br>
         <% } %>
         <h4><%= userName%> is Following</h4>
         <% for (var j = 0; j < following.length; j++) { %>
-        <a href="../users/<%= following[j] %>"><img style="height:25px" src = "<%= followingprofilepics[j] %>"></img> <%= following[j] %></a><br>
+        <a href="../users/<%= following[j] %>"><img style="height:25px" src = "<%= followingprofilepics[j] %>"> <%= following[j] %></a><br>
         <% } %>
         <br>
         <h4><%= userName%>'s Favourite Comics</h4>
-        <% for (var j = 0; j < favourites.length; j++) { %>
-        <a href="../comic/<%= favourites[j] %>"><%= favouriteTitles[j] %></a><br>
+        <% for (var k = 0; k < favourites.length; k++) { %>
+        <a href="../comic/<%= favourites[k] %>"><img style="height:25px" src="<%= favouriteThumbnails[k] %>"> <%= favouriteTitles[k] %></a><br>
         <% } %>
     </div>
 </div>

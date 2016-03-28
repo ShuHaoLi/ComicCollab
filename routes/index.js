@@ -1139,20 +1139,28 @@ var Router = (function () {
                     else if (docs != null) {
                         //
                         var comicCollection = db.get('comics');
+                        var imagesCollection = db.get('comicimages');
                         var favourites = docs['favourites'];
                         var favouriteTitles = [];
+                        var favouriteThumbnails = [];
                         for (var i = 0; i < favourites.length; i++) {
-                            comicCollection.findOne({ "comicId": favourites[i] }, function (err, docs) {
-                                if (err) {
-                                    res.send(err);
+                            comicCollection.findOne({ "comicId": favourites[i] }, function (comicErr, comicDocs) {
+                                if (comicErr) {
+                                    res.send(comicErr);
                                 }
                                 else {
-                                    favouriteTitles.push(docs['title']);
+                                    favouriteTitles.push(comicDocs['title']);
+                                }
+                            });
+                            imagesCollection.findOne({ "comicId": favourites[i], "sequence": 1 }, function (imagesErr, imagesDocs) {
+                                if (imagesErr) {
+                                    res.send(imagesErr);
+                                }
+                                else {
+                                    favouriteThumbnails.push(imagesDocs['url']);
                                 }
                             });
                         }
-                        ;
-                        //
                         var deviantartusername = docs['deviantartusername'];
                         var deviantArtImages = [];
                         var deviantUrls = [];
@@ -1170,7 +1178,6 @@ var Router = (function () {
                                 });
                             }
                         });
-                        //
                         var tumblr_urls = [];
                         var tumblrusername = docs['tumblrusername'];
                         if (tumblrusername != "N/A") {
@@ -1190,7 +1197,6 @@ var Router = (function () {
                                 }
                             });
                         }
-                        //
                         var fanCollection = db.get('fans');
                         //timeout to delay
                         setTimeout(function () {
@@ -1245,7 +1251,6 @@ var Router = (function () {
                                                     }
                                                 });
                                             }
-                                            //
                                             var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
                                             setTimeout(function () {
                                                 res.render('users', {
@@ -1261,6 +1266,7 @@ var Router = (function () {
                                                     following: following,
                                                     favourites: docs['favourites'],
                                                     favouriteTitles: favouriteTitles,
+                                                    favouriteThumbnails: favouriteThumbnails,
                                                     deviantartimages: deviantArtImages,
                                                     devianturls: deviantUrls,
                                                     tumblrusername: docs['tumblrusername'],

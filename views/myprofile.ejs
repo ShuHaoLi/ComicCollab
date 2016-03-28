@@ -93,12 +93,12 @@
         <% } %>
         <h4>I'm Following</h4>
         <% for (var j = 0; j < following.length; j++) { %>
-        </img><a href="../users/<%= following[j]%>"><img style="height:25px" src = "<%= followingprofilepics[j] %>"></img> <%= following[j] %></a><br>
+        </img><a href="../users/<%= following[j]%>"><img style="height:25px" src="<%= followingprofilepics[j] %>"> <%= following[j] %></a><br>
         <% } %>
         <br>
         <h4>My Favourite Comics</h4>
         <% for (var k = 0; k < favourites.length; k++) { %>
-        <a href="../comic/<%= favourites[k]%>"><%= favouriteTitles[k] %></a><br>
+        <a href="../comic/<%= favourites[k]%>"><img style="height:25px" src="<%= favouriteThumbnails[k] %>"> <%= favouriteTitles[k] %></a><br>
         <% } %>
         <br>
         <!--

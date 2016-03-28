@@ -86,7 +86,7 @@ class User implements UserInterface {
     getDeviantArtUsername() {
         return this.deviantartusername;
     }
-    
+
     getTumblrUsername() {
         return this.tumblrusername;
     }
@@ -420,7 +420,7 @@ class Router {
                 }
             );
             //nodejs runs things asynchronously, so delaying a call by 500 ms should help so liketotal is calculated first
-            setTimeout(function(){  
+            setTimeout(function(){
             collection.findOne({
                 "comicId": comicId,
             }, function(err, docs) {
@@ -490,7 +490,7 @@ class Router {
                     });
                 }
             });
-        },500); 
+        },500);
         });
 
         //Post To Comic Page - like/dislike/favourites
@@ -693,7 +693,7 @@ class Router {
             }
             else {
                 var user: User = new User(username, password, req.body.fullname, req.body.age, req.body.aboutme,
-                    req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername, 
+                    req.body.gender, req.body.location, securityQuestion, securityAnswer, deviantartusername,
                     tumblrusername, profilepicture);
 
                 // Set our collection
@@ -1028,15 +1028,26 @@ class Router {
                     res.send(err);
                 } else if (docs != null) {
                     var comicCollection = db.get('comics');
+                    var imagesCollection = db.get('comicimages');
                     var favourites = docs['favourites'];
                     var favouriteTitles = [];
+                    var favouriteThumbnails = [];
                     for (var i = 0; i < favourites.length; i++) {
                         comicCollection.findOne(
-                            { "comicId": favourites[i] }, function(err, docs) {
-                                if (err) {
-                                    res.send(err);
+                            { "comicId": favourites[i] }, function(comicErr, comicDocs) {
+                                if (comicErr) {
+                                    res.send(comicErr);
                                 } else {
-                                    favouriteTitles.push(docs['title']);
+                                    favouriteTitles.push(comicDocs['title']);
+                                }
+                            }
+                        );
+                        imagesCollection.findOne({"comicId": favourites[i], "sequence": 1},
+                            function(imagesErr, imagesDocs) {
+                                if (imagesErr) {
+                                    res.send(imagesErr);
+                                } else {
+                                    favouriteThumbnails.push(imagesDocs['url']);
                                 }
                             }
                         );
@@ -1051,7 +1062,7 @@ class Router {
                             console.log(deviantArtErr);
                         } else {
                             //console.log(deviantArtData);
-                            
+
                             deviantArtData.forEach(function(obj) {
                                 deviantArtImages.push(obj.content.url);
                                 deviantUrls.push(obj.link);
@@ -1081,7 +1092,7 @@ class Router {
                    }
 
                     var fanCollection = db.get('fans');
-                    setTimeout(function(){  
+                    setTimeout(function(){
                     fanCollection.find({
                         "fan": current
                     }, function(fanErr, fanDocs) {
@@ -1144,6 +1155,7 @@ class Router {
                                         following: following,
                                         favourites: docs['favourites'],
                                         favouriteTitles: favouriteTitles,
+                                        favouriteThumbnails: favouriteThumbnails,
                                         deviantartimages: deviantArtImages,
                                         devianturls: deviantUrls,
                                         tumblrusername: docs['tumblrusername'],
@@ -1152,12 +1164,12 @@ class Router {
                                         followingprofilepics: followingprofilepics,
                                         fanprofilepics: fanprofilepics
                                     });
-                                    },200); 
+                                    },200);
                                 }
                             })
                         }
                     })
-                    },1500); 
+                    },1500);
                 } else {
                     res.render('myprofile', {
                         cur: currentUser,
@@ -1222,7 +1234,7 @@ class Router {
                                 //console.log(deviantArtImages);
                                 //console.log(deviantUrls);
                             }
-                        });  
+                        });
                         //
                         var tumblr_urls = [];
                         var tumblrusername = docs['tumblrusername'];
@@ -1248,7 +1260,7 @@ class Router {
                         //
                         var fanCollection = db.get('fans');
                         //timeout to delay
-                        setTimeout(function(){  
+                        setTimeout(function(){
                         fanCollection.find({
                             "fan": username
                         }, function(err, fanDocs) {
@@ -1384,11 +1396,11 @@ class Router {
                 }
             });
         });
-        
+
         router.get('/uploadprofilepic', function(req, res) {
             res.render('uploadprofilepic', { title: 'Upload Profile Profile' });
         });
-        
+
         //post to profilepicture
         router.post('/uploadprofilepic', function(req, res) {
             var currentUser = req.currentUser;
@@ -1458,7 +1470,7 @@ class Router {
                 if (tumblrusername == "") {
                     tumblrusername = "N/A";
                 }
-                
+
                 // Set our collection
                 var collection = db.get('usercollection');
 
@@ -1473,7 +1485,7 @@ class Router {
                         var securityAnswer: string = docs['securityanswer'];
                         var profilepicture: string = docs['profilepicture'];
                         var user: User = new User(currentUser.getUsername(), password, fullname,
-                            gender, age, aboutme, location, securityQuestion, securityAnswer, 
+                            gender, age, aboutme, location, securityQuestion, securityAnswer,
                             deviantartusername, tumblrusername, profilepicture);
                         collection.update(
                             { username: currentUser.getUsername() },
@@ -1564,7 +1576,7 @@ class Router {
                 })
             });
         });
-        
+
         /*POST search page*/
         router.post('/search/*', function(req, res) {
             var search = req.body.search;
@@ -1576,13 +1588,13 @@ class Router {
             var search = req.body.search;
             res.redirect('/search/' + search);
         });
-        
+
         /*POST search for home page*/
         router.post('/', function(req, res) {
             var search = req.body.search;
             res.redirect('/search/' + search);
         });
-        
+
         //Get Sort By Likes Page
         router.get('/sortbylikes', function(req, res) {
             var db = req.db;

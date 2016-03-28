@@ -1031,36 +1031,70 @@ var Router = (function () {
                                     else {
                                         var fans = [];
                                         var following = [];
+                                        var followingprofilepics = [];
+                                        var fanprofilepics = [];
+                                        //following and followingprofilepics
                                         for (var i = 0; i < fanDocs.length; i++) {
                                             following.push(fanDocs[i]['following']);
                                         }
+                                        //
+                                        for (var i = 0; i < following.length; i++) {
+                                            collection.findOne({
+                                                "username": following[i]
+                                            }, function (err, followdoc) {
+                                                if (err) {
+                                                    res.send(err);
+                                                }
+                                                else {
+                                                    followingprofilepics.push(followdoc["profilepicture"]);
+                                                }
+                                            });
+                                        }
+                                        //fans and fan profilepics
                                         for (var i = 0; i < followingDocs.length; i++) {
                                             fans.push(followingDocs[i]['fan']);
                                         }
-                                        res.render('myprofile', {
-                                            cur: currentUser,
-                                            fullname: docs['fullname'],
-                                            location: docs['location'],
-                                            age: docs['age'],
-                                            gender: docs['gender'],
-                                            aboutme: docs['aboutme'],
-                                            username: current,
-                                            deviantartusername: docs['deviantartusername'],
-                                            fans: fans,
-                                            following: following,
-                                            favourites: docs['favourites'],
-                                            favouriteTitles: favouriteTitles,
-                                            deviantartimages: deviantArtImages,
-                                            devianturls: deviantUrls,
-                                            tumblrusername: docs['tumblrusername'],
-                                            tumblrurls: tumblr_urls,
-                                            profilepicture: docs['profilepicture']
-                                        });
+                                        for (var i = 0; i < fans.length; i++) {
+                                            collection.findOne({
+                                                "username": fans[i]
+                                            }, function (err, fandoc) {
+                                                if (err) {
+                                                    res.send(err);
+                                                }
+                                                else {
+                                                    fanprofilepics.push(fandoc["profilepicture"]);
+                                                }
+                                            });
+                                        }
+                                        //
+                                        setTimeout(function () {
+                                            res.render('myprofile', {
+                                                cur: currentUser,
+                                                fullname: docs['fullname'],
+                                                location: docs['location'],
+                                                age: docs['age'],
+                                                gender: docs['gender'],
+                                                aboutme: docs['aboutme'],
+                                                username: current,
+                                                deviantartusername: docs['deviantartusername'],
+                                                fans: fans,
+                                                following: following,
+                                                favourites: docs['favourites'],
+                                                favouriteTitles: favouriteTitles,
+                                                deviantartimages: deviantArtImages,
+                                                devianturls: deviantUrls,
+                                                tumblrusername: docs['tumblrusername'],
+                                                tumblrurls: tumblr_urls,
+                                                profilepicture: docs['profilepicture'],
+                                                followingprofilepics: followingprofilepics,
+                                                fanprofilepics: fanprofilepics
+                                            });
+                                        }, 200);
                                     }
                                 });
                             }
                         });
-                    }, 2000);
+                    }, 1500);
                 }
                 else {
                     res.render('myprofile', {
@@ -1195,7 +1229,7 @@ var Router = (function () {
                                     });
                                 }
                             });
-                        }, 2000);
+                        }, 1500);
                     }
                     else {
                         res.send("This user does not exist!");

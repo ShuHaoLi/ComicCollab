@@ -1084,9 +1084,9 @@ class Router {
                            //console.log(json.posts[0].photos[0].alt_sizes[0].url);
                            for (var i = 0; i < posts_length; i++){
                                var photos_length = json.posts[i].photos.length;
+                               var tumblr_posturl = json.posts[i].post_url;
                                for (var j = 0; j < photos_length; j++){
                                    var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
-                                   var tumblr_posturl = json.posts[i].post_url;
                                    tumblr_urls.push(tumblr_url);
                                    tumblr_posturls.push(tumblr_posturl);
                                }
@@ -1262,9 +1262,9 @@ class Router {
                                 //console.log("tumblrusername" + tumblrusername);
                                 for (var i = 0; i < posts_length; i++){
                                     var photos_length = json.posts[i].photos.length;
+                                    var tumblr_posturl = json.posts[i].post_url;
                                     for (var j = 0; j < photos_length; j++){
                                         var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
-                                        var tumblr_posturl = json.posts[i].post_url;
                                         tumblr_urls.push(tumblr_url);
                                         tumblr_posturls.push(tumblr_posturl);
                                     }

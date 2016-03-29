@@ -4,6 +4,11 @@
     <title></title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
+<style>
+body  {
+    background: linear-gradient( rgb(128, 255, 128),  rgba(255,0,0,0));
+}
+</style>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -17,6 +22,7 @@
         <h1><b><%= username %></b></h1>
         <img src="<%= profilepicture%>"  style="height:200px;width:200px;"></img>
     </div>
+    <div class="row">
     <div class="col-lg-7">
         <h4>Name</h4>
         <%= fullname %>
@@ -28,62 +34,6 @@
         <p><%= location %></p>
         <h4>About Me</h4>
         <p><%= aboutme %></p>
-        <br>
-        <br>
-        <h3>Check out my other artwork</h3>
-        <!--deviantartstart -->
-        <% if (deviantartusername != "N/A") { %>
-        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com">DeviantArt</a></h4>
-        
-        <% if (deviantartimages.length > 10) { %>
-        <% for (var m = 0; m < 10; m++) { %>
-        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
-        <% } %>
-        <% } else { %>
-        <% for (var m = 0; m < deviantartimages.length; m++) { %>
-        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
-        <% } %>
-        <% } %>
-        <% if (deviantartimages.length > 10) { %>
-        <br>
-        <br>
-        <a href = "http://www.<%= deviantartusername%>.deviantart.com/gallery"><button type="button" class="btn btn-success">Full Gallery</button></a>
-        <% } %>
-        <br>
-        
-        <% } else { %>
-        <div> A DeviantArt account is not associated with this profile.</div>
-        <% } %>
-        <br>
-        <!--deviantartend -->
-        <!--tumblrstart -->
-        <% if (tumblrusername != "N/A") { %>
-        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com">Tumblr</a></h4>
-        
-        <% if (tumblrurls.length > 10) { %>
-        <% for (var m = 0; m < 10; m++) { %>
-        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
-        <% } %>
-        <% } else { %>
-        <% for (var m = 0; m < tumblrurls.length; m++) { %>
-        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
-        <% } %>
-        <% } %>
-        <% if (tumblrurls.length > 10) { %>
-        <br>
-        <br>
-        <a href = "http://www.<%= tumblrusername%>.tumblr.com"><button type="button" class="btn btn-success">Full Gallery</button></a>
-        <% } %>
-        <br>
-        
-        <% } else { %>
-        <div> A Tumblr account is not associated with this profile.</div>
-        <% } %>
-        <br>
-        <!--tumblrend -->
-        
-        <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
-        <br>
         <br>
     </div>
     <div class="col-lg-5">
@@ -100,14 +50,68 @@
         <% for (var k = 0; k < favourites.length; k++) { %>
         <a href="../comic/<%= favourites[k]%>"><img style="height:25px; width:25px;" src="<%= favouriteThumbnails[k] %>"> <%= favouriteTitles[k] %></a><br>
         <% } %>
-        <br>
-        <!--
-        <h4>My DeviantArt Images</h4>
-        <% for (var m = 0; m < deviantartimages.length; m++) { %>
-        <img style="width: 300px; height:300px" src=<%= deviantartimages[m] %> />
-        <% } %>
-        !-->
+        <br>       
     </div>
+    </div>
+        <div class= "row">
+        <h3>Check out my other artwork</h3>
+        <!--deviantartstart -->
+        <% if (deviantartusername != "N/A") { %>
+        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com">DeviantArt</a></h4>
+        
+        <% if (deviantartimages.length > 4) { %>
+        <% for (var m = 0; m < 4; m++) { %>
+        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
+        <% } %>
+        <% } else { %>
+        <% for (var m = 0; m < deviantartimages.length; m++) { %>
+        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
+        <% } %>
+        <% } %>
+        <% if (deviantartimages.length > 4) { %>
+        <br>
+        <br>
+        <a href = "http://www.<%= deviantartusername%>.deviantart.com/gallery"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <% } %>
+        <br>
+        
+        <% } else { %>
+        <div> A DeviantArt account is not associated with this profile.</div>
+        <% } %>
+        <br>
+        <!--deviantartend -->
+        <!--tumblrstart -->
+        <% if (tumblrusername != "N/A") { %>
+        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com">Tumblr</a></h4>
+        
+        <% if (tumblrurls.length > 4) { %>
+        <% for (var m = 0; m < 4; m++) { %>
+        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <% } %>
+        <% } else { %>
+        <% for (var m = 0; m < tumblrurls.length; m++) { %>
+        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <% } %>
+        <% } %>
+        <% if (tumblrurls.length > 4) { %>
+        <br>
+        <br>
+        <a href = "http://www.<%= tumblrusername%>.tumblr.com"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <% } %>
+        <br>
+        
+        <% } else { %>
+        <br>
+        <div> A Tumblr account is not associated with this profile.</div>
+        <br>
+        <% } %>
+        <br>
+        <!--tumblrend -->
+        
+        <a href="edit"><button type="button" class="btn btn-info">Edit Profile</button></a>
+        <br>
+        <br>
+    </div>    
 </div>
 <% } else { %>
 <div class="container" id="notLoggedIn">

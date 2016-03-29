@@ -1072,6 +1072,7 @@ class Router {
                         }
                     });
                     var tumblr_urls = [];
+                    var tumblr_posturls = [];
                     var tumblrusername = docs['tumblrusername'];
                    if (tumblrusername != "N/A"){
                        var Tumblr = require('tumblrwks');
@@ -1085,7 +1086,9 @@ class Router {
                                var photos_length = json.posts[i].photos.length;
                                for (var j = 0; j < photos_length; j++){
                                    var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
+                                   var tumblr_posturl = json.posts[i].post_url;
                                    tumblr_urls.push(tumblr_url);
+                                   tumblr_posturls.push(tumblr_posturl);
                                }
                            }
                        });
@@ -1160,6 +1163,7 @@ class Router {
                                         devianturls: deviantUrls,
                                         tumblrusername: docs['tumblrusername'],
                                         tumblrurls:tumblr_urls,
+                                        tumblrposturls: tumblr_posturls,
                                         profilepicture: docs['profilepicture'],
                                         followingprofilepics: followingprofilepics,
                                         fanprofilepics: fanprofilepics
@@ -1246,6 +1250,7 @@ class Router {
                             }
                         });
                         var tumblr_urls = [];
+                        var tumblr_posturls = [];
                         var tumblrusername = docs['tumblrusername'];
                         if (tumblrusername != "N/A"){
                             var Tumblr = require('tumblrwks');
@@ -1254,12 +1259,14 @@ class Router {
                             });
                             tumblr.get('/posts', {hostname:tumblrusername + '.tumblr.com'}, function(err, json){
                                 var posts_length = json.posts.length;
-                                console.log("tumblrusername" + tumblrusername);
+                                //console.log("tumblrusername" + tumblrusername);
                                 for (var i = 0; i < posts_length; i++){
                                     var photos_length = json.posts[i].photos.length;
                                     for (var j = 0; j < photos_length; j++){
                                         var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
+                                        var tumblr_posturl = json.posts[i].post_url;
                                         tumblr_urls.push(tumblr_url);
+                                        tumblr_posturls.push(tumblr_posturl);
                                     }
                                 }
                             });
@@ -1334,6 +1341,7 @@ class Router {
                                             devianturls: deviantUrls,
                                             tumblrusername: docs['tumblrusername'],
                                             tumblrurls: tumblr_urls,
+                                            tumblrposturls: tumblr_posturls,
                                             profilepicture: docs['profilepicture'],
                                             followingprofilepics: followingprofilepics,
                                             fanprofilepics: fanprofilepics

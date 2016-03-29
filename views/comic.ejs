@@ -33,7 +33,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-
+<style>
+body  {
+    background: linear-gradient( rgb(255, 212, 128),  rgba(255,0,0,0));
+}
+</style>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -99,15 +103,19 @@
         <a href="../uploadcomics/<%= comicId %>">
             <button type="submit" class="login btn btn-primary">Upload New Image</button>
         </a>
+        <br>
+        <br>
         <% } %>
         <% if (isCreator) { %>
         <a href="../home">
             <button type="submit" onclick="deleteButtonFunction()" class="login btn btn-primary">Delete Comic</button>
         </a>
+        <br>
+        <br>
         <% } %>
         <p>Tags:
             <% for (var i = 0; i < tags.length; i++) { %>
-            <span class="label label-default"><%= tags[i] %></span>
+            <span class="label label-default"><a href="../search/<%= tags[i] %>" style="text-decoration:none; color:white"><%= tags[i] %></a></span>
             <% } %>
         </p>
         <br>

@@ -63,7 +63,7 @@ body  {
         <% } %>
         <h4>I'm Following</h4>
         <% for (var j = 0; j < following.length; j++) { %>
-        </img><a href="../users/<%= following[j]%>"><img style="height:25px; width:25px;" src="<%= followingprofilepics[j] %>"> <b><%= following[j] %></b></a><br>
+        <a href="../users/<%= following[j]%>"><img style="height:25px; width:25px;" src="<%= followingprofilepics[j] %>"> <b><%= following[j] %></b></a><br>
         <% } %>
         <br>
         <h4>My Favourite Comics</h4>
@@ -78,21 +78,21 @@ body  {
         <h3>Check out <%= userName %>'s other artwork</h3>
         <!--deviantartstart -->
         <% if (deviantartusername != "N/A") { %>
-        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com"><b>DeviantArt</b></a></h4>
+        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com" target="_blank"><b>DeviantArt</b></a></h4>
         
         <% if (deviantartimages.length > 4) { %>
         <% for (var m = 0; m < 4; m++) { %>
-        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
+        <a href=<%= devianturls[m] %> target="_blank"><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
         <% } %>
         <% } else { %>
         <% for (var m = 0; m < deviantartimages.length; m++) { %>
-        <a href=<%= devianturls[m] %>><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
+        <a href=<%= devianturls[m] %> target="_blank"><img style="height:170px" src=<%= deviantartimages[m] %> /></a>
         <% } %>
         <% } %>
         <% if (deviantartimages.length > 4) { %>
         <br>
         <br>
-        <a href = "http://www.<%= deviantartusername%>.deviantart.com/gallery"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <a href = "http://www.<%= deviantartusername%>.deviantart.com/gallery" target="_blank"><button type="button" class="btn btn-success">Full Gallery</button></a>
         <% } %>
         <br>
         
@@ -103,21 +103,21 @@ body  {
         <!--deviantartend -->
         <!--tumblrstart -->
         <% if (tumblrusername != "N/A") { %>
-        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com"><b>Tumblr</b></a></h4>
+        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com" target="_blank"><b>Tumblr</b></a></h4>
         
         <% if (tumblrurls.length > 4) { %>
         <% for (var m = 0; m < 4; m++) { %>
-        <a href=<%= tumblrposturls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <a href=<%= tumblrposturls[m] %> target="_blank"><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
         <% } %>
         <% } else { %>
         <% for (var m = 0; m < tumblrurls.length; m++) { %>
-        <a href=<%= tumblrposturls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <a href=<%= tumblrposturls[m] %> target="_blank"><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
         <% } %>
         <% } %>
         <% if (tumblrurls.length > 4) { %>
         <br>
         <br>
-        <a href = "http://www.<%= tumblrusername%>.tumblr.com"><button type="button" class="btn btn-success">Full Gallery</button></a>
+        <a href = "http://www.<%= tumblrusername%>.tumblr.com" target="_blank"><button type="button" class="btn btn-success">Full Gallery</button></a>
         <% } %>
         <br>
         

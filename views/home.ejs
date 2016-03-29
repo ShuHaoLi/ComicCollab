@@ -55,13 +55,13 @@ body  {
         <div id="navbar" class="navbar-collapse collapse">
             <ul>
                 <%if (cur.getIsLoggedIn()){%>
-                <a href="uploadcomics/" class="btn btn-info" role="button" id='button_createComic'>Create Comic</a>
-                <a href="myprofile" class="btn btn-info" role="button" id='button_profile'>Profile</a>
-                <a href="userlist" class="btn btn-info" role="button" id='button_createComic'>Users</a>
-                <a href="logout" class="btn btn-info" role="button" id='button_logout'>Logout</a>
+                <a href="uploadcomics/" class="btn btn-info" role="button" id='button_createComic' style="margin-top: 8px;">Create Comic</a>
+                <a href="myprofile" class="btn btn-info" role="button" id='button_profile' style="margin-top: 8px;">Profile</a>
+                <a href="userlist" class="btn btn-info" role="button" id='button_createComic' style="margin-top: 8px;">Users</a>
+                <a href="logout" class="btn btn-info" role="button" id='button_logout' style="margin-top: 8px;">Logout</a>
                 <% }else {%>
-                <a href="register" class="btn btn-info" role="button" id='button_createprofile'>Register</a>
-                <a href="login" class="btn btn-info" role="button" id='button_login'>Login</a>
+                <a href="register" class="btn btn-info" role="button" id='button_createprofile' style="margin-top: 8px;">Register</a>
+                <a href="login" class="btn btn-info" role="button" id='button_login' style="margin-top: 8px;">Login</a>
                 <%}%>
             </ul>
 

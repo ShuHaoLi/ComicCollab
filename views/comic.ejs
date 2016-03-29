@@ -156,7 +156,11 @@
         <button type="submit" class="btn btn-success" name="submit" value="like">Like</button>
         <button type="submit" class="btn btn-danger" name="submit" value="dislike">DisLike</button>
         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <% if (isFavourite) { %>
+        Already added to favourites.
+        <% } else { %>
         <button type="submit" class="btn btn-info" name="submit" value="favourite">Favourite</button>
+        <% } %>
         <br>
         <br>
         <textarea title="comment" id="comment" name="comment" rows="4" cols="160" form="form"

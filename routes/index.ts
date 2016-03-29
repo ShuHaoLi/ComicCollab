@@ -419,6 +419,18 @@ class Router {
                     }
                 }
             );
+            var isFavourite = false;
+            userlist.findOne({
+                "username": req.currentUser.getUsername()
+            }, function(favErr, favDocs) {
+                if (favErr) {
+                    res.send(favErr);
+                } else if (favDocs != null) {
+                    if (favDocs['favourites'].indexOf(comicId) >= 0) {
+                        isFavourite = true;
+                    }
+                }
+            });
             //nodejs runs things asynchronously, so delaying a call by 500 ms should help so liketotal is calculated first
             setTimeout(function(){
             collection.findOne({
@@ -474,6 +486,7 @@ class Router {
                                         tags: tags,
                                         liketotal: liketotal,
                                         disliketotal: disliketotal,
+                                        isFavourite: isFavourite,
                                         isCreator: (req.currentUser.getUsername() == creator),
                                         currentUser: req.currentUser,
                                         viewcount: docs['viewcount'],

@@ -20,17 +20,17 @@ body  {
     <div class="page-header" style="margin-top: 100px">
         <h1>Sorted By Likes</h1>
         <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Sort By
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Sort by
                 <span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li><a href="../sortbyviews">Sort By Views</a></li>
-                <li><a href="../sortbylikes">Sort By Likes</a></li>
+                <li><a href="../sortbyviews">views</a></li>
+                <li><a href="../sortbylikes">likes</a></li>
             </ul>
         </div>
         </div>
         <ol>
             <% comics.forEach(function(comic, index) { %>
-            <li><a href = "comic/<%= comic.comicId %>"><img style="height:25px; width:25px;" src="<%= comicThumbnails[index] %>"> <%= comic.title %></a></li>
+            <li><a href = "comic/<%= comic.comicId %>"><img style="height:25px; width:25px;" src="<%= comicThumbnails[index] %>"> <b><%= comic.title %></b></a></li>
             <% }); %>
         </ol>
     </div>

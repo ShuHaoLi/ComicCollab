@@ -22,40 +22,63 @@ body  {
     </div>
     <div class="row">
     <div class="col-lg-7">
-        <h4>Name</h4>
-        <%= fullname %>
-        <h4>Age</h4>
-        <p><%= age %></p>
-        <h4>Gender</h4>
-        <p><%= gender %></p>
-        <h4>Location</h4>
-        <p><%= location %></p>
-        <h4>About Me</h4>
-        <p><%= aboutme %></p>
+        <table>
+            <tr>
+                <td>
+                    <b>Name</b><br>
+                    <%= fullname %><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Age</b><br>
+                    <%= age %><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Gender</b><br>
+                    <%= gender %><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Location</b><br>
+                    <%= location %><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>About Me</b><br>
+                    <%= aboutme %>
+                </td>
+            </tr>
+        </table>
         <br>
     </div>
     <div class="col-lg-5">
         <h4>My Fans</h4>
         <% for (var i = 0; i < fans.length; i++) { %>
-        <a href="../users/<%= fans[i]%>"><img style="height:25px; width:25px;" src = "<%= fanprofilepics[i] %>"> <%= fans[i] %></a><br>
+        <a href="../users/<%= fans[i]%>"><img style="height:25px; width:25px;" src = "<%= fanprofilepics[i] %>"> <b><%= fans[i] %></b></a><br>
         <% } %>
         <h4>I'm Following</h4>
         <% for (var j = 0; j < following.length; j++) { %>
-        </img><a href="../users/<%= following[j]%>"><img style="height:25px; width:25px;; width:25px;" src="<%= followingprofilepics[j] %>"> <%= following[j] %></a><br>
+        </img><a href="../users/<%= following[j]%>"><img style="height:25px; width:25px;; width:25px;" src="<%= followingprofilepics[j] %>"> <b><%= following[j] %></b></a><br>
         <% } %>
         <br>
         <h4>My Favourite Comics</h4>
         <% for (var k = 0; k < favourites.length; k++) { %>
-        <a href="../comic/<%= favourites[k]%>"><img style="height:25px; width:25px;" src="<%= favouriteThumbnails[k] %>"> <%= favouriteTitles[k] %></a><br>
+        <a href="../comic/<%= favourites[k]%>"><img style="height:25px; width:25px;" src="<%= favouriteThumbnails[k] %>"> <b><%= favouriteTitles[k] %></b></a><br>
         <% } %>
         <br>       
     </div>
     </div>
         <div class= "row">
+            <div class = "col-lg-12">
         <h3>Check out <%= userName %>'s other artwork</h3>
         <!--deviantartstart -->
         <% if (deviantartusername != "N/A") { %>
-        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com">DeviantArt</a></h4>
+        <h4><a href = "http://www.<%= deviantartusername%>.deviantart.com"><b>DeviantArt</b></a></h4>
         
         <% if (deviantartimages.length > 4) { %>
         <% for (var m = 0; m < 4; m++) { %>
@@ -80,11 +103,11 @@ body  {
         <!--deviantartend -->
         <!--tumblrstart -->
         <% if (tumblrusername != "N/A") { %>
-        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com">Tumblr</a></h4>
+        <h4><a href = "http://www.<%= tumblrusername%>.tumblr.com"><b>Tumblr</b></a></h4>
         
         <% if (tumblrurls.length > 4) { %>
         <% for (var m = 0; m < 4; m++) { %>
-        <a href=<%= tumblrurls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
+        <a href=<%= tumblrposturls[m] %>><img style="height:170px" src=<%= tumblrurls[m] %> /></a>
         <% } %>
         <% } else { %>
         <% for (var m = 0; m < tumblrurls.length; m++) { %>
@@ -107,6 +130,7 @@ body  {
         <!--tumblrend -->
         <br>
         <br>
+        </div>
     </div>    
 </body>
 </html>

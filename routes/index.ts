@@ -1071,28 +1071,27 @@ class Router {
                             //console.log(deviantUrls);
                         }
                     });
-                    var tumblr_urls = [];
                     var tumblr_posturls = [];
+                    var tumblr_urls = [];
                     var tumblrusername = docs['tumblrusername'];
-                   if (tumblrusername != "N/A"){
-                       var Tumblr = require('tumblrwks');
-                       var tumblr = new Tumblr({
-                           consumerKey: 'B0aoP9VFQz0Aspq8tYkPs7UHg0ijvyZS36fg5JYQP4TeHLF210'
-                       });
-                       tumblr.get('/posts', {hostname:tumblrusername + '.tumblr.com'}, function(err, json){
-                           var posts_length = json.posts.length;
-                           //console.log(json.posts[0].photos[0].alt_sizes[0].url);
-                           for (var i = 0; i < posts_length; i++){
-                               var photos_length = json.posts[i].photos.length;
-                               var tumblr_posturl = json.posts[i].post_url;
-                               for (var j = 0; j < photos_length; j++){
-                                   var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
-                                   tumblr_urls.push(tumblr_url);
-                                   tumblr_posturls.push(tumblr_posturl);
-                               }
-                           }
-                       });
-                   }
+                    if (tumblrusername != "N/A") {
+                        var Tumblr = require('tumblrwks');
+                        var tumblr = new Tumblr({
+                            consumerKey: 'B0aoP9VFQz0Aspq8tYkPs7UHg0ijvyZS36fg5JYQP4TeHLF210'
+                        });
+                        tumblr.get('/posts', { hostname: tumblrusername + '.tumblr.com' }, function(err, json) {
+                            var posts_length = json.posts.length;
+                            for (var i = 0; i < posts_length; i++) {
+                                var tumblr_posturl = json.posts[i].post_url;
+                                var photos_length = json.posts[i].photos.length;
+                                for (var j = 0; j < photos_length; j++) {
+                                    var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
+                                    tumblr_urls.push(tumblr_url);
+                                    tumblr_posturls.push(tumblr_posturl);
+                                }
+                            }
+                        });
+                    }
 
                     var fanCollection = db.get('fans');
                     setTimeout(function(){
@@ -1252,18 +1251,18 @@ class Router {
                         var tumblr_urls = [];
                         var tumblr_posturls = [];
                         var tumblrusername = docs['tumblrusername'];
-                        if (tumblrusername != "N/A"){
+
+                        if (tumblrusername != "N/A") {
                             var Tumblr = require('tumblrwks');
                             var tumblr = new Tumblr({
                                 consumerKey: 'B0aoP9VFQz0Aspq8tYkPs7UHg0ijvyZS36fg5JYQP4TeHLF210'
                             });
-                            tumblr.get('/posts', {hostname:tumblrusername + '.tumblr.com'}, function(err, json){
+                            tumblr.get('/posts', { hostname: tumblrusername + '.tumblr.com' }, function(err, json) {
                                 var posts_length = json.posts.length;
-                                //console.log("tumblrusername" + tumblrusername);
-                                for (var i = 0; i < posts_length; i++){
-                                    var photos_length = json.posts[i].photos.length;
+                                for (var i = 0; i < posts_length; i++) {
                                     var tumblr_posturl = json.posts[i].post_url;
-                                    for (var j = 0; j < photos_length; j++){
+                                    var photos_length = json.posts[i].photos.length;
+                                    for (var j = 0; j < photos_length; j++) {
                                         var tumblr_url = json.posts[i].photos[j].alt_sizes[2].url; //grab the second size of the photo
                                         tumblr_urls.push(tumblr_url);
                                         tumblr_posturls.push(tumblr_posturl);

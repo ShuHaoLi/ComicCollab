@@ -17,7 +17,7 @@
         </div>
         <ol>
             <% userlist.forEach(function(user) { %>
-            <li><a href = "users/<%= user.username %>"><img style="height:25px" src = "<%= user.profilepicture %>"></img> <%= user.username %></a></li>
+            <li><a href = "users/<%= user.username %>"><img style="height:25px; width:25px;" src = "<%= user.profilepicture %>"> <%= user.username %></a></li>
             <% }); %>
         </ol>
     </div>

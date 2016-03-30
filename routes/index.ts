@@ -1555,7 +1555,7 @@ class Router {
             var titles = [];
             var comicThumbnails = [];
             var tagExists;
-            var profilepicture
+            var profilepicture;
 
             collection.findOne({
                 "username": search
@@ -1583,16 +1583,18 @@ class Router {
                         for (var i = 0; i < comicDocs.length; i++) {
                             comicIds.push(comicDocs[i]['comicId']);
                             titles.push(comicDocs[i]['title']);
-                            imagesCollection.findOne({
-                                "comicId": comicDocs[i]['comicId'],
-                                "sequence": 1
-                            }, function(imagesErr, imagesDocs) {
-                                if (imagesErr) {
-                                    res.send(imagesErr);
-                                } else {
-                                    comicThumbnails.push(imagesDocs['url']);
-                                }
-                            })
+                            (function(i) {
+                                imagesCollection.findOne({
+                                    "comicId": comicDocs[i]['comicId'],
+                                    "sequence": 1
+                                }, function(imagesErr, imagesDocs) {
+                                    if (imagesErr) {
+                                        res.send(imagesErr);
+                                    } else {
+                                        comicThumbnails[i] = imagesDocs['url'];
+                                    }
+                                })
+                            })(i);
                         }
                         setTimeout(function() {
                             res.render('search', {

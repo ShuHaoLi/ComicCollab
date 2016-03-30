@@ -1690,16 +1690,18 @@ class Router {
                 else if (docs != null) {
                     var comicThumbnails = [];
                     for (var i = 0; i < docs.length; i++) {
-                        imagesCollection.findOne({
-                            "comicId": docs[i]['comicId'],
-                            "sequence": 1
-                        }, function(imagesErr, imagesDocs) {
-                            if (imagesErr) {
-                                res.send(imagesErr);
-                            } else {
-                                comicThumbnails.push(imagesDocs['url']);
-                            }
-                        })
+                        (function(i) {
+                            imagesCollection.findOne({
+                                "comicId": docs[i]['comicId'],
+                                "sequence": 1
+                            }, function(imagesErr, imagesDocs) {
+                                if (imagesErr) {
+                                    res.send(imagesErr);
+                                } else {
+                                    comicThumbnails[i] = imagesDocs['url'];
+                                }
+                            })
+                        })(i);
                     }
                     setTimeout(function() {
                         res.render('sortbyviews', {

@@ -1230,24 +1230,28 @@ class Router {
                         var favouriteTitles = [];
                         var favouriteThumbnails = [];
                         for (var i = 0; i < favourites.length; i++) {
-                            comicCollection.findOne(
-                                { "comicId": favourites[i] }, function(comicErr, comicDocs) {
-                                    if (comicErr) {
-                                        res.send(comicErr);
-                                    } else {
-                                        favouriteTitles.push(comicDocs['title']);
+                            (function(i) {
+                                comicCollection.findOne(
+                                    { "comicId": favourites[i] }, function(comicErr, comicDocs) {
+                                        if (comicErr) {
+                                            res.send(comicErr);
+                                        } else {
+                                            favouriteTitles[i] = comicDocs['title'];
+                                        }
                                     }
-                                }
-                            );
-                            imagesCollection.findOne({"comicId": favourites[i], "sequence": 1},
-                                function(imagesErr, imagesDocs) {
-                                    if (imagesErr) {
-                                        res.send(imagesErr);
-                                    } else {
-                                        favouriteThumbnails.push(imagesDocs['url']);
+                                );
+                            })(i);
+                            (function(i) {
+                                imagesCollection.findOne({"comicId": favourites[i], "sequence": 1},
+                                    function(imagesErr, imagesDocs) {
+                                        if (imagesErr) {
+                                            res.send(imagesErr);
+                                        } else {
+                                            favouriteThumbnails[i] = imagesDocs['url'];
+                                        }
                                     }
-                                }
-                            );
+                                );
+                            })(i);
                         }
                         var deviantartusername = docs['deviantartusername'];
                         var deviantArtImages = [];
@@ -1311,34 +1315,38 @@ class Router {
                                         var fanprofilepics = [];
                                         //following and followingprofilepics
                                         for (var i = 0; i < fanDocs.length; i++) {
-                                            following.push(fanDocs[i]['following']);
+                                            following[i] = fanDocs[i]['following'];
                                         }
                                         //
                                         for (var i = 0; i < following.length; i++) {
-                                            collection.findOne({
-                                                "username": following[i]
-                                            }, function(err, followdoc) {
-                                                if (err) {
-                                                    res.send(err);
-                                                } else {
-                                                    followingprofilepics.push(followdoc["profilepicture"]);
-                                                }
-                                            });
+                                            (function(i) {
+                                                collection.findOne({
+                                                    "username": following[i]
+                                                }, function(err, followdoc) {
+                                                    if (err) {
+                                                        res.send(err);
+                                                    } else {
+                                                        followingprofilepics[i] = followdoc["profilepicture"];
+                                                    }
+                                                });
+                                            })(i);
                                         }
                                         //fans and fan profilepics
                                         for (var i = 0; i < followingDocs.length; i++) {
-                                            fans.push(followingDocs[i]['fan']);
+                                            fans[i] = followingDocs[i]['fan'];
                                         }
                                         for (var i = 0; i < fans.length; i++) {
-                                            collection.findOne({
-                                                "username": fans[i]
-                                            }, function(err, fandoc) {
-                                                if (err) {
-                                                    res.send(err);
-                                                } else {
-                                                    fanprofilepics.push(fandoc["profilepicture"]);
-                                                }
-                                            });
+                                            (function(i) {
+                                                collection.findOne({
+                                                    "username": fans[i]
+                                                }, function(err, fandoc) {
+                                                    if (err) {
+                                                        res.send(err);
+                                                    } else {
+                                                        fanprofilepics[i] = fandoc["profilepicture"];
+                                                    }
+                                                });
+                                            })(i);
                                         }
                                         var notFan = (fans.indexOf(req.currentUser.getUsername()) == -1);
                                         setTimeout(function(){
